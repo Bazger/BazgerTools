@@ -393,5 +393,10 @@ namespace BazgerTools
         }
 
         #endregion
+
+        private void addButton_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

@@ -52,7 +52,6 @@
             this.posGridView = new Telerik.WinControls.UI.RadGridView();
             this.circlesLabel = new System.Windows.Forms.Label();
             this.copyrightLabel = new Telerik.WinControls.UI.RadLabel();
-            this.addButton = new Telerik.WinControls.UI.RadButton();
             ((System.ComponentModel.ISupportInitialize)(this.clickersPageView)).BeginInit();
             this.clickersPageView.SuspendLayout();
             this.ClickerPage.SuspendLayout();
@@ -70,7 +69,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.posGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.posGridView.MasterTemplate)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.copyrightLabel)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.addButton)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this)).BeginInit();
             this.SuspendLayout();
             // 
@@ -194,7 +192,6 @@
             // 
             // posClickerPanel
             // 
-            this.posClickerPanel.Controls.Add(this.addButton);
             this.posClickerPanel.Controls.Add(this.moveDownButton);
             this.posClickerPanel.Controls.Add(this.removeButton);
             this.posClickerPanel.Controls.Add(this.moveUpButton);
@@ -339,15 +336,6 @@
             this.copyrightLabel.TabIndex = 1;
             this.copyrightLabel.Text = "© Vanya Zolotaryov 2015";
             // 
-            // addButton
-            // 
-            this.addButton.Location = new System.Drawing.Point(95, 15);
-            this.addButton.Name = "addButton";
-            this.addButton.Size = new System.Drawing.Size(72, 30);
-            this.addButton.TabIndex = 35;
-            this.addButton.Text = "Add";
-            this.addButton.ThemeName = "VisualStudio2012Light";
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -387,7 +375,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.posGridView.MasterTemplate)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.posGridView)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.copyrightLabel)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.addButton)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -418,6 +405,5 @@
         private Telerik.WinControls.UI.RadButton clearAllButton;
         private System.Windows.Forms.Label delayPosClickerLabel;
         private Telerik.WinControls.UI.RadSpinEditor posClickerSpinEditor;
-        private Telerik.WinControls.UI.RadButton addButton;
     }
 }
