@@ -1,2 +1,0 @@
-@echo off
-msiexec /x {DEB865C7-70AA-4E8D-AD0C-6B1A3D09209C}

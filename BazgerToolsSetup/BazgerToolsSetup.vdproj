@@ -165,12 +165,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_F9F1907FF19E480394F56932E4F66F01"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_5EDD142285E419C9978BE72D73C6D4A1"
         "MsmSig" = "8:_UNDEFINED"
@@ -611,26 +605,6 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F9F1907FF19E480394F56932E4F66F01"
-            {
-            "SourcePath" = "8:Uninstall.bat"
-            "TargetName" = "8:Uninstall.bat"
-            "Tag" = "8:"
-            "Folder" = "8:_9FE70C9735354DE1AF448730AFCC9393"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
         }
         "FileType"
         {
@@ -697,9 +671,9 @@
         "Product"
         {
         "Name" = "8:Microsoft Visual Studio"
-        "ProductName" = "8:BazgerToolsSetup"
+        "ProductName" = "8:BazgerTools"
         "ProductCode" = "8:{95E58FB6-02B3-459A-BE1B-8FB061BB6D13}"
-        "PackageCode" = "8:{32D16320-E28B-4D44-9BDF-BD38A6B262D1}"
+        "PackageCode" = "8:{B2131ACF-2A12-4E05-8DE3-8A36DAE6ACB7}"
         "UpgradeCode" = "8:{A2892DA5-FCEE-43D6-A8C9-3BF3C292262A}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -710,7 +684,7 @@
         "Manufacturer" = "8:BlacKnight com"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
-        "Title" = "8:BazgerToolsSetup"
+        "Title" = "8:BazgerTools"
         "Subject" = "8:"
         "ARPCONTACT" = "8:Bazger"
         "Keywords" = "8:"
@@ -819,34 +793,6 @@
         }
         "Shortcut"
         {
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_49C70901490245AFAF2AC5D8236B7B9B"
-            {
-            "Name" = "8:Uninstall"
-            "Arguments" = "8:"
-            "Description" = "8:"
-            "ShowCmd" = "3:1"
-            "IconIndex" = "3:0"
-            "Transitive" = "11:FALSE"
-            "Target" = "8:_F9F1907FF19E480394F56932E4F66F01"
-            "Folder" = "8:_0073D05E759A4BF9B40D9E8DC0E50D8C"
-            "WorkingFolder" = "8:_9FE70C9735354DE1AF448730AFCC9393"
-            "Icon" = "8:_63221D87511E41DD9268051E682C790E"
-            "Feature" = "8:"
-            }
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_583ED6BCF5AD477B9428594582849035"
-            {
-            "Name" = "8:Uninstall"
-            "Arguments" = "8:"
-            "Description" = "8:"
-            "ShowCmd" = "3:1"
-            "IconIndex" = "3:0"
-            "Transitive" = "11:FALSE"
-            "Target" = "8:_F9F1907FF19E480394F56932E4F66F01"
-            "Folder" = "8:_D0CF9E6C1B7A4B5F8B42FAA250D5BF6F"
-            "WorkingFolder" = "8:_9FE70C9735354DE1AF448730AFCC9393"
-            "Icon" = "8:_63221D87511E41DD9268051E682C790E"
-            "Feature" = "8:"
-            }
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_CC98FEA45E91408FBC08C8C4F4C1538D"
             {
             "Name" = "8:BazgerTools"
