@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Linq;
 using System.Windows.Forms;
 
-namespace BazgerTools
+namespace BazgerTools.App
 {
     static class Program
     {

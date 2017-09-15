@@ -1,4 +1,4 @@
-﻿namespace BazgerTools
+﻿namespace BazgerTools.App
 {
     public static class Constants
     {

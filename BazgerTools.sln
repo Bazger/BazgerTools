@@ -1,11 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BazgerTools", "BazgerTools\BazgerTools.csproj", "{6A5E388F-8377-41F9-802B-197F8DDD42A6}"
-EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "BazgerToolsSetup", "BazgerToolsSetup\BazgerToolsSetup.vdproj", "{F09E4873-8A47-4C39-8B04-B9A6833731F6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BazgerTools.App", "BazgerTools\BazgerTools.App.csproj", "{6A5E388F-8377-41F9-802B-197F8DDD42A6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,9 +15,6 @@ Global
 		{6A5E388F-8377-41F9-802B-197F8DDD42A6}.Debug|x86.Build.0 = Debug|x86
 		{6A5E388F-8377-41F9-802B-197F8DDD42A6}.Release|x86.ActiveCfg = Release|x86
 		{6A5E388F-8377-41F9-802B-197F8DDD42A6}.Release|x86.Build.0 = Release|x86
-		{F09E4873-8A47-4C39-8B04-B9A6833731F6}.Debug|x86.ActiveCfg = Debug
-		{F09E4873-8A47-4C39-8B04-B9A6833731F6}.Release|x86.ActiveCfg = Release
-		{F09E4873-8A47-4C39-8B04-B9A6833731F6}.Release|x86.Build.0 = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

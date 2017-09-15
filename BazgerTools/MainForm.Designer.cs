@@ -1,4 +1,4 @@
-﻿namespace BazgerTools
+﻿namespace BazgerTools.App
 {
     partial class MainForm
     {

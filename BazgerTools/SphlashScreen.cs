@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
-using BazgerTools.Properties;
+using BazgerTools.App.Properties;
 
-namespace BazgerTools
+namespace BazgerTools.App
 {
     public partial class SphlashScreen : Form
     {
