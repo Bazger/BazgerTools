@@ -223,9 +223,9 @@ namespace BazgerTools.App
         /// <param name="text">String that will be added</param>
         private void ClickerLog(string text)
         {
-            clickerLog.Text += text + Environment.NewLine;
-            clickerLog.SelectionStart = clickerLog.Text.Length;
-            clickerLog.ScrollToCaret();
+            logTextBox.Text += text + Environment.NewLine;
+            logTextBox.SelectionStart = logTextBox.Text.Length;
+            logTextBox.ScrollToCaret();
 
         }
 
@@ -382,9 +382,9 @@ namespace BazgerTools.App
         /// <param name="text">String that will be added</param>
         private void PositionClickerLog(string text)
         {
-            posClickerLog.Text += text + Environment.NewLine;
-            posClickerLog.SelectionStart = posClickerLog.Text.Length;
-            posClickerLog.ScrollToCaret();
+            logTextBox.Text += text + Environment.NewLine;
+            logTextBox.SelectionStart = logTextBox.Text.Length;
+            logTextBox.ScrollToCaret();
         }
 
         #endregion

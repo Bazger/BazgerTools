@@ -110,20 +110,6 @@ namespace BazgerTools.YouTubeDownloader
             }
         }
 
-
-        [ConfigurationProperty("overwriteExistingFiles", IsRequired = false, DefaultValue = false)]
-        public bool OverwriteExistingFiles
-        {
-            get
-            {
-                return (bool)this["overwriteExistingFiles"];
-            }
-            set
-            {
-                this["overwriteExistingFiles"] = value;
-            }
-        }
-
         [ConfigurationProperty("journalFileName", IsRequired = true)]
         public string JournalFileName
         {
