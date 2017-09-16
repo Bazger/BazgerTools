@@ -37,22 +37,25 @@ namespace BazgerTools.App
             this.object_b5396cdc_c5a7_4301_882f_ea3e4dbfb3fe = new Telerik.WinControls.RootRadElement();
             this.clickersPageView = new Telerik.WinControls.UI.RadPageView();
             this.ClickerPage = new Telerik.WinControls.UI.RadPageViewPage();
-            this.clickerSpinEditor = new Telerik.WinControls.UI.RadSpinEditor();
-            this.startClickerButton = new Telerik.WinControls.UI.RadButton();
-            this.delayClickerLabel = new System.Windows.Forms.Label();
-            this.allCountLabel = new System.Windows.Forms.Label();
-            this.countLabel = new System.Windows.Forms.Label();
+            this.clickerCtrlsPnl = new Telerik.WinControls.UI.RadPanel();
+            this.clickerDeleySpin = new Telerik.WinControls.UI.RadSpinEditor();
+            this.clickerDelayLbl = new System.Windows.Forms.Label();
+            this.clickerAllCountLbl = new System.Windows.Forms.Label();
+            this.clickerCountLbl = new System.Windows.Forms.Label();
+            this.clickerStartButton = new Telerik.WinControls.UI.RadButton();
             this.PositionClicker = new Telerik.WinControls.UI.RadPageViewPage();
-            this.posClickerPanel = new System.Windows.Forms.Panel();
-            this.removeButton = new Telerik.WinControls.UI.RadButton();
-            this.moveDownButton = new Telerik.WinControls.UI.RadButton();
-            this.moveUpButton = new Telerik.WinControls.UI.RadButton();
-            this.clearAllButton = new Telerik.WinControls.UI.RadButton();
-            this.delayPosClickerLabel = new System.Windows.Forms.Label();
-            this.posClickerSpinEditor = new Telerik.WinControls.UI.RadSpinEditor();
-            this.posGridView = new Telerik.WinControls.UI.RadGridView();
-            this.circlesLabel = new System.Windows.Forms.Label();
+            this.posClickerCtrlsPnl = new Telerik.WinControls.UI.RadPanel();
+            this.posClickerCirclesLbl = new System.Windows.Forms.Label();
+            this.posClickerReadmeBut = new Telerik.WinControls.UI.RadButton();
+            this.posClickerRemoveBtn = new Telerik.WinControls.UI.RadButton();
+            this.posClickerSpin = new Telerik.WinControls.UI.RadSpinEditor();
+            this.posClickerMoveDownBtn = new Telerik.WinControls.UI.RadButton();
+            this.posClickerDelayLbl = new System.Windows.Forms.Label();
+            this.posClickerMoveUpBtn = new Telerik.WinControls.UI.RadButton();
+            this.posClickerClearAllBtn = new Telerik.WinControls.UI.RadButton();
+            this.posClickerGrid = new Telerik.WinControls.UI.RadGridView();
             this.radPageViewPage1 = new Telerik.WinControls.UI.RadPageViewPage();
+            this.radProgressBar1 = new Telerik.WinControls.UI.RadProgressBar();
             this.browsePathButton = new Telerik.WinControls.UI.RadButton();
             this.journalPathTextBox = new Telerik.WinControls.UI.RadTextBox();
             this.panel2 = new System.Windows.Forms.Panel();
@@ -68,23 +71,28 @@ namespace BazgerTools.App
             this.downloadUrlTextBox = new Telerik.WinControls.UI.RadTextBox();
             this.radButton1 = new Telerik.WinControls.UI.RadButton();
             this.object_33836c11_b0e5_4111_89c3_e07e43b27c2c = new Telerik.WinControls.RootRadElement();
-            this.logTextBox = new Telerik.WinControls.UI.RadTextBox();
+            this.logTxtBox = new Telerik.WinControls.UI.RadTextBox();
             this.copyrightLabel = new Telerik.WinControls.UI.RadLabel();
             ((System.ComponentModel.ISupportInitialize)(this.clickersPageView)).BeginInit();
             this.clickersPageView.SuspendLayout();
             this.ClickerPage.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.clickerSpinEditor)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.startClickerButton)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.clickerCtrlsPnl)).BeginInit();
+            this.clickerCtrlsPnl.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.clickerDeleySpin)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.clickerStartButton)).BeginInit();
             this.PositionClicker.SuspendLayout();
-            this.posClickerPanel.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.removeButton)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.moveDownButton)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.moveUpButton)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.clearAllButton)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.posClickerSpinEditor)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.posGridView)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.posGridView.MasterTemplate)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.posClickerCtrlsPnl)).BeginInit();
+            this.posClickerCtrlsPnl.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.posClickerReadmeBut)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.posClickerRemoveBtn)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.posClickerSpin)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.posClickerMoveDownBtn)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.posClickerMoveUpBtn)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.posClickerClearAllBtn)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.posClickerGrid)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.posClickerGrid.MasterTemplate)).BeginInit();
             this.radPageViewPage1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.radProgressBar1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.browsePathButton)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.journalPathTextBox)).BeginInit();
             this.panel2.SuspendLayout();
@@ -97,7 +105,7 @@ namespace BazgerTools.App
             ((System.ComponentModel.ISupportInitialize)(this.downloaderThreadsSpin)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.downloadUrlTextBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.radButton1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.logTextBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.logTxtBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.copyrightLabel)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this)).BeginInit();
             this.SuspendLayout();
@@ -116,7 +124,7 @@ namespace BazgerTools.App
             this.clickersPageView.Dock = System.Windows.Forms.DockStyle.Top;
             this.clickersPageView.Location = new System.Drawing.Point(0, 0);
             this.clickersPageView.Name = "clickersPageView";
-            this.clickersPageView.SelectedPage = this.radPageViewPage1;
+            this.clickersPageView.SelectedPage = this.PositionClicker;
             this.clickersPageView.Size = new System.Drawing.Size(465, 196);
             this.clickersPageView.TabIndex = 0;
             this.clickersPageView.Text = "radPageView1";
@@ -127,11 +135,8 @@ namespace BazgerTools.App
             // 
             // ClickerPage
             // 
-            this.ClickerPage.Controls.Add(this.clickerSpinEditor);
-            this.ClickerPage.Controls.Add(this.startClickerButton);
-            this.ClickerPage.Controls.Add(this.delayClickerLabel);
-            this.ClickerPage.Controls.Add(this.allCountLabel);
-            this.ClickerPage.Controls.Add(this.countLabel);
+            this.ClickerPage.Controls.Add(this.clickerCtrlsPnl);
+            this.ClickerPage.Controls.Add(this.clickerStartButton);
             this.ClickerPage.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.ClickerPage.ItemSize = new System.Drawing.SizeF(117F, 24F);
             this.ClickerPage.Location = new System.Drawing.Point(5, 30);
@@ -139,72 +144,89 @@ namespace BazgerTools.App
             this.ClickerPage.Size = new System.Drawing.Size(455, 161);
             this.ClickerPage.Text = "Clciker";
             // 
-            // clickerSpinEditor
+            // clickerCtrlsPnl
             // 
-            this.clickerSpinEditor.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.clickerSpinEditor.Location = new System.Drawing.Point(201, 94);
-            this.clickerSpinEditor.Maximum = new decimal(new int[] {
+            this.clickerCtrlsPnl.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.clickerCtrlsPnl.Controls.Add(this.clickerDeleySpin);
+            this.clickerCtrlsPnl.Controls.Add(this.clickerDelayLbl);
+            this.clickerCtrlsPnl.Controls.Add(this.clickerAllCountLbl);
+            this.clickerCtrlsPnl.Controls.Add(this.clickerCountLbl);
+            this.clickerCtrlsPnl.Location = new System.Drawing.Point(290, 0);
+            this.clickerCtrlsPnl.Name = "clickerCtrlsPnl";
+            this.clickerCtrlsPnl.Size = new System.Drawing.Size(165, 158);
+            this.clickerCtrlsPnl.TabIndex = 26;
+            this.clickerCtrlsPnl.ThemeName = "VisualStudio2012Light";
+            // 
+            // clickerDeleySpin
+            // 
+            this.clickerDeleySpin.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.clickerDeleySpin.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.clickerDeleySpin.Location = new System.Drawing.Point(52, 48);
+            this.clickerDeleySpin.Maximum = new decimal(new int[] {
             999999,
             0,
             0,
             0});
-            this.clickerSpinEditor.Name = "clickerSpinEditor";
-            this.clickerSpinEditor.Size = new System.Drawing.Size(124, 27);
-            this.clickerSpinEditor.TabIndex = 25;
-            this.clickerSpinEditor.TabStop = false;
-            this.clickerSpinEditor.ThemeName = "VisualStudio2012Light";
-            this.clickerSpinEditor.Value = new decimal(new int[] {
+            this.clickerDeleySpin.Name = "clickerDeleySpin";
+            this.clickerDeleySpin.Size = new System.Drawing.Size(106, 27);
+            this.clickerDeleySpin.TabIndex = 29;
+            this.clickerDeleySpin.TabStop = false;
+            this.clickerDeleySpin.ThemeName = "VisualStudio2012Light";
+            this.clickerDeleySpin.Value = new decimal(new int[] {
             20,
             0,
             0,
             0});
             // 
-            // startClickerButton
+            // clickerDelayLbl
             // 
-            this.startClickerButton.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.startClickerButton.Location = new System.Drawing.Point(6, 19);
-            this.startClickerButton.Name = "startClickerButton";
-            this.startClickerButton.Size = new System.Drawing.Size(176, 102);
-            this.startClickerButton.TabIndex = 23;
-            this.startClickerButton.Text = "Test Clicking!";
-            this.startClickerButton.ThemeName = "VisualStudio2012Light";
-            this.startClickerButton.Click += new System.EventHandler(this.startClickerButton_Click);
+            this.clickerDelayLbl.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.clickerDelayLbl.AutoSize = true;
+            this.clickerDelayLbl.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.clickerDelayLbl.Location = new System.Drawing.Point(3, 50);
+            this.clickerDelayLbl.Name = "clickerDelayLbl";
+            this.clickerDelayLbl.Size = new System.Drawing.Size(43, 17);
+            this.clickerDelayLbl.TabIndex = 28;
+            this.clickerDelayLbl.Text = "Delay:";
             // 
-            // delayClickerLabel
+            // clickerAllCountLbl
             // 
-            this.delayClickerLabel.AutoSize = true;
-            this.delayClickerLabel.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.delayClickerLabel.Location = new System.Drawing.Point(198, 74);
-            this.delayClickerLabel.Name = "delayClickerLabel";
-            this.delayClickerLabel.Size = new System.Drawing.Size(43, 17);
-            this.delayClickerLabel.TabIndex = 19;
-            this.delayClickerLabel.Text = "Delay:";
+            this.clickerAllCountLbl.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.clickerAllCountLbl.AutoSize = true;
+            this.clickerAllCountLbl.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.clickerAllCountLbl.Location = new System.Drawing.Point(80, 5);
+            this.clickerAllCountLbl.Name = "clickerAllCountLbl";
+            this.clickerAllCountLbl.Size = new System.Drawing.Size(78, 17);
+            this.clickerAllCountLbl.TabIndex = 27;
+            this.clickerAllCountLbl.Text = "All Count:  0";
             // 
-            // allCountLabel
+            // clickerCountLbl
             // 
-            this.allCountLabel.AutoSize = true;
-            this.allCountLabel.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.allCountLabel.Location = new System.Drawing.Point(198, 41);
-            this.allCountLabel.Name = "allCountLabel";
-            this.allCountLabel.Size = new System.Drawing.Size(78, 17);
-            this.allCountLabel.TabIndex = 17;
-            this.allCountLabel.Text = "All Count:  0";
+            this.clickerCountLbl.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.clickerCountLbl.AutoSize = true;
+            this.clickerCountLbl.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.clickerCountLbl.Location = new System.Drawing.Point(3, 5);
+            this.clickerCountLbl.Name = "clickerCountLbl";
+            this.clickerCountLbl.Size = new System.Drawing.Size(60, 17);
+            this.clickerCountLbl.TabIndex = 26;
+            this.clickerCountLbl.Text = "Count:  0";
             // 
-            // countLabel
+            // clickerStartButton
             // 
-            this.countLabel.AutoSize = true;
-            this.countLabel.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.countLabel.Location = new System.Drawing.Point(198, 19);
-            this.countLabel.Name = "countLabel";
-            this.countLabel.Size = new System.Drawing.Size(60, 17);
-            this.countLabel.TabIndex = 16;
-            this.countLabel.Text = "Count:  0";
+            this.clickerStartButton.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.clickerStartButton.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.clickerStartButton.Location = new System.Drawing.Point(0, 0);
+            this.clickerStartButton.Name = "clickerStartButton";
+            this.clickerStartButton.Size = new System.Drawing.Size(284, 158);
+            this.clickerStartButton.TabIndex = 23;
+            this.clickerStartButton.Text = "Test Clicking!";
+            this.clickerStartButton.ThemeName = "VisualStudio2012Light";
+            this.clickerStartButton.Click += new System.EventHandler(this.startClickerButton_Click);
             // 
             // PositionClicker
             // 
-            this.PositionClicker.Controls.Add(this.posClickerPanel);
-            this.PositionClicker.Controls.Add(this.posGridView);
-            this.PositionClicker.Controls.Add(this.circlesLabel);
+            this.PositionClicker.Controls.Add(this.posClickerCtrlsPnl);
+            this.PositionClicker.Controls.Add(this.posClickerGrid);
             this.PositionClicker.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.PositionClicker.ItemSize = new System.Drawing.SizeF(156F, 24F);
             this.PositionClicker.Location = new System.Drawing.Point(5, 30);
@@ -212,140 +234,155 @@ namespace BazgerTools.App
             this.PositionClicker.Size = new System.Drawing.Size(455, 161);
             this.PositionClicker.Text = "Multiply Clicks";
             // 
-            // posClickerPanel
+            // posClickerCtrlsPnl
             // 
-            this.posClickerPanel.Controls.Add(this.removeButton);
-            this.posClickerPanel.Controls.Add(this.moveDownButton);
-            this.posClickerPanel.Controls.Add(this.moveUpButton);
-            this.posClickerPanel.Controls.Add(this.clearAllButton);
-            this.posClickerPanel.Controls.Add(this.delayPosClickerLabel);
-            this.posClickerPanel.Controls.Add(this.posClickerSpinEditor);
-            this.posClickerPanel.Location = new System.Drawing.Point(0, 8);
-            this.posClickerPanel.Name = "posClickerPanel";
-            this.posClickerPanel.Size = new System.Drawing.Size(219, 133);
-            this.posClickerPanel.TabIndex = 37;
+            this.posClickerCtrlsPnl.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.posClickerCtrlsPnl.Controls.Add(this.posClickerCirclesLbl);
+            this.posClickerCtrlsPnl.Controls.Add(this.posClickerReadmeBut);
+            this.posClickerCtrlsPnl.Controls.Add(this.posClickerRemoveBtn);
+            this.posClickerCtrlsPnl.Controls.Add(this.posClickerSpin);
+            this.posClickerCtrlsPnl.Controls.Add(this.posClickerMoveDownBtn);
+            this.posClickerCtrlsPnl.Controls.Add(this.posClickerDelayLbl);
+            this.posClickerCtrlsPnl.Controls.Add(this.posClickerMoveUpBtn);
+            this.posClickerCtrlsPnl.Controls.Add(this.posClickerClearAllBtn);
+            this.posClickerCtrlsPnl.Location = new System.Drawing.Point(0, 3);
+            this.posClickerCtrlsPnl.Name = "posClickerCtrlsPnl";
+            this.posClickerCtrlsPnl.Size = new System.Drawing.Size(219, 158);
+            this.posClickerCtrlsPnl.TabIndex = 1;
             // 
-            // removeButton
+            // posClickerCirclesLbl
             // 
-            this.removeButton.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.removeButton.Location = new System.Drawing.Point(7, 58);
-            this.removeButton.Name = "removeButton";
-            this.removeButton.Size = new System.Drawing.Size(92, 30);
-            this.removeButton.TabIndex = 31;
-            this.removeButton.Text = "Remove";
-            this.removeButton.ThemeName = "VisualStudio2012Light";
-            this.removeButton.Click += new System.EventHandler(this.removeButton_Click);
+            this.posClickerCirclesLbl.AutoSize = true;
+            this.posClickerCirclesLbl.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.posClickerCirclesLbl.Location = new System.Drawing.Point(57, 127);
+            this.posClickerCirclesLbl.Name = "posClickerCirclesLbl";
+            this.posClickerCirclesLbl.Size = new System.Drawing.Size(102, 17);
+            this.posClickerCirclesLbl.TabIndex = 36;
+            this.posClickerCirclesLbl.Text = "Circles Count:  0";
             // 
-            // moveDownButton
+            // posClickerReadmeBut
             // 
-            this.moveDownButton.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.moveDownButton.Location = new System.Drawing.Point(124, 94);
-            this.moveDownButton.Name = "moveDownButton";
-            this.moveDownButton.Size = new System.Drawing.Size(92, 30);
-            this.moveDownButton.TabIndex = 34;
-            this.moveDownButton.Text = "Move Down";
-            this.moveDownButton.ThemeName = "VisualStudio2012Light";
-            this.moveDownButton.Click += new System.EventHandler(this.moveDownButton_Click);
+            this.posClickerReadmeBut.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.posClickerReadmeBut.Location = new System.Drawing.Point(120, 25);
+            this.posClickerReadmeBut.Name = "posClickerReadmeBut";
+            this.posClickerReadmeBut.Size = new System.Drawing.Size(92, 27);
+            this.posClickerReadmeBut.TabIndex = 35;
+            this.posClickerReadmeBut.Text = "README!";
+            this.posClickerReadmeBut.ThemeName = "VisualStudio2012Light";
             // 
-            // moveUpButton
+            // posClickerRemoveBtn
             // 
-            this.moveUpButton.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.moveUpButton.Location = new System.Drawing.Point(124, 58);
-            this.moveUpButton.Name = "moveUpButton";
-            this.moveUpButton.Size = new System.Drawing.Size(92, 30);
-            this.moveUpButton.TabIndex = 33;
-            this.moveUpButton.Text = "Move Up";
-            this.moveUpButton.ThemeName = "VisualStudio2012Light";
-            this.moveUpButton.Click += new System.EventHandler(this.moveUpButton_Click);
+            this.posClickerRemoveBtn.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.posClickerRemoveBtn.Location = new System.Drawing.Point(3, 58);
+            this.posClickerRemoveBtn.Name = "posClickerRemoveBtn";
+            this.posClickerRemoveBtn.Size = new System.Drawing.Size(92, 30);
+            this.posClickerRemoveBtn.TabIndex = 31;
+            this.posClickerRemoveBtn.Text = "Remove";
+            this.posClickerRemoveBtn.ThemeName = "VisualStudio2012Light";
+            this.posClickerRemoveBtn.Click += new System.EventHandler(this.removeButton_Click);
             // 
-            // clearAllButton
+            // posClickerSpin
             // 
-            this.clearAllButton.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.clearAllButton.Location = new System.Drawing.Point(7, 94);
-            this.clearAllButton.Name = "clearAllButton";
-            this.clearAllButton.Size = new System.Drawing.Size(92, 30);
-            this.clearAllButton.TabIndex = 32;
-            this.clearAllButton.Text = "Clear All";
-            this.clearAllButton.ThemeName = "VisualStudio2012Light";
-            this.clearAllButton.Click += new System.EventHandler(this.clearAllButton_Click);
-            // 
-            // delayPosClickerLabel
-            // 
-            this.delayPosClickerLabel.AutoSize = true;
-            this.delayPosClickerLabel.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.delayPosClickerLabel.Location = new System.Drawing.Point(7, 5);
-            this.delayPosClickerLabel.Name = "delayPosClickerLabel";
-            this.delayPosClickerLabel.Size = new System.Drawing.Size(43, 17);
-            this.delayPosClickerLabel.TabIndex = 24;
-            this.delayPosClickerLabel.Text = "Delay:";
-            // 
-            // posClickerSpinEditor
-            // 
-            this.posClickerSpinEditor.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.posClickerSpinEditor.Location = new System.Drawing.Point(7, 25);
-            this.posClickerSpinEditor.Maximum = new decimal(new int[] {
+            this.posClickerSpin.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.posClickerSpin.Location = new System.Drawing.Point(3, 25);
+            this.posClickerSpin.Maximum = new decimal(new int[] {
             999999,
             0,
             0,
             0});
-            this.posClickerSpinEditor.Name = "posClickerSpinEditor";
-            this.posClickerSpinEditor.Size = new System.Drawing.Size(92, 27);
-            this.posClickerSpinEditor.TabIndex = 29;
-            this.posClickerSpinEditor.TabStop = false;
-            this.posClickerSpinEditor.ThemeName = "VisualStudio2012Light";
-            this.posClickerSpinEditor.Value = new decimal(new int[] {
+            this.posClickerSpin.Name = "posClickerSpin";
+            this.posClickerSpin.Size = new System.Drawing.Size(92, 27);
+            this.posClickerSpin.TabIndex = 29;
+            this.posClickerSpin.TabStop = false;
+            this.posClickerSpin.ThemeName = "VisualStudio2012Light";
+            this.posClickerSpin.Value = new decimal(new int[] {
             10,
             0,
             0,
             0});
             // 
-            // posGridView
+            // posClickerMoveDownBtn
             // 
-            this.posGridView.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(246)))), ((int)(((byte)(246)))), ((int)(((byte)(246)))));
-            this.posGridView.Cursor = System.Windows.Forms.Cursors.Default;
-            this.posGridView.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.posGridView.ForeColor = System.Drawing.Color.Black;
-            this.posGridView.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.posGridView.Location = new System.Drawing.Point(320, 3);
+            this.posClickerMoveDownBtn.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.posClickerMoveDownBtn.Location = new System.Drawing.Point(120, 94);
+            this.posClickerMoveDownBtn.Name = "posClickerMoveDownBtn";
+            this.posClickerMoveDownBtn.Size = new System.Drawing.Size(92, 30);
+            this.posClickerMoveDownBtn.TabIndex = 34;
+            this.posClickerMoveDownBtn.Text = "Move Down";
+            this.posClickerMoveDownBtn.ThemeName = "VisualStudio2012Light";
+            this.posClickerMoveDownBtn.Click += new System.EventHandler(this.moveDownButton_Click);
+            // 
+            // posClickerDelayLbl
+            // 
+            this.posClickerDelayLbl.AutoSize = true;
+            this.posClickerDelayLbl.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.posClickerDelayLbl.Location = new System.Drawing.Point(3, 5);
+            this.posClickerDelayLbl.Name = "posClickerDelayLbl";
+            this.posClickerDelayLbl.Size = new System.Drawing.Size(43, 17);
+            this.posClickerDelayLbl.TabIndex = 24;
+            this.posClickerDelayLbl.Text = "Delay:";
+            // 
+            // posClickerMoveUpBtn
+            // 
+            this.posClickerMoveUpBtn.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.posClickerMoveUpBtn.Location = new System.Drawing.Point(120, 58);
+            this.posClickerMoveUpBtn.Name = "posClickerMoveUpBtn";
+            this.posClickerMoveUpBtn.Size = new System.Drawing.Size(92, 30);
+            this.posClickerMoveUpBtn.TabIndex = 33;
+            this.posClickerMoveUpBtn.Text = "Move Up";
+            this.posClickerMoveUpBtn.ThemeName = "VisualStudio2012Light";
+            this.posClickerMoveUpBtn.Click += new System.EventHandler(this.moveUpButton_Click);
+            // 
+            // posClickerClearAllBtn
+            // 
+            this.posClickerClearAllBtn.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.posClickerClearAllBtn.Location = new System.Drawing.Point(3, 94);
+            this.posClickerClearAllBtn.Name = "posClickerClearAllBtn";
+            this.posClickerClearAllBtn.Size = new System.Drawing.Size(92, 30);
+            this.posClickerClearAllBtn.TabIndex = 32;
+            this.posClickerClearAllBtn.Text = "Clear All";
+            this.posClickerClearAllBtn.ThemeName = "VisualStudio2012Light";
+            this.posClickerClearAllBtn.Click += new System.EventHandler(this.clearAllButton_Click);
+            // 
+            // posClickerGrid
+            // 
+            this.posClickerGrid.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.posClickerGrid.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(246)))), ((int)(((byte)(246)))), ((int)(((byte)(246)))));
+            this.posClickerGrid.Cursor = System.Windows.Forms.Cursors.Default;
+            this.posClickerGrid.Font = new System.Drawing.Font("Segoe UI", 9.75F);
+            this.posClickerGrid.ForeColor = System.Drawing.Color.Black;
+            this.posClickerGrid.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.posClickerGrid.Location = new System.Drawing.Point(225, 3);
             // 
             // 
             // 
-            this.posGridView.MasterTemplate.AllowAddNewRow = false;
-            this.posGridView.MasterTemplate.AllowColumnReorder = false;
-            this.posGridView.MasterTemplate.AllowColumnResize = false;
-            this.posGridView.MasterTemplate.AllowRowResize = false;
-            this.posGridView.MasterTemplate.AutoGenerateColumns = false;
+            this.posClickerGrid.MasterTemplate.AllowAddNewRow = false;
+            this.posClickerGrid.MasterTemplate.AllowColumnReorder = false;
+            this.posClickerGrid.MasterTemplate.AllowRowResize = false;
+            this.posClickerGrid.MasterTemplate.AutoGenerateColumns = false;
             gridViewTextBoxColumn1.EnableExpressionEditor = false;
             gridViewTextBoxColumn1.HeaderText = "Position";
             gridViewTextBoxColumn1.Name = "posColumn";
             gridViewTextBoxColumn1.ReadOnly = true;
-            gridViewTextBoxColumn1.Width = 123;
-            this.posGridView.MasterTemplate.Columns.AddRange(new Telerik.WinControls.UI.GridViewDataColumn[] {
+            gridViewTextBoxColumn1.Width = 215;
+            this.posClickerGrid.MasterTemplate.Columns.AddRange(new Telerik.WinControls.UI.GridViewDataColumn[] {
             gridViewTextBoxColumn1});
-            this.posGridView.MasterTemplate.EnableGrouping = false;
-            this.posGridView.MasterTemplate.EnableSorting = false;
-            this.posGridView.MasterTemplate.ShowRowHeaderColumn = false;
-            this.posGridView.MasterTemplate.ViewDefinition = tableViewDefinition1;
-            this.posGridView.Name = "posGridView";
-            this.posGridView.ReadOnly = true;
-            this.posGridView.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.posGridView.ShowGroupPanel = false;
-            this.posGridView.Size = new System.Drawing.Size(140, 150);
-            this.posGridView.TabIndex = 35;
-            this.posGridView.Text = "radGridView1";
-            this.posGridView.ThemeName = "VisualStudio2012Light";
-            // 
-            // circlesLabel
-            // 
-            this.circlesLabel.AutoSize = true;
-            this.circlesLabel.Location = new System.Drawing.Point(3, 144);
-            this.circlesLabel.Name = "circlesLabel";
-            this.circlesLabel.Size = new System.Drawing.Size(102, 17);
-            this.circlesLabel.TabIndex = 21;
-            this.circlesLabel.Text = "Circles Count:  0";
+            this.posClickerGrid.MasterTemplate.EnableGrouping = false;
+            this.posClickerGrid.MasterTemplate.EnableSorting = false;
+            this.posClickerGrid.MasterTemplate.ShowRowHeaderColumn = false;
+            this.posClickerGrid.MasterTemplate.VerticalScrollState = Telerik.WinControls.UI.ScrollState.AlwaysShow;
+            this.posClickerGrid.MasterTemplate.ViewDefinition = tableViewDefinition1;
+            this.posClickerGrid.Name = "posClickerGrid";
+            this.posClickerGrid.ReadOnly = true;
+            this.posClickerGrid.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.posClickerGrid.ShowGroupPanel = false;
+            this.posClickerGrid.Size = new System.Drawing.Size(235, 158);
+            this.posClickerGrid.TabIndex = 35;
+            this.posClickerGrid.ThemeName = "VisualStudio2012Light";
             // 
             // radPageViewPage1
             // 
+            this.radPageViewPage1.Controls.Add(this.radProgressBar1);
             this.radPageViewPage1.Controls.Add(this.browsePathButton);
             this.radPageViewPage1.Controls.Add(this.journalPathTextBox);
             this.radPageViewPage1.Controls.Add(this.panel2);
@@ -360,11 +397,20 @@ namespace BazgerTools.App
             this.radPageViewPage1.Size = new System.Drawing.Size(455, 161);
             this.radPageViewPage1.Text = "YouTube Downloader";
             // 
+            // radProgressBar1
+            // 
+            this.radProgressBar1.Location = new System.Drawing.Point(195, 134);
+            this.radProgressBar1.Name = "radProgressBar1";
+            this.radProgressBar1.Size = new System.Drawing.Size(260, 24);
+            this.radProgressBar1.TabIndex = 43;
+            this.radProgressBar1.Text = "radProgressBar1";
+            this.radProgressBar1.ThemeName = "VisualStudio2012Light";
+            // 
             // browsePathButton
             // 
-            this.browsePathButton.Location = new System.Drawing.Point(397, 86);
+            this.browsePathButton.Location = new System.Drawing.Point(378, 86);
             this.browsePathButton.Name = "browsePathButton";
-            this.browsePathButton.Size = new System.Drawing.Size(58, 24);
+            this.browsePathButton.Size = new System.Drawing.Size(77, 37);
             this.browsePathButton.TabIndex = 1;
             this.browsePathButton.Text = "Browse";
             this.browsePathButton.ThemeName = "VisualStudio2012Light";
@@ -508,9 +554,9 @@ namespace BazgerTools.App
             // 
             // radButton1
             // 
-            this.radButton1.Location = new System.Drawing.Point(257, 111);
+            this.radButton1.Location = new System.Drawing.Point(195, 86);
             this.radButton1.Name = "radButton1";
-            this.radButton1.Size = new System.Drawing.Size(125, 47);
+            this.radButton1.Size = new System.Drawing.Size(128, 37);
             this.radButton1.TabIndex = 0;
             this.radButton1.Text = "Start";
             this.radButton1.ThemeName = "VisualStudio2012Light";
@@ -521,20 +567,20 @@ namespace BazgerTools.App
             this.object_33836c11_b0e5_4111_89c3_e07e43b27c2c.StretchHorizontally = true;
             this.object_33836c11_b0e5_4111_89c3_e07e43b27c2c.StretchVertically = true;
             // 
-            // logTextBox
+            // logTxtBox
             // 
-            this.logTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.logTxtBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.logTextBox.AutoScroll = true;
-            this.logTextBox.AutoSize = false;
-            this.logTextBox.Location = new System.Drawing.Point(0, 197);
-            this.logTextBox.Multiline = true;
-            this.logTextBox.Name = "logTextBox";
-            this.logTextBox.ReadOnly = true;
-            this.logTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.logTextBox.Size = new System.Drawing.Size(465, 203);
-            this.logTextBox.TabIndex = 44;
+            this.logTxtBox.AutoScroll = true;
+            this.logTxtBox.AutoSize = false;
+            this.logTxtBox.Location = new System.Drawing.Point(0, 197);
+            this.logTxtBox.Multiline = true;
+            this.logTxtBox.Name = "logTxtBox";
+            this.logTxtBox.ReadOnly = true;
+            this.logTxtBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.logTxtBox.Size = new System.Drawing.Size(465, 203);
+            this.logTxtBox.TabIndex = 44;
             // 
             // copyrightLabel
             // 
@@ -552,10 +598,10 @@ namespace BazgerTools.App
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(465, 424);
             this.Controls.Add(this.copyrightLabel);
-            this.Controls.Add(this.logTextBox);
+            this.Controls.Add(this.logTxtBox);
             this.Controls.Add(this.clickersPageView);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MinimumSize = new System.Drawing.Size(this.Size.Width, this.Size.Height);
+            this.MinimumSize = new System.Drawing.Size(473, 454);
             this.Name = "MainForm";
             // 
             // 
@@ -568,22 +614,26 @@ namespace BazgerTools.App
             ((System.ComponentModel.ISupportInitialize)(this.clickersPageView)).EndInit();
             this.clickersPageView.ResumeLayout(false);
             this.ClickerPage.ResumeLayout(false);
-            this.ClickerPage.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.clickerSpinEditor)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.startClickerButton)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.clickerCtrlsPnl)).EndInit();
+            this.clickerCtrlsPnl.ResumeLayout(false);
+            this.clickerCtrlsPnl.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.clickerDeleySpin)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.clickerStartButton)).EndInit();
             this.PositionClicker.ResumeLayout(false);
-            this.PositionClicker.PerformLayout();
-            this.posClickerPanel.ResumeLayout(false);
-            this.posClickerPanel.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.removeButton)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.moveDownButton)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.moveUpButton)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.clearAllButton)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.posClickerSpinEditor)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.posGridView.MasterTemplate)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.posGridView)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.posClickerCtrlsPnl)).EndInit();
+            this.posClickerCtrlsPnl.ResumeLayout(false);
+            this.posClickerCtrlsPnl.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.posClickerReadmeBut)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.posClickerRemoveBtn)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.posClickerSpin)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.posClickerMoveDownBtn)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.posClickerMoveUpBtn)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.posClickerClearAllBtn)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.posClickerGrid.MasterTemplate)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.posClickerGrid)).EndInit();
             this.radPageViewPage1.ResumeLayout(false);
             this.radPageViewPage1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.radProgressBar1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.browsePathButton)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.journalPathTextBox)).EndInit();
             this.panel2.ResumeLayout(false);
@@ -598,7 +648,7 @@ namespace BazgerTools.App
             ((System.ComponentModel.ISupportInitialize)(this.downloaderThreadsSpin)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.downloadUrlTextBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.radButton1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.logTextBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.logTxtBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.copyrightLabel)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this)).EndInit();
             this.ResumeLayout(false);
@@ -613,23 +663,10 @@ namespace BazgerTools.App
         private Telerik.WinControls.UI.RadPageView clickersPageView;
         private Telerik.WinControls.UI.RadPageViewPage ClickerPage;
         private Telerik.WinControls.UI.RadPageViewPage PositionClicker;
-        private Telerik.WinControls.UI.RadSpinEditor clickerSpinEditor;
-        private Telerik.WinControls.UI.RadButton startClickerButton;
-        private System.Windows.Forms.Label delayClickerLabel;
-        private System.Windows.Forms.Label allCountLabel;
-        private System.Windows.Forms.Label countLabel;
-        private System.Windows.Forms.Label circlesLabel;
-        private Telerik.WinControls.UI.RadGridView posGridView;
-        private System.Windows.Forms.Panel posClickerPanel;
-        private Telerik.WinControls.UI.RadButton moveDownButton;
-        private Telerik.WinControls.UI.RadButton removeButton;
-        private Telerik.WinControls.UI.RadButton moveUpButton;
-        private Telerik.WinControls.UI.RadButton clearAllButton;
-        private System.Windows.Forms.Label delayPosClickerLabel;
-        private Telerik.WinControls.UI.RadSpinEditor posClickerSpinEditor;
+        private Telerik.WinControls.UI.RadButton clickerStartButton;
         private Telerik.WinControls.UI.RadPageViewPage radPageViewPage1;
         private Telerik.WinControls.RootRadElement object_33836c11_b0e5_4111_89c3_e07e43b27c2c;
-        private Telerik.WinControls.UI.RadTextBox logTextBox;
+        private Telerik.WinControls.UI.RadTextBox logTxtBox;
         private Telerik.WinControls.UI.RadLabel copyrightLabel;
         private Telerik.WinControls.UI.RadTextBox downloadUrlTextBox;
         private Telerik.WinControls.UI.RadButton radButton1;
@@ -645,5 +682,21 @@ namespace BazgerTools.App
         private Telerik.WinControls.UI.RadDropDownList convertionFormatsDropDownList;
         private Telerik.WinControls.UI.RadButton browsePathButton;
         private Telerik.WinControls.UI.RadTextBox journalPathTextBox;
+        private Telerik.WinControls.UI.RadProgressBar radProgressBar1;
+        private Telerik.WinControls.UI.RadPanel clickerCtrlsPnl;
+        private Telerik.WinControls.UI.RadSpinEditor clickerDeleySpin;
+        private System.Windows.Forms.Label clickerDelayLbl;
+        private System.Windows.Forms.Label clickerAllCountLbl;
+        private System.Windows.Forms.Label clickerCountLbl;
+        private Telerik.WinControls.UI.RadPanel posClickerCtrlsPnl;
+        private System.Windows.Forms.Label posClickerCirclesLbl;
+        private Telerik.WinControls.UI.RadButton posClickerReadmeBut;
+        private Telerik.WinControls.UI.RadButton posClickerRemoveBtn;
+        private Telerik.WinControls.UI.RadSpinEditor posClickerSpin;
+        private Telerik.WinControls.UI.RadButton posClickerMoveDownBtn;
+        private System.Windows.Forms.Label posClickerDelayLbl;
+        private Telerik.WinControls.UI.RadButton posClickerMoveUpBtn;
+        private Telerik.WinControls.UI.RadButton posClickerClearAllBtn;
+        private Telerik.WinControls.UI.RadGridView posClickerGrid;
     }
 }

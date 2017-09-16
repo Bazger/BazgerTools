@@ -55,9 +55,9 @@ namespace BazgerTools.App
             allClicksCount = 0;
             circlesCount = 0;
 
-            _countLabel = countLabel;
-            _allCountLabel = allCountLabel;
-            _circlesLabel = circlesLabel;
+            _countLabel = clickerCountLbl;
+            _allCountLabel = clickerAllCountLbl;
+            _circlesLabel = posClickerCirclesLbl;
 
             _countLabel.Text = strCount + clicksCount;
             _allCountLabel.Text = strAllCount + allClicksCount;
@@ -71,10 +71,10 @@ namespace BazgerTools.App
             ghkStartPosClickerTab = new GlobalHotkey((int)HotKeys.StartPosClickerTab, Constants.ALT + Constants.SHIFT, Keys.L, this);
 
 
-            _posGridView = posGridView;
+            _posGridView = posClickerGrid;
 
-            clickerSpinEditor.Value = clickDelay;
-            posClickerSpinEditor.Value = posClickDelay;
+            clickerDeleySpin.Value = clickDelay;
+            posClickerSpin.Value = posClickDelay;
         }
 
         /// <summary>
@@ -189,8 +189,8 @@ namespace BazgerTools.App
             {
                 clicksCount = 0;
                 isClickerStarted = true;
-                clickDelay = (int)clickerSpinEditor.Value;
-                clickerSpinEditor.Enabled = false;
+                clickDelay = (int)clickerDeleySpin.Value;
+                clickerDeleySpin.Enabled = false;
                 _countLabel.Text = strCount + clicksCount;
                 clickThread = new Thread(ClickerThread);
                 clickThread.Start();
@@ -200,7 +200,7 @@ namespace BazgerTools.App
             {
                 isClickerStarted = false;
                 allClicksCount += clicksCount;
-                clickerSpinEditor.Enabled = true;
+                clickerDeleySpin.Enabled = true;
                 _countLabel.Text = strCount + clicksCount;
                 _allCountLabel.Text = strAllCount + allClicksCount;
                 ClickerLog("Clicking Stopped");
@@ -223,9 +223,9 @@ namespace BazgerTools.App
         /// <param name="text">String that will be added</param>
         private void ClickerLog(string text)
         {
-            logTextBox.Text += text + Environment.NewLine;
-            logTextBox.SelectionStart = logTextBox.Text.Length;
-            logTextBox.ScrollToCaret();
+            logTxtBox.Text += text + Environment.NewLine;
+            logTxtBox.SelectionStart = logTxtBox.Text.Length;
+            logTxtBox.ScrollToCaret();
 
         }
 
@@ -241,8 +241,8 @@ namespace BazgerTools.App
             if (!isPosClickerStarted)
             {
                 isPosClickerStarted = true;
-                posClickerPanel.Enabled = false;
-                posClickDelay = (int)posClickerSpinEditor.Value;
+                posClickerCtrlsPnl.Enabled = false;
+                posClickDelay = (int)posClickerSpin.Value;
                 posClickThread = new Thread(PositionClickerThread);
                 posClickThread.Start();
                 PositionClickerLog("Clicking Started");
@@ -250,7 +250,7 @@ namespace BazgerTools.App
             else
             {
                 isPosClickerStarted = false;
-                posClickerPanel.Enabled = true;
+                posClickerCtrlsPnl.Enabled = true;
                 PositionClickerLog("Clicking Stopped");
                 _circlesLabel.Text = strCircles + circlesCount;
             }
@@ -262,7 +262,7 @@ namespace BazgerTools.App
             {
                 for (int i = 0; i < _posGridView.RowCount && isPosClickerStarted; i++)
                 {
-                    string[] resultsArray = posGridView.Rows[i].Cells[0].Value.ToString().Split(',');
+                    string[] resultsArray = posClickerGrid.Rows[i].Cells[0].Value.ToString().Split(',');
                     MoveCursor(new Point(Convert.ToInt32(resultsArray[0]), Convert.ToInt32(resultsArray[1])));
                     DoMouseClick();
                     Thread.Sleep(posClickDelay);
@@ -307,7 +307,7 @@ namespace BazgerTools.App
                         PositionClickerLog("Postition removed");
                     }
                 }
-                catch (InvalidOperationException ex)
+                catch (InvalidOperationException)
                 {
                     PositionClickerLog("Unable to remove selected row at this time");
                 }
@@ -382,9 +382,9 @@ namespace BazgerTools.App
         /// <param name="text">String that will be added</param>
         private void PositionClickerLog(string text)
         {
-            logTextBox.Text += text + Environment.NewLine;
-            logTextBox.SelectionStart = logTextBox.Text.Length;
-            logTextBox.ScrollToCaret();
+            logTxtBox.Text += text + Environment.NewLine;
+            logTxtBox.SelectionStart = logTxtBox.Text.Length;
+            logTxtBox.ScrollToCaret();
         }
 
         #endregion

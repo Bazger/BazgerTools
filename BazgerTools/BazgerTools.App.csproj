@@ -77,6 +77,13 @@
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Screens\ClickerControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Screens\ClickerControl.Designer.cs">
+      <DependentUpon>ClickerControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Screens\IToolControl.cs" />
     <Compile Include="SphlashScreen.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -99,6 +106,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="Screens\ClickerControl.resx">
+      <DependentUpon>ClickerControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="SphlashScreen.resx">
       <DependentUpon>SphlashScreen.cs</DependentUpon>
     </EmbeddedResource>
