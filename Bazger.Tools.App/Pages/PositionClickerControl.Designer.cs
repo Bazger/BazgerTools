@@ -28,198 +28,202 @@
         /// </summary>
         private void InitializeComponent()
         {
-            Telerik.WinControls.UI.GridViewTextBoxColumn gridViewTextBoxColumn1 = new Telerik.WinControls.UI.GridViewTextBoxColumn();
-            Telerik.WinControls.UI.TableViewDefinition tableViewDefinition1 = new Telerik.WinControls.UI.TableViewDefinition();
-            this.posClickerCtrlsPnl = new Telerik.WinControls.UI.RadPanel();
-            this.posClickerCirclesLbl = new Telerik.WinControls.UI.RadLabel();
-            this.posClickerMoveDownBtn = new Telerik.WinControls.UI.RadButton();
-            this.posClickerSpin = new Telerik.WinControls.UI.RadSpinEditor();
-            this.posClickerRemoveBtn = new Telerik.WinControls.UI.RadButton();
-            this.posClickerDelayLbl = new Telerik.WinControls.UI.RadLabel();
-            this.posClickerMoveUpBtn = new Telerik.WinControls.UI.RadButton();
-            this.posClickerClearAllBtn = new Telerik.WinControls.UI.RadButton();
-            this.posClickerGrid = new Telerik.WinControls.UI.RadGridView();
-            ((System.ComponentModel.ISupportInitialize)(this.posClickerCtrlsPnl)).BeginInit();
-            this.posClickerCtrlsPnl.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.posClickerCirclesLbl)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.posClickerMoveDownBtn)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.posClickerSpin)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.posClickerRemoveBtn)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.posClickerDelayLbl)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.posClickerMoveUpBtn)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.posClickerClearAllBtn)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.posClickerGrid)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.posClickerGrid.MasterTemplate)).BeginInit();
+            Telerik.WinControls.UI.GridViewTextBoxColumn gridViewTextBoxColumn2 = new Telerik.WinControls.UI.GridViewTextBoxColumn();
+            Telerik.WinControls.UI.TableViewDefinition tableViewDefinition2 = new Telerik.WinControls.UI.TableViewDefinition();
+            this.ctrlsPnl = new Telerik.WinControls.UI.RadPanel();
+            this.circlesLbl = new Telerik.WinControls.UI.RadLabel();
+            this.moveDownBtn = new Telerik.WinControls.UI.RadButton();
+            this.delaySpin = new Telerik.WinControls.UI.RadSpinEditor();
+            this.removeBtn = new Telerik.WinControls.UI.RadButton();
+            this.delayLbl = new Telerik.WinControls.UI.RadLabel();
+            this.moveUpBtn = new Telerik.WinControls.UI.RadButton();
+            this.clearAllBtn = new Telerik.WinControls.UI.RadButton();
+            this.positionsGrid = new Telerik.WinControls.UI.RadGridView();
+            this.visualStudio2012DarkTheme = new Telerik.WinControls.Themes.VisualStudio2012DarkTheme();
+            this.visualStudio2012LightTheme = new Telerik.WinControls.Themes.VisualStudio2012LightTheme();
+            ((System.ComponentModel.ISupportInitialize)(this.ctrlsPnl)).BeginInit();
+            this.ctrlsPnl.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.circlesLbl)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.moveDownBtn)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.delaySpin)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.removeBtn)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.delayLbl)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.moveUpBtn)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.clearAllBtn)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.positionsGrid)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.positionsGrid.MasterTemplate)).BeginInit();
             this.SuspendLayout();
             // 
-            // posClickerCtrlsPnl
+            // ctrlsPnl
             // 
-            this.posClickerCtrlsPnl.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.posClickerCtrlsPnl.Controls.Add(this.posClickerCirclesLbl);
-            this.posClickerCtrlsPnl.Controls.Add(this.posClickerMoveDownBtn);
-            this.posClickerCtrlsPnl.Controls.Add(this.posClickerSpin);
-            this.posClickerCtrlsPnl.Controls.Add(this.posClickerRemoveBtn);
-            this.posClickerCtrlsPnl.Controls.Add(this.posClickerDelayLbl);
-            this.posClickerCtrlsPnl.Controls.Add(this.posClickerMoveUpBtn);
-            this.posClickerCtrlsPnl.Controls.Add(this.posClickerClearAllBtn);
-            this.posClickerCtrlsPnl.Location = new System.Drawing.Point(4, 3);
-            this.posClickerCtrlsPnl.Name = "posClickerCtrlsPnl";
-            this.posClickerCtrlsPnl.Size = new System.Drawing.Size(219, 158);
-            this.posClickerCtrlsPnl.TabIndex = 36;
-            this.posClickerCtrlsPnl.ThemeName = "VisualStudio2012Light";
+            this.ctrlsPnl.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.ctrlsPnl.Controls.Add(this.circlesLbl);
+            this.ctrlsPnl.Controls.Add(this.moveDownBtn);
+            this.ctrlsPnl.Controls.Add(this.delaySpin);
+            this.ctrlsPnl.Controls.Add(this.removeBtn);
+            this.ctrlsPnl.Controls.Add(this.delayLbl);
+            this.ctrlsPnl.Controls.Add(this.moveUpBtn);
+            this.ctrlsPnl.Controls.Add(this.clearAllBtn);
+            this.ctrlsPnl.Location = new System.Drawing.Point(3, 3);
+            this.ctrlsPnl.Name = "ctrlsPnl";
+            this.ctrlsPnl.Size = new System.Drawing.Size(220, 158);
+            this.ctrlsPnl.TabIndex = 36;
+            this.ctrlsPnl.ThemeName = "VisualStudio2012Light";
             // 
-            // posClickerCirclesLbl
+            // circlesLbl
             // 
-            this.posClickerCirclesLbl.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.posClickerCirclesLbl.Location = new System.Drawing.Point(57, 127);
-            this.posClickerCirclesLbl.Name = "posClickerCirclesLbl";
-            this.posClickerCirclesLbl.Size = new System.Drawing.Size(102, 21);
-            this.posClickerCirclesLbl.TabIndex = 36;
-            this.posClickerCirclesLbl.Text = "Circles Count:  0";
-            this.posClickerCirclesLbl.ThemeName = "VisualStudio2012Light";
+            this.circlesLbl.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.circlesLbl.Location = new System.Drawing.Point(57, 127);
+            this.circlesLbl.Name = "circlesLbl";
+            this.circlesLbl.Size = new System.Drawing.Size(102, 21);
+            this.circlesLbl.TabIndex = 36;
+            this.circlesLbl.Text = "Circles Count:  0";
+            this.circlesLbl.ThemeName = "VisualStudio2012Light";
             // 
-            // posClickerMoveDownBtn
+            // moveDownBtn
             // 
-            this.posClickerMoveDownBtn.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.posClickerMoveDownBtn.Location = new System.Drawing.Point(120, 94);
-            this.posClickerMoveDownBtn.Name = "posClickerMoveDownBtn";
-            this.posClickerMoveDownBtn.Size = new System.Drawing.Size(92, 30);
-            this.posClickerMoveDownBtn.TabIndex = 34;
-            this.posClickerMoveDownBtn.Text = "Move Down";
-            this.posClickerMoveDownBtn.ThemeName = "VisualStudio2012Light";
-            this.posClickerMoveDownBtn.Click += new System.EventHandler(this.moveDownButton_Click);
+            this.moveDownBtn.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.moveDownBtn.Location = new System.Drawing.Point(120, 94);
+            this.moveDownBtn.Name = "moveDownBtn";
+            this.moveDownBtn.Size = new System.Drawing.Size(92, 30);
+            this.moveDownBtn.TabIndex = 34;
+            this.moveDownBtn.Text = "Move Down";
+            this.moveDownBtn.ThemeName = "VisualStudio2012Light";
+            this.moveDownBtn.Click += new System.EventHandler(this.moveDownButton_Click);
             // 
-            // posClickerSpin
+            // delaySpin
             // 
-            this.posClickerSpin.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.posClickerSpin.Location = new System.Drawing.Point(3, 25);
-            this.posClickerSpin.Maximum = new decimal(new int[] {
+            this.delaySpin.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.delaySpin.Location = new System.Drawing.Point(5, 25);
+            this.delaySpin.Maximum = new decimal(new int[] {
             999999,
             0,
             0,
             0});
-            this.posClickerSpin.Name = "posClickerSpin";
-            this.posClickerSpin.Size = new System.Drawing.Size(92, 27);
-            this.posClickerSpin.TabIndex = 29;
-            this.posClickerSpin.TabStop = false;
-            this.posClickerSpin.ThemeName = "VisualStudio2012Light";
-            this.posClickerSpin.Value = new decimal(new int[] {
+            this.delaySpin.Name = "delaySpin";
+            this.delaySpin.Size = new System.Drawing.Size(92, 27);
+            this.delaySpin.TabIndex = 29;
+            this.delaySpin.TabStop = false;
+            this.delaySpin.ThemeName = "VisualStudio2012Light";
+            this.delaySpin.Value = new decimal(new int[] {
             10,
             0,
             0,
             0});
             // 
-            // posClickerRemoveBtn
+            // removeBtn
             // 
-            this.posClickerRemoveBtn.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.posClickerRemoveBtn.Location = new System.Drawing.Point(3, 58);
-            this.posClickerRemoveBtn.Name = "posClickerRemoveBtn";
-            this.posClickerRemoveBtn.Size = new System.Drawing.Size(92, 30);
-            this.posClickerRemoveBtn.TabIndex = 31;
-            this.posClickerRemoveBtn.Text = "Remove";
-            this.posClickerRemoveBtn.ThemeName = "VisualStudio2012Light";
-            this.posClickerRemoveBtn.Click += new System.EventHandler(this.removeButton_Click);
+            this.removeBtn.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.removeBtn.Location = new System.Drawing.Point(5, 58);
+            this.removeBtn.Name = "removeBtn";
+            this.removeBtn.Size = new System.Drawing.Size(92, 30);
+            this.removeBtn.TabIndex = 31;
+            this.removeBtn.Text = "Remove";
+            this.removeBtn.ThemeName = "VisualStudio2012Light";
+            this.removeBtn.Click += new System.EventHandler(this.removeButton_Click);
             // 
-            // posClickerDelayLbl
+            // delayLbl
             // 
-            this.posClickerDelayLbl.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.posClickerDelayLbl.Location = new System.Drawing.Point(3, 5);
-            this.posClickerDelayLbl.Name = "posClickerDelayLbl";
-            this.posClickerDelayLbl.Size = new System.Drawing.Size(43, 21);
-            this.posClickerDelayLbl.TabIndex = 24;
-            this.posClickerDelayLbl.Text = "Delay:";
-            this.posClickerDelayLbl.ThemeName = "VisualStudio2012Light";
+            this.delayLbl.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.delayLbl.Location = new System.Drawing.Point(5, 3);
+            this.delayLbl.Name = "delayLbl";
+            this.delayLbl.Size = new System.Drawing.Size(43, 21);
+            this.delayLbl.TabIndex = 24;
+            this.delayLbl.Text = "Delay:";
+            this.delayLbl.ThemeName = "VisualStudio2012Light";
             // 
-            // posClickerMoveUpBtn
+            // moveUpBtn
             // 
-            this.posClickerMoveUpBtn.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.posClickerMoveUpBtn.Location = new System.Drawing.Point(120, 58);
-            this.posClickerMoveUpBtn.Name = "posClickerMoveUpBtn";
-            this.posClickerMoveUpBtn.Size = new System.Drawing.Size(92, 30);
-            this.posClickerMoveUpBtn.TabIndex = 33;
-            this.posClickerMoveUpBtn.Text = "Move Up";
-            this.posClickerMoveUpBtn.ThemeName = "VisualStudio2012Light";
-            this.posClickerMoveUpBtn.Click += new System.EventHandler(this.moveUpButton_Click);
+            this.moveUpBtn.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.moveUpBtn.Location = new System.Drawing.Point(120, 58);
+            this.moveUpBtn.Name = "moveUpBtn";
+            this.moveUpBtn.Size = new System.Drawing.Size(92, 30);
+            this.moveUpBtn.TabIndex = 33;
+            this.moveUpBtn.Text = "Move Up";
+            this.moveUpBtn.ThemeName = "VisualStudio2012Light";
+            this.moveUpBtn.Click += new System.EventHandler(this.moveUpButton_Click);
             // 
-            // posClickerClearAllBtn
+            // clearAllBtn
             // 
-            this.posClickerClearAllBtn.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.posClickerClearAllBtn.Location = new System.Drawing.Point(3, 94);
-            this.posClickerClearAllBtn.Name = "posClickerClearAllBtn";
-            this.posClickerClearAllBtn.Size = new System.Drawing.Size(92, 30);
-            this.posClickerClearAllBtn.TabIndex = 32;
-            this.posClickerClearAllBtn.Text = "Clear All";
-            this.posClickerClearAllBtn.ThemeName = "VisualStudio2012Light";
-            this.posClickerClearAllBtn.Click += new System.EventHandler(this.clearAllButton_Click);
+            this.clearAllBtn.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.clearAllBtn.Location = new System.Drawing.Point(5, 94);
+            this.clearAllBtn.Name = "clearAllBtn";
+            this.clearAllBtn.Size = new System.Drawing.Size(92, 30);
+            this.clearAllBtn.TabIndex = 32;
+            this.clearAllBtn.Text = "Clear All";
+            this.clearAllBtn.ThemeName = "VisualStudio2012Light";
+            this.clearAllBtn.Click += new System.EventHandler(this.clearAllButton_Click);
             // 
-            // posClickerGrid
+            // positionsGrid
             // 
-            this.posClickerGrid.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.posClickerGrid.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(246)))), ((int)(((byte)(246)))), ((int)(((byte)(246)))));
-            this.posClickerGrid.Cursor = System.Windows.Forms.Cursors.Default;
-            this.posClickerGrid.Font = new System.Drawing.Font("Segoe UI", 9.75F);
-            this.posClickerGrid.ForeColor = System.Drawing.Color.Black;
-            this.posClickerGrid.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.posClickerGrid.Location = new System.Drawing.Point(226, 3);
+            this.positionsGrid.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.positionsGrid.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(246)))), ((int)(((byte)(246)))), ((int)(((byte)(246)))));
+            this.positionsGrid.Cursor = System.Windows.Forms.Cursors.Default;
+            this.positionsGrid.Font = new System.Drawing.Font("Segoe UI", 9.75F);
+            this.positionsGrid.ForeColor = System.Drawing.Color.Black;
+            this.positionsGrid.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.positionsGrid.Location = new System.Drawing.Point(226, 3);
             // 
             // 
             // 
-            this.posClickerGrid.MasterTemplate.AllowAddNewRow = false;
-            this.posClickerGrid.MasterTemplate.AllowColumnReorder = false;
-            this.posClickerGrid.MasterTemplate.AllowRowResize = false;
-            this.posClickerGrid.MasterTemplate.AutoGenerateColumns = false;
-            gridViewTextBoxColumn1.EnableExpressionEditor = false;
-            gridViewTextBoxColumn1.HeaderText = "Position";
-            gridViewTextBoxColumn1.Name = "posColumn";
-            gridViewTextBoxColumn1.ReadOnly = true;
-            gridViewTextBoxColumn1.Width = 215;
-            this.posClickerGrid.MasterTemplate.Columns.AddRange(new Telerik.WinControls.UI.GridViewDataColumn[] {
-            gridViewTextBoxColumn1});
-            this.posClickerGrid.MasterTemplate.EnableGrouping = false;
-            this.posClickerGrid.MasterTemplate.EnableSorting = false;
-            this.posClickerGrid.MasterTemplate.ShowRowHeaderColumn = false;
-            this.posClickerGrid.MasterTemplate.VerticalScrollState = Telerik.WinControls.UI.ScrollState.AlwaysShow;
-            this.posClickerGrid.MasterTemplate.ViewDefinition = tableViewDefinition1;
-            this.posClickerGrid.Name = "posClickerGrid";
-            this.posClickerGrid.ReadOnly = true;
-            this.posClickerGrid.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.posClickerGrid.ShowGroupPanel = false;
-            this.posClickerGrid.Size = new System.Drawing.Size(233, 158);
-            this.posClickerGrid.TabIndex = 37;
-            this.posClickerGrid.ThemeName = "VisualStudio2012Light";
+            this.positionsGrid.MasterTemplate.AllowAddNewRow = false;
+            this.positionsGrid.MasterTemplate.AllowColumnReorder = false;
+            this.positionsGrid.MasterTemplate.AllowRowResize = false;
+            this.positionsGrid.MasterTemplate.AutoGenerateColumns = false;
+            gridViewTextBoxColumn2.EnableExpressionEditor = false;
+            gridViewTextBoxColumn2.HeaderText = "Position";
+            gridViewTextBoxColumn2.Name = "posColumn";
+            gridViewTextBoxColumn2.ReadOnly = true;
+            gridViewTextBoxColumn2.Width = 215;
+            this.positionsGrid.MasterTemplate.Columns.AddRange(new Telerik.WinControls.UI.GridViewDataColumn[] {
+            gridViewTextBoxColumn2});
+            this.positionsGrid.MasterTemplate.EnableGrouping = false;
+            this.positionsGrid.MasterTemplate.EnableSorting = false;
+            this.positionsGrid.MasterTemplate.ShowRowHeaderColumn = false;
+            this.positionsGrid.MasterTemplate.VerticalScrollState = Telerik.WinControls.UI.ScrollState.AlwaysShow;
+            this.positionsGrid.MasterTemplate.ViewDefinition = tableViewDefinition2;
+            this.positionsGrid.Name = "positionsGrid";
+            this.positionsGrid.ReadOnly = true;
+            this.positionsGrid.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.positionsGrid.ShowGroupPanel = false;
+            this.positionsGrid.Size = new System.Drawing.Size(233, 158);
+            this.positionsGrid.TabIndex = 37;
+            this.positionsGrid.ThemeName = "VisualStudio2012Light";
             // 
             // PositionClickerControl
             // 
-            this.Controls.Add(this.posClickerCtrlsPnl);
-            this.Controls.Add(this.posClickerGrid);
+            this.Controls.Add(this.ctrlsPnl);
+            this.Controls.Add(this.positionsGrid);
             this.Name = "PositionClickerControl";
             this.Size = new System.Drawing.Size(463, 164);
-            ((System.ComponentModel.ISupportInitialize)(this.posClickerCtrlsPnl)).EndInit();
-            this.posClickerCtrlsPnl.ResumeLayout(false);
-            this.posClickerCtrlsPnl.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.posClickerCirclesLbl)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.posClickerMoveDownBtn)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.posClickerSpin)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.posClickerRemoveBtn)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.posClickerDelayLbl)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.posClickerMoveUpBtn)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.posClickerClearAllBtn)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.posClickerGrid.MasterTemplate)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.posClickerGrid)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ctrlsPnl)).EndInit();
+            this.ctrlsPnl.ResumeLayout(false);
+            this.ctrlsPnl.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.circlesLbl)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.moveDownBtn)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.delaySpin)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.removeBtn)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.delayLbl)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.moveUpBtn)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.clearAllBtn)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.positionsGrid.MasterTemplate)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.positionsGrid)).EndInit();
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private Telerik.WinControls.UI.RadPanel posClickerCtrlsPnl;
-        private Telerik.WinControls.UI.RadLabel posClickerCirclesLbl;
-        private Telerik.WinControls.UI.RadButton posClickerMoveDownBtn;
-        private Telerik.WinControls.UI.RadSpinEditor posClickerSpin;
-        private Telerik.WinControls.UI.RadButton posClickerRemoveBtn;
-        private Telerik.WinControls.UI.RadLabel posClickerDelayLbl;
-        private Telerik.WinControls.UI.RadButton posClickerMoveUpBtn;
-        private Telerik.WinControls.UI.RadButton posClickerClearAllBtn;
-        private Telerik.WinControls.UI.RadGridView posClickerGrid;
+        private Telerik.WinControls.UI.RadPanel ctrlsPnl;
+        private Telerik.WinControls.UI.RadLabel circlesLbl;
+        private Telerik.WinControls.UI.RadButton moveDownBtn;
+        private Telerik.WinControls.UI.RadSpinEditor delaySpin;
+        private Telerik.WinControls.UI.RadButton removeBtn;
+        private Telerik.WinControls.UI.RadLabel delayLbl;
+        private Telerik.WinControls.UI.RadButton moveUpBtn;
+        private Telerik.WinControls.UI.RadButton clearAllBtn;
+        private Telerik.WinControls.UI.RadGridView positionsGrid;
+        private Telerik.WinControls.Themes.VisualStudio2012DarkTheme visualStudio2012DarkTheme;
+        private Telerik.WinControls.Themes.VisualStudio2012LightTheme visualStudio2012LightTheme;
     }
 }

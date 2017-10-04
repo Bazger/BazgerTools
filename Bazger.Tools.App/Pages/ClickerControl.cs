@@ -42,7 +42,7 @@ namespace Bazger.Tools.App.Pages
             UpdateAllCountLblText();
 
             _clickDelay = 20;
-            clickerDeleySpin.Value = _clickDelay;
+            deleySpin.Value = _clickDelay;
 
             //TODO: LOG SUPPORT
             Log = new List<string>();
@@ -81,8 +81,8 @@ namespace Bazger.Tools.App.Pages
             {
                 _clicksCount = 0;
                 _isClickerStarted = true;
-                _clickDelay = (int)clickerDeleySpin.Value;
-                clickerDeleySpin.Enabled = false;
+                _clickDelay = (int)deleySpin.Value;
+                deleySpin.Enabled = false;
                 UpdateCountLblText();
                 _clickThread = new Thread(ClickerThread);
                 _clickThread.Start();
@@ -93,7 +93,7 @@ namespace Bazger.Tools.App.Pages
             {
                 _isClickerStarted = false;
                 _allClicksCount += _clicksCount;
-                clickerDeleySpin.Enabled = true;
+                deleySpin.Enabled = true;
                 UpdateCountLblText();
                 UpdateAllCountLblText();
                 Log.Add("Clicking Stopped");
@@ -125,13 +125,13 @@ namespace Bazger.Tools.App.Pages
 
         private void UpdateCountLblText()
         {
-            clickerCountLbl.Text = CountStr + _clicksCount;
+            countLbl.Text = CountStr + _clicksCount;
         }
 
 
         private void UpdateAllCountLblText()
         {
-            clickerAllCountLbl.Text = AllCountStr + _allClicksCount;
+            allCountLbl.Text = AllCountStr + _allClicksCount;
         }
     }
 }

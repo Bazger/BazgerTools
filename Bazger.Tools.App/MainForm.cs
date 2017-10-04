@@ -26,7 +26,7 @@ namespace Bazger.Tools.App
         /// </summary>
         public MainForm()
         {
-            ThemeResolutionService.ApplicationThemeName = "VisualStudio2012Dark";
+            ThemeResolutionService.ApplicationThemeName = "VisualStudio2012Light";
             InitializeComponent();
 
             //Create HotKeys for the program
@@ -34,10 +34,12 @@ namespace Bazger.Tools.App
             _altShiftK = new GlobalHotkey((int)HotKeys.AltShiftK, Constants.ALT + Constants.SHIFT, Keys.K, this);
             _altShiftL = new GlobalHotkey((int)HotKeys.AltShiftL, Constants.ALT + Constants.SHIFT, Keys.L, this);
 
-            _viewScreenControls = new List<IToolControl> { clickerControl, positionClickerControl};
+            _viewScreenControls = new List<IToolControl> { clickerControl, positionClickerControl, youTubeDownloaderControl};
 
             //Initialize IToolControls
             _viewScreenControls.ForEach(control => control.IntializeControl(this));
+
+            toolControlsPager_SelectedPageChanged(this, null);
         }
 
         /// <summary>
@@ -118,6 +120,15 @@ namespace Bazger.Tools.App
             logTxtBox.Text += text + Environment.NewLine;
             logTxtBox.SelectionStart = logTxtBox.Text.Length;
             logTxtBox.ScrollToCaret();
+        }
+
+        private void toolControlsPager_SelectedPageChanged(object sender, EventArgs e)
+        {
+            var control = _viewScreenControls.Find(c => c.ParentPage.TabIndex == toolControlsPager.SelectedPage.TabIndex);
+            if (control != null)
+            {
+                this.MinimumSize = new System.Drawing.Size(((UserControl)control).Size.Width + 13, this.MinimumSize.Height);
+            }
         }
     }
 }

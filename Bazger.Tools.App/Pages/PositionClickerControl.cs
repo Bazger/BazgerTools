@@ -29,9 +29,9 @@ namespace Bazger.Tools.App.Pages
 
             _circlesCount = 0;
             _posClickDelay = 10;
-            posClickerCirclesLbl.Text = StrCircles + _circlesCount;
+            circlesLbl.Text = StrCircles + _circlesCount;
             _isPosClickerStarted = false;
-            posClickerSpin.Value = _posClickDelay;
+            delaySpin.Value = _posClickDelay;
 
             //TODO: LOG SUPPORT
             Log = new List<string>();
@@ -67,8 +67,8 @@ namespace Bazger.Tools.App.Pages
             if (!_isPosClickerStarted)
             {
                 _isPosClickerStarted = true;
-                posClickerCtrlsPnl.Enabled = false;
-                _posClickDelay = (int)posClickerSpin.Value;
+                ctrlsPnl.Enabled = false;
+                _posClickDelay = (int)delaySpin.Value;
                 _posClickThread = new Thread(PositionClickerThread);
                 _posClickThread.Start();
                 PositionClickerLog("Clicking Started");
@@ -77,9 +77,9 @@ namespace Bazger.Tools.App.Pages
             else
             {
                 _isPosClickerStarted = false;
-                posClickerCtrlsPnl.Enabled = true;
+                ctrlsPnl.Enabled = true;
                 PositionClickerLog("Clicking Stopped");
-                posClickerCirclesLbl.Text = StrCircles + _circlesCount;
+                circlesLbl.Text = StrCircles + _circlesCount;
                 _mainForm.ChangeEnabledStateOfNotSelectedTabs(true);
             }
         }
@@ -89,9 +89,9 @@ namespace Bazger.Tools.App.Pages
         {
             while (_isPosClickerStarted)
             {
-                for (int i = 0; i < posClickerGrid.RowCount && _isPosClickerStarted; i++)
+                for (int i = 0; i < positionsGrid.RowCount && _isPosClickerStarted; i++)
                 {
-                    string[] resultsArray = posClickerGrid.Rows[i].Cells[0].Value.ToString().Split(',');
+                    string[] resultsArray = positionsGrid.Rows[i].Cells[0].Value.ToString().Split(',');
                     MoveCursor(new Point(Convert.ToInt32(resultsArray[0]), Convert.ToInt32(resultsArray[1])));
                     ProgramClick.DoMouseClick(Cursor.Position.X, Cursor.Position.Y);
                     Thread.Sleep(_posClickDelay);
@@ -113,7 +113,7 @@ namespace Bazger.Tools.App.Pages
                 if (Cursor.Current != null)
                 {
                     Cursor = new Cursor(Cursor.Current.Handle);
-                    posClickerGrid.Rows.Add(Cursor.Position.X + "," + Cursor.Position.Y);
+                    positionsGrid.Rows.Add(Cursor.Position.X + "," + Cursor.Position.Y);
                     PositionClickerLog("Position (" + Cursor.Position.X + ", " + Cursor.Position.Y + ") was added");
                 }
                 else
@@ -130,13 +130,13 @@ namespace Bazger.Tools.App.Pages
         /// <param name="e"></param>
         private void removeButton_Click(object sender, EventArgs e)
         {
-            if (posClickerGrid.Rows.Count > 0)
+            if (positionsGrid.Rows.Count > 0)
                 try
                 {
-                    int selectedIndex = posClickerGrid.CurrentCell.RowIndex;
+                    int selectedIndex = positionsGrid.CurrentCell.RowIndex;
                     if (selectedIndex > -1)
                     {
-                        posClickerGrid.Rows.RemoveAt(selectedIndex);
+                        positionsGrid.Rows.RemoveAt(selectedIndex);
                         PositionClickerLog("Postition removed");
                     }
                 }
@@ -156,11 +156,11 @@ namespace Bazger.Tools.App.Pages
         /// <param name="e"></param>
         private void clearAllButton_Click(object sender, EventArgs e)
         {
-            if (posClickerGrid.Rows.Count > 0)
+            if (positionsGrid.Rows.Count > 0)
             {
-                while (posClickerGrid.Rows.Count > 0)
+                while (positionsGrid.Rows.Count > 0)
                 {
-                    posClickerGrid.Rows.RemoveAt(posClickerGrid.Rows.Count - 1);
+                    positionsGrid.Rows.RemoveAt(positionsGrid.Rows.Count - 1);
                 }
                 PositionClickerLog("All data was removed");
             }
@@ -192,16 +192,16 @@ namespace Bazger.Tools.App.Pages
         /// <param name="jumps">Jumps to new position</param>
         private void MoveUpDown(int jumps)
         {
-            if (posClickerGrid.Rows.Count > 0)
+            if (positionsGrid.Rows.Count > 0)
             {
-                int selectedIndex = posClickerGrid.CurrentCell.RowIndex;
+                int selectedIndex = positionsGrid.CurrentCell.RowIndex;
                 if (selectedIndex > -1)
                 {
-                    if (selectedIndex + jumps >= 0 && selectedIndex + jumps < posClickerGrid.Rows.Count)
+                    if (selectedIndex + jumps >= 0 && selectedIndex + jumps < positionsGrid.Rows.Count)
                     {
-                        posClickerGrid.Rows[selectedIndex].IsSelected = false;
-                        posClickerGrid.Rows.Move(selectedIndex, selectedIndex + jumps);
-                        posClickerGrid.Rows[selectedIndex + jumps].IsSelected = true;
+                        positionsGrid.Rows[selectedIndex].IsSelected = false;
+                        positionsGrid.Rows.Move(selectedIndex, selectedIndex + jumps);
+                        positionsGrid.Rows[selectedIndex + jumps].IsSelected = true;
                         PositionClickerLog("Postition moved UP/DOWN");
                     }
 
