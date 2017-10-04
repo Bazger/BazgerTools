@@ -10,13 +10,15 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Bazger.Tools.Clicker.Core;
 using Telerik.WinControls;
+using Telerik.WinControls.UI;
 
 namespace Bazger.Tools.App.Pages
 {
     public partial class ClickerControl : UserControl, IToolControl
     {
+        private MainForm _mainForm;
+        public RadPageViewPage ParentPage { get; set; }
         public List<string> Log { get; }
-
 
         private Thread _clickThread;
         private const string CountStr = "Count: ";
@@ -42,14 +44,15 @@ namespace Bazger.Tools.App.Pages
             _clickDelay = 20;
             clickerDeleySpin.Value = _clickDelay;
 
+            //TODO: LOG SUPPORT
             Log = new List<string>();
-
             ClickerLog("START/STOP: Try to press this combination: SHIFT+ALT+O");
         }
 
-        public void IntializeControl(MainForm form)
+        public void IntializeControl(MainForm mainForm)
         {
-            form.AltShiftOCombinationPressed += ClickerMainProcess;
+            _mainForm = mainForm;
+            mainForm.AltShiftOCombinationPressed += ClickerMainProcess;
         }
 
         /// <summary>
@@ -69,7 +72,7 @@ namespace Bazger.Tools.App.Pages
         /// </summary>
         private void ClickerMainProcess(object sender, PageEventArgs e)
         {
-            if (e.SelectedPage == null)
+            if (ParentPage.TabIndex != e.SelectedPage.TabIndex)
             {
                 return;
             }
@@ -84,13 +87,7 @@ namespace Bazger.Tools.App.Pages
                 _clickThread = new Thread(ClickerThread);
                 _clickThread.Start();
                 Log.Add("Clicking Started");
-                e.ToolControlsPager.Pages.ToList().ForEach(p =>
-                {
-                    if (p != e.SelectedPage)
-                    {
-                        p.Enabled = false;
-                    }
-                });
+                _mainForm.ChangeEnabledStateOfNotSelectedTabs(false);
             }
             else
             {
@@ -100,13 +97,7 @@ namespace Bazger.Tools.App.Pages
                 UpdateCountLblText();
                 UpdateAllCountLblText();
                 Log.Add("Clicking Stopped");
-                e.ToolControlsPager.Pages.ToList().ForEach(p =>
-                {
-                    if (p != e.SelectedPage)
-                    {
-                        p.Enabled = true;
-                    }
-                });
+                _mainForm.ChangeEnabledStateOfNotSelectedTabs(true);
             }
         }
 

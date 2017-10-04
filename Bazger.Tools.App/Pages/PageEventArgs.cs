@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Telerik.WinControls.UI;
 
 namespace Bazger.Tools.App.Pages
@@ -11,7 +7,6 @@ namespace Bazger.Tools.App.Pages
     {
         public RadPageView ToolControlsPager { get; }
         public RadPageViewPage SelectedPage => ToolControlsPager.SelectedPage;
-
 
         public PageEventArgs(RadPageView toolControlsPager)
         {
