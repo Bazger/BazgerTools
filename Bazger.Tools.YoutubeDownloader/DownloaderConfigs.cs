@@ -2,10 +2,26 @@
 using System.Configuration;
 using System.IO;
 
-namespace Bazger.Tools.YouTubeDownloader
+namespace Bazger.Tools.YouTubeDownloader.Core
 {
     public class DownloaderConfigs : ConfigurationSection
     {
+        public static DownloaderConfigs GetDefaultConfigs()
+        {
+            return new DownloaderConfigs()
+            {
+                SaveDir = "Downloads",
+                ParallelDownloadsCount = 5,
+                ConvertersCount = 3,
+                ConverterEnabled = true,
+                ConvertionFormat = "wav",
+                JournalFileName = "Journal.json",
+                WriteToJournal = false,
+                ReadFromJournal = false
+            };
+        }
+
+
         public static DownloaderConfigs GetConfig()
         {
             return (DownloaderConfigs)ConfigurationManager.GetSection("DownloaderConfigs") ?? new DownloaderConfigs();

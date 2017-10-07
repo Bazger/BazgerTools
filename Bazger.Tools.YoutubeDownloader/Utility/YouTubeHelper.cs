@@ -1,15 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json.Linq;
 using NLog;
-using YoutubeExtractor;
 
-namespace Bazger.Tools.YouTubeDownloader.Utility
+namespace Bazger.Tools.YouTubeDownloader.Core.Utility
 {
     public static class YouTubeHelper
     {
-        private static readonly Logger Log = LogManager.GetLogger("Console");
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
         private static readonly string PlaylistVideosApiUrl = "https://www.googleapis.com/youtube/v3/playlistItems?part=snippet";
 

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Bazger.Tools.YouTubeDownloader.Model
+﻿namespace Bazger.Tools.YouTubeDownloader.Core.Model
 {
     public enum VideoProgressStage
     {
@@ -13,6 +7,7 @@ namespace Bazger.Tools.YouTubeDownloader.Model
         WaitingToConvertion, 
         Converting,
         Completed,
-        Error
+        Error,
+        VideoUrlProblem
     }
 }

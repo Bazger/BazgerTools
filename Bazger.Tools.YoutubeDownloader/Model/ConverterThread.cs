@@ -4,26 +4,26 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
-using Bazger.Tools.YouTubeDownloader.Converters;
+using Bazger.Tools.YouTubeDownloader.Core.Converters;
 using NLog;
 
-namespace Bazger.Tools.YouTubeDownloader.Model
+namespace Bazger.Tools.YouTubeDownloader.Core.Model
 {
     public class ConverterThread : ServiceThread
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
-        private readonly IAudioConverter _audioConverter;
-        private readonly BlockingCollection<Tuple<string, string>> _waitingToConvert;
+        private readonly IAudioConverterProxy _audioConverterProxy;
+        private readonly BlockingCollection<VideoProperties> _waitingToConvert;
         private readonly ConcurrentDictionary<string, VideoProgressMetadata> _videosProgress;
         private readonly string _convertionFormat;
         private readonly List<DownloaderThread> _downloaderThreads;
         private ManualResetEvent _stoppedEvent;
         private readonly int _millisecondsTimeout = 5000;
 
-        public ConverterThread(string name, IAudioConverter audioConverter, BlockingCollection<Tuple<string, string>> waitingToConvert, ConcurrentDictionary<string, VideoProgressMetadata> videosProgress, string convertionFormat, List<DownloaderThread> downloaderThreads) : base(name)
+        public ConverterThread(string name, IAudioConverterProxy audioConverterProxy, BlockingCollection<VideoProperties> waitingToConvert, ConcurrentDictionary<string, VideoProgressMetadata> videosProgress, string convertionFormat, List<DownloaderThread> downloaderThreads) : base(name)
         {
-            _audioConverter = audioConverter;
+            _audioConverterProxy = audioConverterProxy;
             _waitingToConvert = waitingToConvert;
             _videosProgress = videosProgress;
             _convertionFormat = convertionFormat;
@@ -34,29 +34,29 @@ namespace Bazger.Tools.YouTubeDownloader.Model
         {
             while ((_waitingToConvert.Count != 0 || _downloaderThreads.Count(c => c.IsAlive) != 0 || _downloaderThreads.FirstOrDefault(c => c.IsStarted) == null) && !StopEvent.WaitOne(0))
             {
-                Tuple<string, string> videoUrlAndPath = null;
+                VideoProperties videoProp = new VideoProperties();
                 try
                 {
-                    _waitingToConvert.TryTake(out videoUrlAndPath, _millisecondsTimeout);
+                    _waitingToConvert.TryTake(out videoProp, _millisecondsTimeout);
 
-                    if (videoUrlAndPath == null)
+                    if (videoProp == null)
                     {
                         continue;
                     }
-                    _videosProgress[videoUrlAndPath.Item1].Stage = VideoProgressStage.Converting;
-                    _audioConverter.Convert(videoUrlAndPath.Item2, _convertionFormat);
-                    File.Delete(videoUrlAndPath.Item2);
-                    _videosProgress[videoUrlAndPath.Item1].Stage = VideoProgressStage.Completed;
+                    _videosProgress[videoProp.Url].Stage = VideoProgressStage.Converting;
+                    _audioConverterProxy.Convert(videoProp.Path, _convertionFormat);
+                    File.Delete(videoProp.Path);
+                    _videosProgress[videoProp.Url].Stage = VideoProgressStage.Completed;
                 }
                 catch (Exception ex)
                 {
-                    if (videoUrlAndPath == null)
+                    if (videoProp == null)
                     {
                         continue;
                     }
-                    Log.Error($"Can't convert video | url={videoUrlAndPath.Item1} | path={videoUrlAndPath.Item1} \n" + ex);
-                    _videosProgress[videoUrlAndPath.Item1].Stage = VideoProgressStage.Error;
-                    _videosProgress[videoUrlAndPath.Item1].ErrorArgs = ex.ToString();
+                    Log.Error($"Can't convert video | url={videoProp.Url} | path={videoProp.Path} \n" + ex);
+                    _videosProgress[videoProp.Url].Stage = VideoProgressStage.Error;
+                    _videosProgress[videoProp.Url].ErrorArgs = ex.ToString();
                 }
             }
             _stoppedEvent.Set();

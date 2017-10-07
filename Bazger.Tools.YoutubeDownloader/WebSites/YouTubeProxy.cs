@@ -1,25 +1,22 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using Bazger.Tools.YouTubeDownloader.Model;
+using Bazger.Tools.YouTubeDownloader.Core.Model;
 using NLog;
 using YoutubeExtractor;
 
-namespace Bazger.Tools.YouTubeDownloader.WebSites
+namespace Bazger.Tools.YouTubeDownloader.Core.WebSites
 {
-    public class YouTube : IWebSiteDownloader
+    public class YouTubeProxy : IWebSiteDownloaderProxy
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         private readonly VideoType _type;
         private readonly int _resolution;
         private readonly int _retriesCount;
 
-        public YouTube(VideoType type = VideoType.Mp4, int resolution = 360, int retriesCount = 3)
+        public YouTubeProxy(VideoType type = VideoType.Mp4, int resolution = 360, int retriesCount = 3)
         {
             _type = type;
             _resolution = resolution;
@@ -30,7 +27,6 @@ namespace Bazger.Tools.YouTubeDownloader.WebSites
         {
             List<VideoInfo> videoInfos = new List<VideoInfo>();
             videoInfos = DownloadUrlResolver.GetDownloadUrls(videoUrl, false).ToList();
-
 
             /*
              * Select the first .mp4 video with 360p resolution

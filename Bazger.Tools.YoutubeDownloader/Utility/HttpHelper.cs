@@ -3,7 +3,7 @@ using System.IO;
 using System.Net;
 using System.Text.RegularExpressions;
 
-namespace Bazger.Tools.YouTubeDownloader.Utility
+namespace Bazger.Tools.YouTubeDownloader.Core.Utility
 {
     public static class HttpHelper
     {

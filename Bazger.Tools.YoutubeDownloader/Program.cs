@@ -1,20 +1,15 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading;
-using System.Threading.Tasks;
-using System.Web.SessionState;
-using System.Xml.Linq;
-using Bazger.Tools.YouTubeDownloader.Converters;
-using Bazger.Tools.YouTubeDownloader.Model;
-using Bazger.Tools.YouTubeDownloader.Utility;
-using Bazger.Tools.YouTubeDownloader.WebSites;
+using Bazger.Tools.YouTubeDownloader.Core;
+using Bazger.Tools.YouTubeDownloader.Core.Converters;
+using Bazger.Tools.YouTubeDownloader.Core.Model;
+using Bazger.Tools.YouTubeDownloader.Core.Utility;
+using Bazger.Tools.YouTubeDownloader.Core.WebSites;
 using NLog;
-using YoutubeExtractor;
 
 namespace Bazger.Tools.YouTubeDownloader
 {
@@ -22,7 +17,6 @@ namespace Bazger.Tools.YouTubeDownloader
     {
         private static readonly Logger Log = LogManager.GetLogger("Console");
 
-        private static volatile bool _isFinished;
         private static ConcurrentDictionary<string, VideoProgressMetadata> _videosProgress;
         public static readonly DownloaderConfigs Configs = DownloaderConfigs.GetConfig();
 
@@ -36,8 +30,6 @@ namespace Bazger.Tools.YouTubeDownloader
 
         private static Thread _managerThread;
         private static Thread _uiThread;
-
-
 
         public static void Main(string[] args)
         {
@@ -92,6 +84,7 @@ namespace Bazger.Tools.YouTubeDownloader
                 var waitingToConvertVideos = new HashSet<string>();
                 var convertingVideos = new HashSet<string>();
                 var completedVideos = new HashSet<string>();
+                var urlProblemVideos = new HashSet<string>();
                 foreach (var video in _videosProgress)
                 {
                     switch (video.Value.Stage)
@@ -108,6 +101,9 @@ namespace Bazger.Tools.YouTubeDownloader
                         case VideoProgressStage.Completed:
                             completedVideos.Add(video.Key);
                             break;
+                        case VideoProgressStage.VideoUrlProblem:
+                            urlProblemVideos.Add(video.Key);
+                            break;
                         default:
                             inProgressVideos.Add(video.Key);
                             break;
@@ -116,12 +112,17 @@ namespace Bazger.Tools.YouTubeDownloader
                 Console.ForegroundColor = ConsoleColor.Green;
                 foreach (var url in completedVideos)
                 {
-                    PrintConsoleLog($"{url} - Completed!", url);
+                    PrintConsoleLogWithRetries($"{url} - Completed!", url);
+                }
+                Console.ForegroundColor = ConsoleColor.Magenta;
+                foreach (var url in urlProblemVideos)
+                {
+                    Console.WriteLine("{0} - Url Problem!", url);
                 }
                 Console.ForegroundColor = ConsoleColor.Red;
                 foreach (var url in errorVideos)
                 {
-                    PrintConsoleLog($"{url} - Error!", url);
+                    PrintConsoleLogWithRetries($"{url} - Error!", url);
                 }
                 Console.ForegroundColor = ConsoleColor.Yellow;
                 foreach (var url in convertingVideos)
@@ -136,16 +137,14 @@ namespace Bazger.Tools.YouTubeDownloader
                 Console.ForegroundColor = ConsoleColor.White;
                 foreach (var url in inProgressVideos)
                 {
-                    PrintConsoleLog($"{url} - {_videosProgress[url].Progress}%", url);
+                    PrintConsoleLogWithRetries($"{url} - {_videosProgress[url].Progress}%", url);
                 }
                 Console.WriteLine("\n-------------Video status info---------------------");
-                Console.WriteLine("Completed: {0}/{1} Errors:{2} Downloading:{3} In Waiting Queue: {4} Converting: {5}",
-                    completedVideos.Count, _videoUrls.Count, errorVideos.Count, inProgressVideos.Count, waitingToConvertVideos.Count,
-                    convertingVideos.Count);
+                Console.WriteLine($"Completed: { completedVideos.Count}/{_videoUrls.Count} Download Errors:{errorVideos.Count} Problem url:{urlProblemVideos.Count} Downloading:{inProgressVideos.Count} In Waiting Queue: {waitingToConvertVideos.Count} Converting: {convertingVideos.Count}");
                 Console.WriteLine("\n---------------Threads info------------------------");
                 Console.WriteLine("Donwload threads {0}/{1} Converters threads {2}/{3}",
-                    _downloaderThreads.Count(c => c.IsAlive), _downloaderThreads.Count,
-                    _converterThreads.Count(c => c.IsAlive), Configs.ConvertersCount);
+                    _downloaderThreads.Count( c=> c.IsAlive), _downloaderThreads.Count,
+                   _converterThreads.Count(c => c.IsAlive), _converterThreads.Count);
             }
             Console.WriteLine("\n---------------------------------------------------\n");
         }
@@ -155,14 +154,14 @@ namespace Bazger.Tools.YouTubeDownloader
             _videosProgress = new ConcurrentDictionary<string, VideoProgressMetadata>();
 
             var waitingForDownload = new BlockingCollection<string>(new ConcurrentQueue<string>(_videoUrls/*.GetRange(0,2)*/));
-            var waitingForConvertion = new BlockingCollection<Tuple<string, string>>();
+            var waitingForConvertion = new BlockingCollection<VideoProperties>();
 
             _downloaderThreads = new List<DownloaderThread>();
             _converterThreads = new List<ConverterThread>();
 
             _stopManagerEvent = new AutoResetEvent(false);
 
-            IWebSiteDownloader website = new YouTube();
+            IWebSiteDownloaderProxy website = new YouTubeProxy();
             for (var i = 0; i < Configs.ParallelDownloadsCount; i++)
             {
                 _downloaderThreads.Add(new DownloaderThread($"Downloader {i}", website, _videosProgress, Configs.SaveDir, waitingForDownload, waitingForConvertion, Configs.ConverterEnabled));
@@ -187,14 +186,14 @@ namespace Bazger.Tools.YouTubeDownloader
 
             if (Configs.ConverterEnabled)
             {
-                IAudioConverter converter = new FFmpegConverter();
+                IAudioConverterProxy converterProxy = new FFmpegConverterProxy();
                 for (var i = 0; i < Configs.ConvertersCount; i++)
                 {
-                    _converterThreads.Add(new ConverterThread($"Converter {i}", converter, waitingForConvertion,
+                    _converterThreads.Add(new ConverterThread($"Converter {i}", converterProxy, waitingForConvertion,
                         _videosProgress, Configs.ConvertionFormat, _downloaderThreads));
                 }
 
-                Log.Info("Starting converter threads");
+                Log.Info("Starting converterProxy threads");
                 while (!_stopManagerEvent.WaitOne(200))
                 {
                     foreach (var service in _converterThreads.Where(c => !c.IsAlive && c.IsEnabled))
@@ -209,7 +208,7 @@ namespace Bazger.Tools.YouTubeDownloader
                         }
                     _stopManagerEvent.Set();
                 }
-                Log.Info("{0} converter threads was started", Configs.ConvertersCount);
+                Log.Info("{0} converterProxy threads was started", Configs.ConvertersCount);
             }
 
             _stopUiEvent.Set();
@@ -256,7 +255,7 @@ namespace Bazger.Tools.YouTubeDownloader
             }
             catch (Exception)
             {
-                Log.Error("there is a problem to write to journal file. May be journal format is illegal");
+                Log.Error("there is a problem to read a journal file. May be journal format is illegal");
             }
             return videoUrls;
         }
@@ -289,7 +288,7 @@ namespace Bazger.Tools.YouTubeDownloader
             }
         }
 
-        private static void PrintConsoleLog(string showStr, string video)
+        private static void PrintConsoleLogWithRetries(string showStr, string video)
         {
             var tryStr = "";
             if (_videosProgress[video].Retries > 0)
@@ -312,7 +311,7 @@ namespace Bazger.Tools.YouTubeDownloader
 
                 if (_converterThreads.Any())
                 {
-                    Log.Info("Stop converter threads threads");
+                    Log.Info("Stop converterProxy threads threads");
                     foreach (var service in _converterThreads.Where(c => !c.IsAlive && c.IsEnabled))
                     {
                         Log.Info("Stopping service ({0})", service.Name);
@@ -325,121 +324,5 @@ namespace Bazger.Tools.YouTubeDownloader
                 e.Cancel = true;
             }
         }
-
-        public static void Main_v1(string[] args)
-        {
-            Directory.CreateDirectory(Configs.SaveDir);
-
-            List<string> videoUrls;
-            try
-            {
-                Console.WriteLine("Trying to get all video urls");
-                videoUrls = YouTubeHelper.GetVideosUrls(Configs.DownloadUrl).ToList();
-                if (!videoUrls.Any())
-                {
-                    Console.WriteLine("Playlist is empty, try again");
-                    return;
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Check your dowload url or Api key, there are may be incorrect \n" + ex);
-                return;
-            }
-
-
-            _videosProgress = new ConcurrentDictionary<string, VideoProgressMetadata>();
-
-            IWebSiteDownloader downloader = new YouTube();
-            //downloader.InitVideosProgress(_videosProgress);
-            IAudioConverter converter = new FFmpegConverter();
-
-            new Thread(() =>
-            {
-                Parallel.ForEach(videoUrls, new ParallelOptions() { MaxDegreeOfParallelism = Configs.ParallelDownloadsCount }, url =>
-                {
-                    string videoPath = null;
-                    try
-                    {
-                        _videosProgress.TryAdd(url, new VideoProgressMetadata() { Stage = VideoProgressStage.Downloading, Progress = 0 });
-                        videoPath = downloader.Download(url, Configs.SaveDir, _videosProgress[url]);
-                        if (_videosProgress[url].Stage == VideoProgressStage.Exist)
-                        {
-                            return;
-                        }
-                        if (Configs.ConverterEnabled)
-                        {
-                            _videosProgress[url].Stage = VideoProgressStage.Converting;
-                            converter.Convert(videoPath, Configs.ConvertionFormat);
-                            File.Delete(videoPath);
-                        }
-                        _videosProgress[url].Stage = VideoProgressStage.Completed;
-                    }
-                    catch (Exception ex)
-                    {
-                        if (videoPath != null && File.Exists(videoPath))
-                        {
-                            File.Delete(videoPath);
-                        }
-                        _videosProgress[url].ErrorArgs = ex.ToString();
-                        _videosProgress[url].Stage = VideoProgressStage.Error;
-                    }
-                });
-                _isFinished = true;
-            }).Start();
-
-            while (!_isFinished)
-            {
-                Console.Clear();
-                var inProgressVideos = new HashSet<string>();
-                var errorVideos = new HashSet<string>();
-                var convertingVideos = new HashSet<string>();
-                var completedVideos = new HashSet<string>();
-                foreach (var video in _videosProgress)
-                {
-                    switch (video.Value.Stage)
-                    {
-                        case VideoProgressStage.Error:
-                            errorVideos.Add(video.Key);
-                            break;
-                        case VideoProgressStage.Converting:
-                            convertingVideos.Add(video.Key);
-                            break;
-                        case VideoProgressStage.Completed:
-                            completedVideos.Add(video.Key);
-                            break;
-                        default:
-                            inProgressVideos.Add(video.Key);
-                            break;
-                    }
-                }
-                Console.ForegroundColor = ConsoleColor.Green;
-                foreach (var video in completedVideos)
-                {
-                    Console.WriteLine("{0} - Completed!", video);
-                }
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                foreach (var video in convertingVideos)
-                {
-                    Console.WriteLine("{0} - Converting...", video);
-                }
-                Console.ForegroundColor = ConsoleColor.Red;
-                foreach (var video in errorVideos)
-                {
-                    Console.WriteLine("{0} - Error!", video);
-                }
-                Console.ForegroundColor = ConsoleColor.White;
-                foreach (var video in inProgressVideos)
-                {
-                    Console.WriteLine("{0} - {1}%", video, _videosProgress[video].Progress);
-                }
-                Console.WriteLine("----------------------------------------------------");
-                Console.WriteLine("Completed: {0}/{1} Errors:{2} Downloading:{3} Converting: {4}",
-                    completedVideos.Count, videoUrls.Count, errorVideos.Count, inProgressVideos.Count,
-                    convertingVideos.Count);
-                Thread.Sleep(1000);
-            }
-        }
-
     }
 }

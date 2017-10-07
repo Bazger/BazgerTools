@@ -1,16 +1,14 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Configuration;
+﻿using System.Configuration;
 using System.IO;
 using System.Net.Http;
-using Bazger.Tools.YouTubeDownloader.Model;
-using Bazger.Tools.YouTubeDownloader.Utility;
+using Bazger.Tools.YouTubeDownloader.Core.Model;
+using Bazger.Tools.YouTubeDownloader.Core.Utility;
 using Jint;
 using Newtonsoft.Json.Linq;
 
-namespace Bazger.Tools.YouTubeDownloader.WebSites
+namespace Bazger.Tools.YouTubeDownloader.Core.WebSites
 {
-    public class YouTubeMp3 : IWebSiteDownloader
+    public class YouTubeMp3 : IWebSiteDownloaderProxy
     {
         private const string WebSiteUrl = @"http://www.youtube-mp3.org";
         private static readonly string SessionKeyJsScript = File.ReadAllText(ConfigurationManager.AppSettings["SessionKeyJsScript"]);

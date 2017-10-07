@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Bazger.Tools.YouTubeDownloader.Core")]
+[assembly: AssemblyTitle("Bazger.Tools.YouTubeDownloader.Console")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Microsoft")]
-[assembly: AssemblyProduct("Bazger.Tools.YouTubeDownloader.Core")]
-[assembly: AssemblyCopyright("Copyright © Microsoft 2017")]
+[assembly: AssemblyCompany("")]
+[assembly: AssemblyProduct("Bazger.Tools.YouTubeDownloader.Console")]
+[assembly: AssemblyCopyright("Copyright ©  2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("fced1c65-44e5-433a-afe5-5fa31174b0b2")]
+[assembly: Guid("eb57c87b-aa5e-4d88-a70d-efe8a57d318a")]
 
 // Version information for an assembly consists of the following four values:
 //

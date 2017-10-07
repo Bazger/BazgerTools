@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
-namespace Bazger.Tools.YouTubeDownloader.Converters
+namespace Bazger.Tools.YouTubeDownloader.Core.Converters
 {
-    public class FFmpegConverter : IAudioConverter
+    public class FFmpegConverterProxy : IAudioConverterProxy
     {
         public string Convert(string path, string format)
         {
