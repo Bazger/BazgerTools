@@ -7,8 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bazger.Tools.Clicker.Core",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bazger.Tools.App", "Bazger.Tools.App\Bazger.Tools.App.csproj", "{6A5E388F-8377-41F9-802B-197F8DDD42A6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bazger.Tools.YouTubeDownloader.Core", "Bazger.Tools.YoutubeDownloader\Bazger.Tools.YouTubeDownloader.Core.csproj", "{FCED1C65-44E5-433A-AFE5-5FA31174B0B2}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YoutubeExtractor", "YoutubeExtractor\YoutubeExtractor\YoutubeExtractor.csproj", "{ECDC127F-8DEF-4F99-8300-72C13597339D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bazger.Tools.YouTubeDownloader.Console", "Bazger.Tools.YouTubeDownloader.Console\Bazger.Tools.YouTubeDownloader.Console.csproj", "{EB57C87B-AA5E-4D88-A70D-EFE8A57D318A}"
@@ -35,14 +33,6 @@ Global
 		{6A5E388F-8377-41F9-802B-197F8DDD42A6}.Release|Any CPU.ActiveCfg = Release|x86
 		{6A5E388F-8377-41F9-802B-197F8DDD42A6}.Release|x86.ActiveCfg = Release|x86
 		{6A5E388F-8377-41F9-802B-197F8DDD42A6}.Release|x86.Build.0 = Release|x86
-		{FCED1C65-44E5-433A-AFE5-5FA31174B0B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FCED1C65-44E5-433A-AFE5-5FA31174B0B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FCED1C65-44E5-433A-AFE5-5FA31174B0B2}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{FCED1C65-44E5-433A-AFE5-5FA31174B0B2}.Debug|x86.Build.0 = Debug|Any CPU
-		{FCED1C65-44E5-433A-AFE5-5FA31174B0B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FCED1C65-44E5-433A-AFE5-5FA31174B0B2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FCED1C65-44E5-433A-AFE5-5FA31174B0B2}.Release|x86.ActiveCfg = Release|Any CPU
-		{FCED1C65-44E5-433A-AFE5-5FA31174B0B2}.Release|x86.Build.0 = Release|Any CPU
 		{ECDC127F-8DEF-4F99-8300-72C13597339D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{ECDC127F-8DEF-4F99-8300-72C13597339D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ECDC127F-8DEF-4F99-8300-72C13597339D}.Debug|x86.ActiveCfg = Debug|Any CPU
