@@ -27,11 +27,11 @@ namespace Bazger.Tools.YouTubeDownloader.Core.Utility
             return !query.TryGetValue("list", out list) ? null : list;
         }
 
-        public static IEnumerable<string> GetVideosUrls(string url)
+        public static IEnumerable<string> GetVideosUrls(string url, string youTubeApiKey)
         {
             if (GetPlaylistId(url) != null)
             {
-                return GetPlaylistVideosUrls(url);
+                return GetPlaylistVideosUrls(url, youTubeApiKey);
             }
             if (GetVideoId(url) != null)
             {
@@ -43,10 +43,10 @@ namespace Bazger.Tools.YouTubeDownloader.Core.Utility
             return null;
         }
 
-        private static IEnumerable<string> GetPlaylistVideosUrls(string url)
+        private static IEnumerable<string> GetPlaylistVideosUrls(string url, string youTubeApiKey)
         {
             string fullUrl = PlaylistVideosApiUrl +
-                             $"&playlistId={GetPlaylistId(url)}&key={Program.Configs.YouTubeApiKey}&maxResults=50";
+                             $"&playlistId={GetPlaylistId(url)}&key={youTubeApiKey}&maxResults=50";
             string tokenUrl = string.Copy(fullUrl);
             var videoIds = new List<string>();
             do

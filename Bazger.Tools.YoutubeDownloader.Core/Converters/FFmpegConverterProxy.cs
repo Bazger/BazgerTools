@@ -22,5 +22,10 @@ namespace Bazger.Tools.YouTubeDownloader.Core.Converters
             process.WaitForExit();
             return newMp3Path;
         }
+
+        public void Stop()
+        {
+            
+        }
     }
 }

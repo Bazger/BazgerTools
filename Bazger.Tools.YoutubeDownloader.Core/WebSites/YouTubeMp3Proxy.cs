@@ -8,18 +8,18 @@ using Newtonsoft.Json.Linq;
 
 namespace Bazger.Tools.YouTubeDownloader.Core.WebSites
 {
-    public class YouTubeMp3 : IWebSiteDownloaderProxy
+    public class YouTubeMp3Proxy : IWebSiteDownloaderProxy
     {
         private const string WebSiteUrl = @"http://www.youtube-mp3.org";
         private static readonly string SessionKeyJsScript = File.ReadAllText(ConfigurationManager.AppSettings["SessionKeyJsScript"]);
 
-        public string Download(string videoUrl, string saveFolder, VideoProgressMetadata metadata)
+        public void Download(VideoProgressMetadata videoProgress)
         {
-            string videoId = YouTubeHelper.GetVideoId(videoUrl);
+            string videoId = YouTubeHelper.GetVideoId(videoProgress.Url);
             string videoInfo = GetVideoInfoJson(videoId);
             if (videoInfo == null)
             {
-                throw new HttpRequestException("Can't get json for this video url: " + videoUrl);
+                throw new HttpRequestException("Can't get json for this video url: " + videoProgress.Url);
             }
 
             dynamic videoInfoJson = JObject.Parse(videoInfo);
@@ -28,7 +28,8 @@ namespace Bazger.Tools.YouTubeDownloader.Core.WebSites
             Stream stream = HttpHelper.DownloadStream(downloadUrl);
 
             string videoName = videoInfoJson.title.ToString();
-            string videoPath = Path.Combine(saveFolder, videoName + ".mp3");
+            string videoPath = Path.Combine(videoProgress.OutputDirectory, videoName + ".mp3");
+            videoProgress.VideoFilePath = videoPath;
             using (var ms = new MemoryStream())
             {
                 stream.CopyTo(ms);
@@ -37,8 +38,6 @@ namespace Bazger.Tools.YouTubeDownloader.Core.WebSites
                     ms.WriteTo(file);
                 }
             }
-
-            return videoPath;
         }
 
         private static string GenerateDownloadUrl(string videoId, dynamic json)

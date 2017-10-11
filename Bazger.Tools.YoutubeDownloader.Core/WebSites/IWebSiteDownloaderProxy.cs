@@ -4,6 +4,6 @@ namespace Bazger.Tools.YouTubeDownloader.Core.WebSites
 {
     public interface IWebSiteDownloaderProxy
     {
-        string Download(string videoUrl, string savePath, VideoProgressMetadata metadata);
+        void Download(VideoProgressMetadata metadata);
     }
 }

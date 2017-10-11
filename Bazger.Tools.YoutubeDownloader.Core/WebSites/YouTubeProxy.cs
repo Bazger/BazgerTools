@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text.RegularExpressions;
 using Bazger.Tools.YouTubeDownloader.Core.Model;
 using NLog;
@@ -23,10 +24,10 @@ namespace Bazger.Tools.YouTubeDownloader.Core.WebSites
             _retriesCount = retriesCount;
         }
 
-        public string Download(string videoUrl, string savePath, VideoProgressMetadata videoProgress)
+        public void Download(VideoProgressMetadata videoProgress)
         {
             List<VideoInfo> videoInfos = new List<VideoInfo>();
-            videoInfos = DownloadUrlResolver.GetDownloadUrls(videoUrl, false).ToList();
+            videoInfos = DownloadUrlResolver.GetDownloadUrls(videoProgress.Url, false).ToList();
 
             /*
              * Select the first .mp4 video with 360p resolution
@@ -55,8 +56,9 @@ namespace Bazger.Tools.YouTubeDownloader.Core.WebSites
              * The first argument is the video to download.
              * The second argument is the path to save the video file.
              */
-            var videoPath = Path.Combine(savePath,
+            var videoPath = Path.Combine(videoProgress.OutputDirectory,
                 RemoveIllegalPathCharacters(video.Title) + video.VideoExtension);
+            videoProgress.VideoFilePath = videoPath;
             var videoDownloader = new VideoDownloader(video, videoPath);
 
 
@@ -68,34 +70,48 @@ namespace Bazger.Tools.YouTubeDownloader.Core.WebSites
              * Execute the video downloader.
              * For GUI applications note, that this method runs synchronously.
              */
+            try
+            {
+                videoDownloader.Execute();
+                return;
+            }
+            catch (Exception ex)
+            {
+                Log.Warn($"Can't download video, will retry | Url={videoProgress.Url} | Retries count={_retriesCount} \n" + ex);
+            }
+            RetryToDownload(videoDownloader, videoProgress);
+        }
+
+        private void RetryToDownload(Downloader videoDownloader, VideoProgressMetadata videoProgress)
+        {
             while (videoProgress.Retries <= _retriesCount)
             {
                 try
                 {
+                    videoProgress.Retries++;
                     videoDownloader.Execute();
                     break;
                 }
                 catch (Exception ex)
                 {
-                    if (videoProgress.Retries < _retriesCount)
+                    if (videoProgress.Retries <= _retriesCount)
                     {
-                        Log.Warn($"Can't download video, will try again | url={videoUrl} | Retries={videoProgress.Retries} \n" + ex);
+                        Log.Warn(
+                            $"Can't download video | url={videoProgress.Url} | Retries={videoProgress.Retries} \n" +
+                            ex);
                     }
                     else
                     {
                         throw;
                     }
-                    videoProgress.Retries++;
                 }
             }
-
-            return videoPath;
         }
 
         private static string RemoveIllegalPathCharacters(string path)
         {
             string regexSearch = new string(Path.GetInvalidFileNameChars()) + new string(Path.GetInvalidPathChars());
-            var r = new Regex(string.Format("[{0}]", Regex.Escape(regexSearch)));
+            var r = new Regex($"[{Regex.Escape(regexSearch)}]");
             return r.Replace(path, "");
         }
     }

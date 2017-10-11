@@ -10,6 +10,7 @@ namespace Bazger.Tools.YouTubeDownloader.Core
         {
             return new DownloaderConfigs()
             {
+                YouTubeApiKey = "AIzaSyAQXaMeoVZGg5DNr5M_tgAkh28QMLb1Q6U",
                 SaveDir = "Downloads",
                 ParallelDownloadsCount = 5,
                 ConvertersCount = 3,
@@ -58,19 +59,6 @@ namespace Bazger.Tools.YouTubeDownloader.Core
                     this["saveDir"] = value;
                 }
 
-            }
-        }
-
-        [ConfigurationProperty("downloadUrl", IsRequired = true)]
-        public string DownloadUrl
-        {
-            get
-            {
-                return (string)this["downloadUrl"];
-            }
-            set
-            {
-                this["downloadUrl"] = value;
             }
         }
 

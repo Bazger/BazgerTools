@@ -27,7 +27,7 @@ namespace Bazger.Tools.YouTubeDownloader.ConsoleApp
                 Log.Info("Trying to get all video urls");
                 _videoUrls = YouTubeHelper.GetVideosUrls(
                     System.Configuration.ConfigurationManager.AppSettings["downloadUrl"], Configs.YouTubeApiKey
-                    ).ToList().GetRange(0,6);
+                    ).ToList();
                 if (!_videoUrls.Any())
                 {
                     Log.Error("Your playlist or video url not contains video or null");
@@ -49,6 +49,8 @@ namespace Bazger.Tools.YouTubeDownloader.ConsoleApp
             _uiThread.Start();
 
             Console.CancelKeyPress += ConsoleCancelKeyPress;
+            Thread.Sleep(10000);
+            _launcher.Stop();
         }
 
         private static void UiDraw()
