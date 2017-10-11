@@ -49,8 +49,8 @@ namespace Bazger.Tools.YouTubeDownloader.ConsoleApp
             _uiThread.Start();
 
             Console.CancelKeyPress += ConsoleCancelKeyPress;
-            Thread.Sleep(10000);
-            _launcher.Stop();
+            //Thread.Sleep(30000);
+            //_launcher.Stop();
         }
 
         private static void UiDraw()

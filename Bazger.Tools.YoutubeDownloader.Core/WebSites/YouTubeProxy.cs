@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
 using Bazger.Tools.YouTubeDownloader.Core.Model;
+using Bazger.Tools.YouTubeDownloader.Core.Utility;
 using NLog;
 using YoutubeExtractor;
 
@@ -24,10 +25,10 @@ namespace Bazger.Tools.YouTubeDownloader.Core.WebSites
             _retriesCount = retriesCount;
         }
 
-        public void Download(VideoProgressMetadata videoProgress)
+        public void Download(VideoProgressMetadata videoMetadata)
         {
             List<VideoInfo> videoInfos = new List<VideoInfo>();
-            videoInfos = DownloadUrlResolver.GetDownloadUrls(videoProgress.Url, false).ToList();
+            videoInfos = DownloadUrlResolver.GetDownloadUrls(videoMetadata.Url, false).ToList();
 
             /*
              * Select the first .mp4 video with 360p resolution
@@ -49,22 +50,22 @@ namespace Bazger.Tools.YouTubeDownloader.Core.WebSites
                 DownloadUrlResolver.DecryptDownloadUrl(video);
             }
 
-            videoProgress.Title = video.Title;
+            videoMetadata.Title = video.Title;
 
             /*
              * Create the video downloader.
              * The first argument is the video to download.
              * The second argument is the path to save the video file.
              */
-            var videoPath = Path.Combine(videoProgress.OutputDirectory,
+            var videoPath = Path.Combine(videoMetadata.OutputDirectory,
                 RemoveIllegalPathCharacters(video.Title) + video.VideoExtension);
-            videoProgress.VideoFilePath = videoPath;
+            videoMetadata.VideoFilePath = videoPath;
             var videoDownloader = new VideoDownloader(video, videoPath);
 
 
             // Register the ProgressChanged event and print the current progress
             videoDownloader.DownloadProgressChanged += (sender, args) =>
-               videoProgress.Progress = Math.Round(args.ProgressPercentage, 2);
+               videoMetadata.Progress = Math.Round(args.ProgressPercentage, 2);
 
             /*
              * Execute the video downloader.
@@ -77,28 +78,26 @@ namespace Bazger.Tools.YouTubeDownloader.Core.WebSites
             }
             catch (Exception ex)
             {
-                Log.Warn($"Can't download video, will retry | Url={videoProgress.Url} | Retries count={_retriesCount} \n" + ex);
+                Log.Warn(ex, LogHelper.Format("Can't download video, will retry", videoMetadata));
             }
-            RetryToDownload(videoDownloader, videoProgress);
+            RetryToDownload(videoDownloader, videoMetadata);
         }
 
-        private void RetryToDownload(Downloader videoDownloader, VideoProgressMetadata videoProgress)
+        private void RetryToDownload(Downloader videoDownloader, VideoProgressMetadata videoMetadata)
         {
-            while (videoProgress.Retries <= _retriesCount)
+            while (videoMetadata.Retries <= _retriesCount)
             {
                 try
                 {
-                    videoProgress.Retries++;
+                    videoMetadata.Retries++;
                     videoDownloader.Execute();
                     break;
                 }
                 catch (Exception ex)
                 {
-                    if (videoProgress.Retries <= _retriesCount)
+                    if (videoMetadata.Retries <= _retriesCount)
                     {
-                        Log.Warn(
-                            $"Can't download video | url={videoProgress.Url} | Retries={videoProgress.Retries} \n" +
-                            ex);
+                        Log.Warn(ex, LogHelper.Format($"Can't download video | retry={videoMetadata.Retries}", videoMetadata));
                     }
                     else
                     {

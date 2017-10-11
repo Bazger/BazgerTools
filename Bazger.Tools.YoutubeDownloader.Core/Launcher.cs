@@ -27,17 +27,11 @@ namespace Bazger.Tools.YouTubeDownloader.Core
 
         private ManualResetEvent _stoppedEvent;
 
-        private readonly IWebSiteDownloaderProxy _websiteProxy;
-        private readonly IAudioConverterProxy _converterProxy;
-
-
+        //TODO: Add option to chose video quality and resolution
         public Launcher(IEnumerable<string> videoUrls, DownloaderConfigs configs, string name = "Launcher") : base(name)
         {
             _configs = configs;
             _videoUrls = videoUrls;
-
-            _websiteProxy = new YouTubeProxy();
-            _converterProxy = new FFmpegConverterProxy();
 
             VideosProgress = new ConcurrentDictionary<string, VideoProgressMetadata>();
             _downloaderThreads = new List<DownloaderThread>();
@@ -81,6 +75,7 @@ namespace Bazger.Tools.YouTubeDownloader.Core
 
         protected override void Job()
         {
+            //TODO: Log fix (Unnensesary logs dont show on the console)
             var waitingForDownload = new BlockingCollection<string>(new ConcurrentQueue<string>(_videoUrls));
             var waitingForConvertion = new BlockingCollection<VideoProgressMetadata>();
 
@@ -144,10 +139,11 @@ namespace Bazger.Tools.YouTubeDownloader.Core
 
         private void StartDownloderThreads(BlockingCollection<string> waitingForDownload, BlockingCollection<VideoProgressMetadata> waitingForConvertion)
         {
-
+            //Inialing once because method are safe for multithreaded usage
+            var websiteProxy = new YouTubeProxy();
             for (var i = 0; i < _configs.ParallelDownloadsCount; i++)
             {
-                _downloaderThreads.Add(new DownloaderThread($"Downloader {i}", _websiteProxy, VideosProgress, _configs.SaveDir, waitingForDownload, waitingForConvertion, _configs.ConverterEnabled));
+                _downloaderThreads.Add(new DownloaderThread($"Downloader {i}", websiteProxy, VideosProgress, _configs.SaveDir, waitingForDownload, waitingForConvertion, _configs.ConverterEnabled));
             }
 
             Log.Info("Starting downloader threads");
@@ -155,15 +151,15 @@ namespace Bazger.Tools.YouTubeDownloader.Core
             {
                 try
                 {
-                    Log.Info("Starting service ({0})", service.Name);
+                    Log.Info("Starting service [{0}]", service.Name);
                     service.Start();
                 }
                 catch (Exception ex)
                 {
-                    Log.Error("Error starting service ({0}): {1}", service.Name, ex);
+                    Log.Error(ex, "Error starting service [{0}]", service.Name);
                 }
             }
-            Log.Info("{0} downloading threads was started", _downloaderThreads.Count(c=>c.IsStarted));
+            Log.Info("{0} downloading threads was started", _downloaderThreads.Count(c => c.IsStarted));
         }
 
         private void StopDownloaderThreads()
@@ -172,12 +168,12 @@ namespace Bazger.Tools.YouTubeDownloader.Core
             {
                 try
                 {
-                    Log.Info("Stopping service ({0})", service.Name);
+                    Log.Info("Stopping service [{0}]", service.Name);
                     service.Stop();
                 }
                 catch (Exception ex)
                 {
-                    Log.Error(ex, "Error stopping service: ");
+                    Log.Error(ex, "Error stopping service [{0}]", service.Name);
                 }
             }
         }
@@ -186,8 +182,9 @@ namespace Bazger.Tools.YouTubeDownloader.Core
         {
             for (var i = 0; i < _configs.ConvertersCount; i++)
             {
-                _converterThreads.Add(new ConverterThread($"Converter {i}", _converterProxy, waitingForConvertion,
-                    VideosProgress, _configs.ConvertionFormat, _downloaderThreads));
+                //TODO: may be architecture changes needed
+                //Initialize new proxy for all converter service because proxy includes monitoring of external process and it terminating
+                _converterThreads.Add(new ConverterThread($"Converter {i}", new FFmpegConverterProxy(), waitingForConvertion, _configs.ConvertionFormat, _downloaderThreads));
             }
 
             Log.Info("Starting converter threads");
@@ -195,12 +192,12 @@ namespace Bazger.Tools.YouTubeDownloader.Core
             {
                 try
                 {
-                    Log.Info("Starting service ({0})", service.Name);
+                    Log.Info("Starting service [{0}]", service.Name);
                     service.Start();
                 }
                 catch (Exception ex)
                 {
-                    Log.Error("Error starting service ({0}): {1}", service.Name, ex);
+                    Log.Error(ex, "Error starting service [{0}]", service.Name);
                 }
             }
             Log.Info("{0} converter threads was started", _converterThreads.Count(c => c.IsStarted));
@@ -212,12 +209,12 @@ namespace Bazger.Tools.YouTubeDownloader.Core
             {
                 try
                 {
-                    Log.Info("Stopping service ({0})", service.Name);
+                    Log.Info("Stopping service [{0}]", service.Name);
                     service.Stop();
                 }
                 catch (Exception ex)
                 {
-                    Log.Error(ex, "Error stopping service: ");
+                    Log.Error(ex, "Error stopping service [{0}]", service.Name);
                 }
             }
         }
@@ -243,9 +240,9 @@ namespace Bazger.Tools.YouTubeDownloader.Core
                 }
                 SerDeUtils.SerializeToJsonFile(downloadedVideos, _configs.JournalFileName);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                Log.Error("there is a problem to write to journal file. May be journal format is illegal");
+                Log.Error(ex, "There is a problem to write to a journal file");
             }
         }
 
@@ -261,9 +258,9 @@ namespace Bazger.Tools.YouTubeDownloader.Core
             {
                 return SerDeUtils.DeserializeJsonFile<HashSet<string>>(_configs.JournalFileName);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                Log.Error("There is a problem to write to journal file. May be journal format is illegal");
+                Log.Error(ex, "There is a problem to read a journal file. May be journal format is illegal");
             }
             return null;
         }

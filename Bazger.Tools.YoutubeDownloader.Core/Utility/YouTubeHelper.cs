@@ -57,7 +57,7 @@ namespace Bazger.Tools.YouTubeDownloader.Core.Utility
                     break;
                 }
                 videoIds.AddRange(GetVideosIdsFromPlaylist(playlistJson));
-                Log.Info("Received video urls: {0}", videoIds.Count);
+                Log.Info($"Received video urls: {videoIds.Count}");
                 if (playlistJson["nextPageToken"] == null)
                 {
                     break;

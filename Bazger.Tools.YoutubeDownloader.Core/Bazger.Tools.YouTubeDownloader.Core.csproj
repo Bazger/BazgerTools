@@ -63,6 +63,7 @@
   <ItemGroup>
     <Compile Include="Converters\FFmpegConverterProxy.cs" />
     <Compile Include="Converters\IAudioConverterProxy.cs" />
+    <Compile Include="Converters\IAudioExternalConverterProxy.cs" />
     <Compile Include="Launcher.cs" />
     <Compile Include="Model\ConverterThread.cs" />
     <Compile Include="Model\DownloaderThread.cs" />
@@ -71,6 +72,7 @@
     <Compile Include="Model\VideoProgressStage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utility\HttpHelper.cs" />
+    <Compile Include="Utility\LogHelper.cs" />
     <Compile Include="Utility\SerDeUtils.cs" />
     <Compile Include="Utility\YouTubeHelper.cs" />
     <Compile Include="WebSites\IWebSiteDownloaderProxy.cs" />

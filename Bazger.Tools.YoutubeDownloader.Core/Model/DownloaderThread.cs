@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.IO;
 using System.Net;
 using System.Threading;
+using Bazger.Tools.YouTubeDownloader.Core.Utility;
 using Bazger.Tools.YouTubeDownloader.Core.WebSites;
 using NLog;
 using YoutubeExtractor;
@@ -21,7 +22,7 @@ namespace Bazger.Tools.YouTubeDownloader.Core.Model
         private readonly string _saveDir;
         private ManualResetEvent _stoppedEvent;
         private const int MillisecondsTimeout = 5000;
-        private VideoProgressMetadata _jobVideoProgress;
+        private VideoProgressMetadata _currentVideoMetadata;
 
         public DownloaderThread(string name, IWebSiteDownloaderProxy webSite, ConcurrentDictionary<string, VideoProgressMetadata> videosProgress, string saveDir, BlockingCollection<string> waitingForDownload, BlockingCollection<VideoProgressMetadata> waitingForConvertion, bool isConvertionEnabled) : base(name)
         {
@@ -39,7 +40,7 @@ namespace Bazger.Tools.YouTubeDownloader.Core.Model
             //WaitOne equals 0 because we are waiting when we taking from queue, so we dont need to wait on stop event
             while (_waitingForDownload.Count != 0 && !StopEvent.WaitOne(0))
             {
-                _jobVideoProgress = null;
+                _currentVideoMetadata = null;
                 try
                 {
                     string videoUrl;
@@ -48,54 +49,53 @@ namespace Bazger.Tools.YouTubeDownloader.Core.Model
                     {
                         continue;
                     }
-                    _jobVideoProgress = new VideoProgressMetadata(videoUrl)
+                    _currentVideoMetadata = new VideoProgressMetadata(videoUrl)
                     {
                         Stage = VideoProgressStage.Downloading,
                         Progress = 0,
                         OutputDirectory = _saveDir
                     };
-                    _videosProgress.TryAdd(videoUrl, _jobVideoProgress);
-                    Log.Info($"Downloading video | url={videoUrl}");
-                    _webSite.Download(_jobVideoProgress);
+                    _videosProgress.TryAdd(videoUrl, _currentVideoMetadata);
+                    Log.Info(LogHelper.Format($"Downloading video", _currentVideoMetadata));
+                    _webSite.Download(_currentVideoMetadata);
                     if (!_isConvertionEnabled)
                     {
-                        _jobVideoProgress.Stage = VideoProgressStage.Completed;
+                        _currentVideoMetadata.Stage = VideoProgressStage.Completed;
                         continue;
                     }
                     _waitingForConvertion?.TryAdd(_videosProgress[videoUrl]);
-                    _jobVideoProgress.Stage = VideoProgressStage.WaitingToConvertion;
+                    _currentVideoMetadata.Stage = VideoProgressStage.WaitingToConvertion;
                 }
                 catch (Exception ex)
                 {
-                    if (_jobVideoProgress == null)
+                    if (_currentVideoMetadata == null)
                     {
-                        Log.Error($"There is a problem to take an item from queue {ex}");
+                        Log.Error(ex, "There is a problem to take an item from queue");
                         continue;
                     }
                     if (ex is YoutubeParseException)
                     {
-                        Log.Error(
-                                $"Video was removed or blocked | url={_jobVideoProgress.Url}\n{ex}");
-                        _jobVideoProgress.Stage = VideoProgressStage.VideoUrlProblem;
-                        _jobVideoProgress.ErrorArgs = ex.ToString();
+                        Log.Error(ex, LogHelper.Format("Video was removed or blocked", _currentVideoMetadata));
+                        _currentVideoMetadata.Stage = VideoProgressStage.VideoUrlProblem;
+                        _currentVideoMetadata.ErrorArgs = ex.ToString();
                         continue;
                     }
 
                     if (ex is IOException || ex is WebException)
                     {
-                        Log.Error(
-                            $"Problem with downloading video | url={_jobVideoProgress.Url} | Retries={_jobVideoProgress.Retries}\n{ex}");
+                        Log.Error(ex,
+                            LogHelper.Format($"Problem with downloading video | retries={_currentVideoMetadata.Retries}", _currentVideoMetadata));
                     }
                     else
                     {
-                        Log.Error($"Not expected case{ex}");
+                        Log.Error(ex, "Not expected case");
                     }
-                    _jobVideoProgress.Stage = VideoProgressStage.Error;
-                    _jobVideoProgress.ErrorArgs = ex.ToString();
+                    _currentVideoMetadata.Stage = VideoProgressStage.Error;
+                    _currentVideoMetadata.ErrorArgs = ex.ToString();
                     //Removing downloaded file
-                    if(!string.IsNullOrEmpty(_jobVideoProgress?.VideoFilePath) && File.Exists(_jobVideoProgress.VideoFilePath))
+                    if (!string.IsNullOrEmpty(_currentVideoMetadata?.VideoFilePath) && File.Exists(_currentVideoMetadata.VideoFilePath))
                     {
-                        File.Delete(_jobVideoProgress.VideoFilePath);
+                        File.Delete(_currentVideoMetadata.VideoFilePath);
                     }
                 }
             }
@@ -115,7 +115,7 @@ namespace Bazger.Tools.YouTubeDownloader.Core.Model
         {
             StopEvent.Set();
             //If convertion enabled there is no purpose wait for finishig of downloader process because video will be removed 
-            var waitTime = _isConvertionEnabled ? 0 : 5000;
+            var waitTime = _isConvertionEnabled ? 0 : MillisecondsTimeout;
             while (JobThread.IsAlive)
             {
                 if (!_stoppedEvent.WaitOne(waitTime))

@@ -13,13 +13,13 @@ namespace Bazger.Tools.YouTubeDownloader.Core.WebSites
         private const string WebSiteUrl = @"http://www.youtube-mp3.org";
         private static readonly string SessionKeyJsScript = File.ReadAllText(ConfigurationManager.AppSettings["SessionKeyJsScript"]);
 
-        public void Download(VideoProgressMetadata videoProgress)
+        public void Download(VideoProgressMetadata videoMetadata)
         {
-            string videoId = YouTubeHelper.GetVideoId(videoProgress.Url);
+            string videoId = YouTubeHelper.GetVideoId(videoMetadata.Url);
             string videoInfo = GetVideoInfoJson(videoId);
             if (videoInfo == null)
             {
-                throw new HttpRequestException("Can't get json for this video url: " + videoProgress.Url);
+                throw new HttpRequestException("Can't get json | video url: " + videoMetadata.Url);
             }
 
             dynamic videoInfoJson = JObject.Parse(videoInfo);
@@ -28,8 +28,8 @@ namespace Bazger.Tools.YouTubeDownloader.Core.WebSites
             Stream stream = HttpHelper.DownloadStream(downloadUrl);
 
             string videoName = videoInfoJson.title.ToString();
-            string videoPath = Path.Combine(videoProgress.OutputDirectory, videoName + ".mp3");
-            videoProgress.VideoFilePath = videoPath;
+            string videoPath = Path.Combine(videoMetadata.OutputDirectory, videoName + ".mp3");
+            videoMetadata.VideoFilePath = videoPath;
             using (var ms = new MemoryStream())
             {
                 stream.CopyTo(ms);
