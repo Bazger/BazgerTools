@@ -28,6 +28,6 @@ namespace Bazger.Tools.YouTubeDownloader.Core.Model
         public abstract void Stop();
         // Override in base class
         protected abstract void Job();
-
+        public abstract void Abort();
     }
 }

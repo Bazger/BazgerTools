@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using Bazger.Tools.YouTubeDownloader.Core;
@@ -18,6 +20,9 @@ namespace Bazger.Tools.YouTubeDownloader.ConsoleApp
         private static Launcher _launcher;
         private static Thread _uiThread;
         private static AutoResetEvent _stopUiEvent;
+        private static bool _onStopping = false;
+        private static bool _launcherStopped = false;
+        private static int _stopAnimationStage;
 
         public static void Main(string[] args)
         {
@@ -49,8 +54,6 @@ namespace Bazger.Tools.YouTubeDownloader.ConsoleApp
             _uiThread.Start();
 
             Console.CancelKeyPress += ConsoleCancelKeyPress;
-            //Thread.Sleep(30000);
-            //_launcher.Stop();
         }
 
         private static void UiDraw()
@@ -125,11 +128,26 @@ namespace Bazger.Tools.YouTubeDownloader.ConsoleApp
                     PrintConsoleLogWithRetries($"{url} - {_launcher.VideosProgress[url].Progress}%", url);
                 }
                 Console.WriteLine("\n-------------Video status info---------------------");
-                Console.WriteLine($"Completed: { completedVideos.Count}/{_videoUrls.Count} Download Errors:{errorVideos.Count} Problem url:{urlProblemVideos.Count} Downloading:{inProgressVideos.Count} In Waiting Queue: {waitingToConvertVideos.Count} Converting: {convertingVideos.Count}");
+                Console.WriteLine($"Completed:{ completedVideos.Count}/{_videoUrls.Count} Download Errors:{errorVideos.Count} Problem url:{urlProblemVideos.Count}\nDownloading:{inProgressVideos.Count} Waiting:{waitingToConvertVideos.Count} Converting:{convertingVideos.Count}");
                 Console.WriteLine("\n---------------Threads info------------------------");
                 Console.WriteLine("Donwload threads {0}/{1} Converters threads {2}/{3}",
                     _launcher.GetAliveDownloadersCount(), _launcher.GetAllDownloadersCount(),
                    _launcher.GetAliveConvertersCount(), _launcher.GetAllConvertersCount());
+                Console.WriteLine("\n---------------------------------------------------");
+                if (_launcherStopped)
+                {
+                    Console.Write("Successfully stoped");
+                }
+                else if (_onStopping)
+                {
+                    Console.Write("Stopping");
+                    for (int i = 0; i <= _stopAnimationStage % 3; i++)
+                    {
+                        Console.Write(".");
+                    }
+                    _stopAnimationStage++;
+                    Console.WriteLine();
+                }
             }
             Console.WriteLine("\n---------------------------------------------------\n");
         }
@@ -151,7 +169,10 @@ namespace Bazger.Tools.YouTubeDownloader.ConsoleApp
             {
                 return;
             }
+            _onStopping = true;
             _launcher.Stop();
+            _launcherStopped = true;
+            _stopUiEvent.Set();
             e.Cancel = true;
         }
     }

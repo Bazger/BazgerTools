@@ -85,7 +85,7 @@ namespace Bazger.Tools.YouTubeDownloader.Core.WebSites
 
         private void RetryToDownload(Downloader videoDownloader, VideoProgressMetadata videoMetadata)
         {
-            while (videoMetadata.Retries <= _retriesCount)
+            while (videoMetadata.Retries < _retriesCount)
             {
                 try
                 {

@@ -14,17 +14,17 @@ namespace Bazger.Tools.YouTubeDownloader.Core.Model
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
-        private readonly IAudioExternalConverterProxy _audioConverterProxy;
         private readonly BlockingCollection<VideoProgressMetadata> _waitingForConvertion;
         private readonly string _convertionFormat;
         private readonly List<DownloaderThread> _downloaderThreads;
         private ManualResetEvent _stoppedEvent;
         private VideoProgressMetadata _currentVideoMetadata;
+        private ExternalProcessProxy _currentProcessProxy;
         private const int MillisecondsTimeout = 5000;
+        private const int ExternalConverterWaitingTimeout = 30000;
 
-        public ConverterThread(string name, IAudioExternalConverterProxy audioConverterProxy, BlockingCollection<VideoProgressMetadata> waitingForConvertion, string convertionFormat, List<DownloaderThread> downloaderThreads) : base(name)
+        public ConverterThread(string name, BlockingCollection<VideoProgressMetadata> waitingForConvertion, string convertionFormat, List<DownloaderThread> downloaderThreads) : base(name)
         {
-            _audioConverterProxy = audioConverterProxy;
             _waitingForConvertion = waitingForConvertion;
             _convertionFormat = convertionFormat;
             _downloaderThreads = downloaderThreads;
@@ -37,41 +37,34 @@ namespace Bazger.Tools.YouTubeDownloader.Core.Model
                     _downloaderThreads.FirstOrDefault(c => c.IsStarted) == null) && !StopEvent.WaitOne(0))
             {
                 _currentVideoMetadata = null;
+                _currentProcessProxy = null;
                 try
                 {
                     _waitingForConvertion.TryTake(out _currentVideoMetadata, MillisecondsTimeout);
+                    if (_currentVideoMetadata == null) { continue; }
 
-                    if (_currentVideoMetadata == null)
-                    {
-                        continue;
-                    }
                     _currentVideoMetadata.Stage = VideoProgressStage.Converting;
                     _currentVideoMetadata.ConvertedFilePath = Path.Combine(_currentVideoMetadata.OutputDirectory,
                         Path.GetFileNameWithoutExtension(_currentVideoMetadata.VideoFilePath) + $".{_convertionFormat}");
-                    _audioConverterProxy.Convert(_currentVideoMetadata);
+                    _currentProcessProxy = new FFmpegConverterProcessProxy(_currentVideoMetadata, ExternalConverterWaitingTimeout);
+                    //TODO: Remove before converting?
+                    Log.Info(LogHelper.Format($"Converting video", _currentVideoMetadata));
+                    _currentProcessProxy.Start();
                     _currentVideoMetadata.Stage = VideoProgressStage.Completed;
+                    File.Delete(_currentVideoMetadata.VideoFilePath);
+                    Log.Info(LogHelper.Format($"Video successfully converted", _currentVideoMetadata));
                 }
                 catch (Exception ex)
                 {
-                    if (_currentVideoMetadata == null)
-                    {
-                        continue;
-                    }
+                    if (_currentVideoMetadata == null) { continue; }
                     Log.Error(ex,
                         LogHelper.Format($"Can't convert video | path={_currentVideoMetadata.VideoFilePath}",
                             _currentVideoMetadata));
                     _currentVideoMetadata.Stage = VideoProgressStage.Error;
                     _currentVideoMetadata.ErrorArgs = ex.ToString();
-                    //Remove bad convertion file if exception thrown
-                    if (!string.IsNullOrEmpty(_currentVideoMetadata.ConvertedFilePath) && File.Exists(_currentVideoMetadata.ConvertedFilePath))
-                    {
-                        File.Delete(_currentVideoMetadata.ConvertedFilePath);
-                    }
-                }
-                finally
-                {
-                    //Remove video file
-                    if (!string.IsNullOrEmpty(_currentVideoMetadata?.VideoFilePath) && File.Exists(_currentVideoMetadata.VideoFilePath))
+
+                    //Removing downloaded file
+                    if (File.Exists(_currentVideoMetadata.VideoFilePath))
                     {
                         File.Delete(_currentVideoMetadata.VideoFilePath);
                     }
@@ -92,15 +85,13 @@ namespace Bazger.Tools.YouTubeDownloader.Core.Model
         public override void Stop()
         {
             StopEvent.Set();
-            while (JobThread.IsAlive)
-            {
-                if (!_stoppedEvent.WaitOne(MillisecondsTimeout))
-                {
-                    Log.Warn("Abort converter thread");
-                    JobThread.Abort();
-                    _audioConverterProxy.Terminate();
-                }
-            }
+        }
+
+        public override void Abort()
+        {
+            Log.Warn($"Abort converter service ({Name})");
+            _currentProcessProxy?.Stop();
+            JobThread.Abort();
         }
     }
 }

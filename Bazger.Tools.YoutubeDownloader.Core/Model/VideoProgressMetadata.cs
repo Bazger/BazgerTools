@@ -13,6 +13,7 @@
         public string ErrorArgs { get; set; }
         public int Retries { get; set; }
         public string VideoFilePath { get; set; }
+        //TODO: Save files to tmp directory?
         public string OutputDirectory { get; set; }
         public string Url { get; private set; }
         public string ConvertedFilePath { get; set; }

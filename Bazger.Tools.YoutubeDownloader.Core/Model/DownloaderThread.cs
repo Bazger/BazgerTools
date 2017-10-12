@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.IO;
 using System.Net;
+using System.Runtime.InteropServices;
 using System.Threading;
 using Bazger.Tools.YouTubeDownloader.Core.Utility;
 using Bazger.Tools.YouTubeDownloader.Core.WebSites;
@@ -17,23 +18,20 @@ namespace Bazger.Tools.YouTubeDownloader.Core.Model
         private readonly BlockingCollection<string> _waitingForDownload;
         private readonly BlockingCollection<VideoProgressMetadata> _waitingForConvertion;
         private readonly bool _isConvertionEnabled;
-        private readonly IWebSiteDownloaderProxy _webSite;
         private readonly ConcurrentDictionary<string, VideoProgressMetadata> _videosProgress;
         private readonly string _saveDir;
         private ManualResetEvent _stoppedEvent;
         private const int MillisecondsTimeout = 5000;
         private VideoProgressMetadata _currentVideoMetadata;
 
-        public DownloaderThread(string name, IWebSiteDownloaderProxy webSite, ConcurrentDictionary<string, VideoProgressMetadata> videosProgress, string saveDir, BlockingCollection<string> waitingForDownload, BlockingCollection<VideoProgressMetadata> waitingForConvertion, bool isConvertionEnabled) : base(name)
+        public DownloaderThread(string name, ConcurrentDictionary<string, VideoProgressMetadata> videosProgress, string saveDir, BlockingCollection<string> waitingForDownload, BlockingCollection<VideoProgressMetadata> waitingForConvertion, bool isConvertionEnabled) : base(name)
         {
             _waitingForDownload = waitingForDownload;
             _waitingForConvertion = waitingForConvertion;
             _isConvertionEnabled = isConvertionEnabled;
-            _webSite = webSite;
             _videosProgress = videosProgress;
             _saveDir = saveDir;
         }
-
 
         protected override void Job()
         {
@@ -57,7 +55,8 @@ namespace Bazger.Tools.YouTubeDownloader.Core.Model
                     };
                     _videosProgress.TryAdd(videoUrl, _currentVideoMetadata);
                     Log.Info(LogHelper.Format($"Downloading video", _currentVideoMetadata));
-                    _webSite.Download(_currentVideoMetadata);
+                    new YouTubeProxy().Download(_currentVideoMetadata);
+                    Log.Info(LogHelper.Format($"Video successfully dwonloaded", _currentVideoMetadata));
                     if (!_isConvertionEnabled)
                     {
                         _currentVideoMetadata.Stage = VideoProgressStage.Completed;
@@ -93,7 +92,7 @@ namespace Bazger.Tools.YouTubeDownloader.Core.Model
                     _currentVideoMetadata.Stage = VideoProgressStage.Error;
                     _currentVideoMetadata.ErrorArgs = ex.ToString();
                     //Removing downloaded file
-                    if (!string.IsNullOrEmpty(_currentVideoMetadata?.VideoFilePath) && File.Exists(_currentVideoMetadata.VideoFilePath))
+                    if (File.Exists(_currentVideoMetadata.VideoFilePath))
                     {
                         File.Delete(_currentVideoMetadata.VideoFilePath);
                     }
@@ -114,16 +113,12 @@ namespace Bazger.Tools.YouTubeDownloader.Core.Model
         public override void Stop()
         {
             StopEvent.Set();
-            //If convertion enabled there is no purpose wait for finishig of downloader process because video will be removed 
-            var waitTime = _isConvertionEnabled ? 0 : MillisecondsTimeout;
-            while (JobThread.IsAlive)
-            {
-                if (!_stoppedEvent.WaitOne(waitTime))
-                {
-                    Log.Warn("Abort downloader thread");
-                    JobThread.Abort();
-                }
-            }
+        }
+
+        public override void Abort()
+        {
+            Log.Warn($"Abort downloader service ({Name})");
+            JobThread.Abort();
         }
     }
 }
