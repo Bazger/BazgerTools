@@ -1,31 +1,34 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
 using Bazger.Tools.YouTubeDownloader.Core.Model;
 using Bazger.Tools.YouTubeDownloader.Core.Utility;
+using ConcurrentCollections;
 using NLog;
 using YoutubeExtractor;
 
 namespace Bazger.Tools.YouTubeDownloader.Core.WebSites
 {
-    public class YouTubeProxy : IWebSiteDownloaderProxy
+    public class YouTubeProxy : WebSiteDownloaderProxy
     {
+        private const int DefaultVideoFormatCode = 18;
+
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
-        private readonly VideoType _type;
-        private readonly int _resolution;
+        private readonly int _videoFormatCode;
         private readonly int _retriesCount;
 
-        public YouTubeProxy(VideoType type = VideoType.Mp4, int resolution = 360, int retriesCount = 3)
+        public YouTubeProxy( int videoFormatCode = DefaultVideoFormatCode, int retriesCount = 3) 
         {
-            _type = type;
-            _resolution = resolution;
+            _videoFormatCode = videoFormatCode;
             _retriesCount = retriesCount;
         }
 
-        public void Download(VideoProgressMetadata videoMetadata)
+        public override void Download(VideoProgressMetadata videoMetadata)
         {
             List<VideoInfo> videoInfos = new List<VideoInfo>();
             videoInfos = DownloadUrlResolver.GetDownloadUrls(videoMetadata.Url, false).ToList();
@@ -34,12 +37,12 @@ namespace Bazger.Tools.YouTubeDownloader.Core.WebSites
              * Select the first .mp4 video with 360p resolution
              */
             var video = videoInfos
-                .First(info => info.VideoType == _type && info.Resolution >= _resolution);
+                .First(info => info.FormatCode == _videoFormatCode);
 
             if (video == null)
             {
                 video = videoInfos
-                    .First(info => info.VideoType == VideoType.Mp4 && info.Resolution == 360);
+                    .First(info => info.FormatCode == DefaultVideoFormatCode);
             }
 
             /*
@@ -57,10 +60,9 @@ namespace Bazger.Tools.YouTubeDownloader.Core.WebSites
              * The first argument is the video to download.
              * The second argument is the path to save the video file.
              */
-            var videoPath = Path.Combine(videoMetadata.OutputDirectory,
-                RemoveIllegalPathCharacters(video.Title) + video.VideoExtension);
-            videoMetadata.VideoFilePath = videoPath;
-            var videoDownloader = new VideoDownloader(video, videoPath);
+            videoMetadata.VideoFilePath = Path.Combine(videoMetadata.DownloaderTempDir,
+              Guid.NewGuid() + video.VideoExtension);
+            var videoDownloader = new VideoDownloader(video, videoMetadata.VideoFilePath);
 
 
             // Register the ProgressChanged event and print the current progress
@@ -83,6 +85,7 @@ namespace Bazger.Tools.YouTubeDownloader.Core.WebSites
             RetryToDownload(videoDownloader, videoMetadata);
         }
 
+        //TODO: Move to abstract class
         private void RetryToDownload(Downloader videoDownloader, VideoProgressMetadata videoMetadata)
         {
             while (videoMetadata.Retries < _retriesCount)
@@ -95,7 +98,7 @@ namespace Bazger.Tools.YouTubeDownloader.Core.WebSites
                 }
                 catch (Exception ex)
                 {
-                    if (videoMetadata.Retries <= _retriesCount)
+                    if (videoMetadata.Retries < _retriesCount)
                     {
                         Log.Warn(ex, LogHelper.Format($"Can't download video | retry={videoMetadata.Retries}", videoMetadata));
                     }
@@ -105,13 +108,6 @@ namespace Bazger.Tools.YouTubeDownloader.Core.WebSites
                     }
                 }
             }
-        }
-
-        private static string RemoveIllegalPathCharacters(string path)
-        {
-            string regexSearch = new string(Path.GetInvalidFileNameChars()) + new string(Path.GetInvalidPathChars());
-            var r = new Regex($"[{Regex.Escape(regexSearch)}]");
-            return r.Replace(path, "");
         }
     }
 }

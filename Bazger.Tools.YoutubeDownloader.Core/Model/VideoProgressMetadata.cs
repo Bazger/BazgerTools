@@ -13,9 +13,11 @@
         public string ErrorArgs { get; set; }
         public int Retries { get; set; }
         public string VideoFilePath { get; set; }
-        //TODO: Save files to tmp directory?
-        public string OutputDirectory { get; set; }
-        public string Url { get; private set; }
         public string ConvertedFilePath { get; set; }
+        public string MovingFilePath { get; set; }
+        public string SaveDir { get; set; }
+        public string Url { get; private set; }
+        public string DownloaderTempDir { get; set; }
+        public string ConverterTempDir { get; set; }
     }
 }

@@ -1,19 +1,21 @@
-﻿using System.Configuration;
+﻿using System.Collections.Concurrent;
+using System.Configuration;
 using System.IO;
 using System.Net.Http;
 using Bazger.Tools.YouTubeDownloader.Core.Model;
 using Bazger.Tools.YouTubeDownloader.Core.Utility;
+using ConcurrentCollections;
 using Jint;
 using Newtonsoft.Json.Linq;
 
 namespace Bazger.Tools.YouTubeDownloader.Core.WebSites
 {
-    public class YouTubeMp3Proxy : IWebSiteDownloaderProxy
+    public class YouTubeMp3Proxy : WebSiteDownloaderProxy
     {
         private const string WebSiteUrl = @"http://www.youtube-mp3.org";
         private static readonly string SessionKeyJsScript = File.ReadAllText(ConfigurationManager.AppSettings["SessionKeyJsScript"]);
 
-        public void Download(VideoProgressMetadata videoMetadata)
+        public override void Download(VideoProgressMetadata videoMetadata)
         {
             string videoId = YouTubeHelper.GetVideoId(videoMetadata.Url);
             string videoInfo = GetVideoInfoJson(videoId);
@@ -28,7 +30,7 @@ namespace Bazger.Tools.YouTubeDownloader.Core.WebSites
             Stream stream = HttpHelper.DownloadStream(downloadUrl);
 
             string videoName = videoInfoJson.title.ToString();
-            string videoPath = Path.Combine(videoMetadata.OutputDirectory, videoName + ".mp3");
+            string videoPath = Path.Combine(videoMetadata.SaveDir, videoName + ".mp3");
             videoMetadata.VideoFilePath = videoPath;
             using (var ms = new MemoryStream())
             {

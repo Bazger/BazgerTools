@@ -8,6 +8,7 @@
         Converting,
         Completed,
         Error,
-        VideoUrlProblem
+        VideoUrlProblem,
+        Moving
     }
 }

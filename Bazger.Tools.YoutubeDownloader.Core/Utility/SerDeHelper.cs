@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace Bazger.Tools.YouTubeDownloader.Core.Utility
 {
-    public static class SerDeUtils
+    public static class SerDeHelper
     {
         public static TObject DeserializeJsonFile<TObject>(string path) where TObject : new()
         {

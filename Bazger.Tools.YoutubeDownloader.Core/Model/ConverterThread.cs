@@ -15,68 +15,78 @@ namespace Bazger.Tools.YouTubeDownloader.Core.Model
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
         private readonly BlockingCollection<VideoProgressMetadata> _waitingForConvertion;
+        private readonly BlockingCollection<VideoProgressMetadata> _waitingForMoving;
         private readonly string _convertionFormat;
         private readonly List<DownloaderThread> _downloaderThreads;
-        private ManualResetEvent _stoppedEvent;
-        private VideoProgressMetadata _currentVideoMetadata;
-        private ExternalProcessProxy _currentProcessProxy;
+        private readonly string _launcherTempDir;
+        private ExternalProcessProxy _runningProcessProxy;
+        private string _converterTempDir;
         private const int MillisecondsTimeout = 5000;
         private const int ExternalConverterWaitingTimeout = 30000;
 
-        public ConverterThread(string name, BlockingCollection<VideoProgressMetadata> waitingForConvertion, string convertionFormat, List<DownloaderThread> downloaderThreads) : base(name)
+        public ConverterThread(string name, BlockingCollection<VideoProgressMetadata> waitingForConvertion, BlockingCollection<VideoProgressMetadata> waitingForMoving, string convertionFormat, List<DownloaderThread> downloaderThreads, string launcherTempDir) : base(name)
         {
             _waitingForConvertion = waitingForConvertion;
+            _waitingForMoving = waitingForMoving;
             _convertionFormat = convertionFormat;
             _downloaderThreads = downloaderThreads;
+            _launcherTempDir = launcherTempDir;
         }
 
         protected override void Job()
         {
+            _converterTempDir = Path.Combine(_launcherTempDir, Guid.NewGuid().ToString());
+            Directory.CreateDirectory(_converterTempDir);
+
+            //TODO: _downloaderThreads.Count may be replaced
             //WaitOne equals 0 because we are waiting when we taking from queue, so we dont need to wait on stop event
             while ((_waitingForConvertion.Count != 0 || _downloaderThreads.Count(c => c.IsAlive) != 0 ||
                     _downloaderThreads.FirstOrDefault(c => c.IsStarted) == null) && !StopEvent.WaitOne(0))
             {
-                _currentVideoMetadata = null;
-                _currentProcessProxy = null;
+                _runningProcessProxy = null;
+                VideoProgressMetadata videoMetadata = null;
                 try
                 {
-                    _waitingForConvertion.TryTake(out _currentVideoMetadata, MillisecondsTimeout);
-                    if (_currentVideoMetadata == null) { continue; }
+                    _waitingForConvertion.TryTake(out videoMetadata, MillisecondsTimeout);
+                    if (videoMetadata == null)
+                    {
+                        continue;
+                    }
 
-                    _currentVideoMetadata.Stage = VideoProgressStage.Converting;
-                    _currentVideoMetadata.ConvertedFilePath = Path.Combine(_currentVideoMetadata.OutputDirectory,
-                        Path.GetFileNameWithoutExtension(_currentVideoMetadata.VideoFilePath) + $".{_convertionFormat}");
-                    _currentProcessProxy = new FFmpegConverterProcessProxy(_currentVideoMetadata, ExternalConverterWaitingTimeout);
-                    //TODO: Remove before converting?
-                    Log.Info(LogHelper.Format($"Converting video", _currentVideoMetadata));
-                    _currentProcessProxy.Start();
-                    _currentVideoMetadata.Stage = VideoProgressStage.Completed;
-                    File.Delete(_currentVideoMetadata.VideoFilePath);
-                    Log.Info(LogHelper.Format($"Video successfully converted", _currentVideoMetadata));
+                    videoMetadata.Stage = VideoProgressStage.Converting;
+                    videoMetadata.ConverterTempDir = _converterTempDir;
+                    videoMetadata.ConvertedFilePath = Path.Combine(_converterTempDir, Guid.NewGuid() + $".{_convertionFormat}");
+                    _runningProcessProxy = new FFmpegConverterProcessProxy(videoMetadata,
+                        ExternalConverterWaitingTimeout);
+                    Log.Info(LogHelper.Format("Converting video", videoMetadata));
+                    _runningProcessProxy.Start();
+                    Log.Info(LogHelper.Format("Video successfully converted", videoMetadata));
+
+                    videoMetadata.MovingFilePath = videoMetadata.ConvertedFilePath;
+                    _waitingForMoving?.TryAdd(videoMetadata);
+                    videoMetadata.Stage = VideoProgressStage.Moving;
                 }
                 catch (Exception ex)
                 {
-                    if (_currentVideoMetadata == null) { continue; }
-                    Log.Error(ex,
-                        LogHelper.Format($"Can't convert video | path={_currentVideoMetadata.VideoFilePath}",
-                            _currentVideoMetadata));
-                    _currentVideoMetadata.Stage = VideoProgressStage.Error;
-                    _currentVideoMetadata.ErrorArgs = ex.ToString();
-
-                    //Removing downloaded file
-                    if (File.Exists(_currentVideoMetadata.VideoFilePath))
+                    if (videoMetadata == null)
                     {
-                        File.Delete(_currentVideoMetadata.VideoFilePath);
+                        continue;
                     }
+                    Log.Error(ex,
+                        LogHelper.Format($"Can't convert video | path={videoMetadata.VideoFilePath}",
+                            videoMetadata));
+                    //TODO: Remove video file if err occured
+                    videoMetadata.Stage = VideoProgressStage.Error;
+                    videoMetadata.ErrorArgs = ex.ToString();
                 }
             }
-            _stoppedEvent.Set();
+            StoppedEvent.Set();
         }
 
         public override void Start()
         {
             StopEvent = new ManualResetEvent(false);
-            _stoppedEvent = new ManualResetEvent(false);
+            StoppedEvent = new ManualResetEvent(false);
 
             JobThread.Start();
             IsStarted = true;
@@ -90,7 +100,7 @@ namespace Bazger.Tools.YouTubeDownloader.Core.Model
         public override void Abort()
         {
             Log.Warn($"Abort converter service ({Name})");
-            _currentProcessProxy?.Stop();
+            _runningProcessProxy?.Stop();
             JobThread.Abort();
         }
     }

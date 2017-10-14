@@ -12,13 +12,14 @@ namespace Bazger.Tools.YouTubeDownloader.Core
             {
                 YouTubeApiKey = "AIzaSyAQXaMeoVZGg5DNr5M_tgAkh28QMLb1Q6U",
                 SaveDir = "Downloads",
-                ParallelDownloadsCount = 5,
-                ConvertersCount = 3,
+                YouTubeVideoFormatCode = 18,
+                ParallelDownloadsCount = 10,
+                ConvertersCount = 4,
                 ConverterEnabled = true,
                 ConvertionFormat = "wav",
                 JournalFileName = "Journal.json",
                 WriteToJournal = false,
-                ReadFromJournal = false
+                ReadFromJournal = false,
             };
         }
 
@@ -62,6 +63,19 @@ namespace Bazger.Tools.YouTubeDownloader.Core
             }
         }
 
+        [ConfigurationProperty("youTubeVideoFormatCode", IsRequired = false, DefaultValue = 18)]
+        public int YouTubeVideoFormatCode
+        {
+            get
+            {
+                return (int)this["youTubeVideoFormatCode"];
+            }
+            set
+            {
+                this["youTubeVideoFormatCode"] = value;
+            }
+        }
+
         [ConfigurationProperty("parallelDownloadsCount", IsRequired = false, DefaultValue = 10)]
         public int ParallelDownloadsCount
         {
@@ -88,6 +102,7 @@ namespace Bazger.Tools.YouTubeDownloader.Core
             }
         }
 
+
         [ConfigurationProperty("converterEnabled", IsRequired = false, DefaultValue = true)]
         public bool ConverterEnabled
         {
@@ -101,7 +116,7 @@ namespace Bazger.Tools.YouTubeDownloader.Core
             }
         }
 
-        [ConfigurationProperty("convertionFormat", IsRequired = false, DefaultValue = "mp3")]
+        [ConfigurationProperty("convertionFormat", IsRequired = false, DefaultValue = "wav")]
         public string ConvertionFormat
         {
             get

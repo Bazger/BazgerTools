@@ -36,6 +36,10 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ConcurrentCollections, Version=1.0.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ConcurrentHashSet.1.0.2\lib\netstandard1.0\ConcurrentCollections.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Jint, Version=0.0.0.0, Culture=neutral, PublicKeyToken=2e92ba9c8d81157f, processorArchitecture=MSIL">
       <HintPath>..\packages\Jint.2.11.23\lib\net451\Jint.dll</HintPath>
       <Private>True</Private>
@@ -53,6 +57,7 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Diagnostics.Contracts" />
     <Reference Include="System.Management" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -67,6 +72,8 @@
     <Compile Include="Launcher.cs" />
     <Compile Include="Model\ConverterThread.cs" />
     <Compile Include="Model\DownloaderThread.cs" />
+    <Compile Include="Model\FileMoverThread.cs" />
+    <Compile Include="Utility\FileHelper.cs" />
     <Compile Include="Model\ServiceThread.cs" />
     <Compile Include="Model\VideoProgressMetadata.cs" />
     <Compile Include="Model\VideoProgressStage.cs" />
@@ -74,9 +81,9 @@
     <Compile Include="Utility\HttpHelper.cs" />
     <Compile Include="Utility\LogHelper.cs" />
     <Compile Include="Utility\ProcessHelper.cs" />
-    <Compile Include="Utility\SerDeUtils.cs" />
+    <Compile Include="Utility\SerDeHelper.cs" />
     <Compile Include="Utility\YouTubeHelper.cs" />
-    <Compile Include="WebSites\IWebSiteDownloaderProxy.cs" />
+    <Compile Include="WebSites\WebSiteDownloaderProxy.cs" />
     <Compile Include="WebSites\YouTubeProxy.cs" />
     <Compile Include="WebSites\YouTubeMp3Proxy.cs" />
     <Compile Include="DownloaderConfigs.cs" />

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -20,8 +19,8 @@ namespace Bazger.Tools.YouTubeDownloader.ConsoleApp
         private static Launcher _launcher;
         private static Thread _uiThread;
         private static AutoResetEvent _stopUiEvent;
-        private static bool _onStopping = false;
-        private static bool _launcherStopped = false;
+        private static bool _onStopping;
+        private static bool _launcherStopped;
         private static int _stopAnimationStage;
 
         public static void Main(string[] args)
@@ -62,7 +61,7 @@ namespace Bazger.Tools.YouTubeDownloader.ConsoleApp
             var drawLastTime = false;
             while (!drawLastTime)
             {
-                if (_stopUiEvent.WaitOne(1000))
+                if (_stopUiEvent.WaitOne(1000) || _launcher.WaitForStop(0))
                 {
                     drawLastTime = true;
                 }
@@ -73,6 +72,7 @@ namespace Bazger.Tools.YouTubeDownloader.ConsoleApp
                 var convertingVideos = new HashSet<string>();
                 var completedVideos = new HashSet<string>();
                 var urlProblemVideos = new HashSet<string>();
+                var movingVideos = new HashSet<string>();
                 foreach (var video in _launcher.VideosProgress)
                 {
                     switch (video.Value.Stage)
@@ -91,6 +91,9 @@ namespace Bazger.Tools.YouTubeDownloader.ConsoleApp
                             break;
                         case VideoProgressStage.VideoUrlProblem:
                             urlProblemVideos.Add(video.Key);
+                            break;
+                        case VideoProgressStage.Moving:
+                            movingVideos.Add(video.Key);
                             break;
                         default:
                             inProgressVideos.Add(video.Key);
@@ -122,13 +125,17 @@ namespace Bazger.Tools.YouTubeDownloader.ConsoleApp
                 {
                     Console.WriteLine("{0} - Waiting to convertion", url);
                 }
+                foreach (var url in movingVideos)
+                {
+                    Console.WriteLine("{0} - Moving...", url);
+                }
                 Console.ForegroundColor = ConsoleColor.White;
                 foreach (var url in inProgressVideos)
                 {
                     PrintConsoleLogWithRetries($"{url} - {_launcher.VideosProgress[url].Progress}%", url);
                 }
                 Console.WriteLine("\n-------------Video status info---------------------");
-                Console.WriteLine($"Completed:{ completedVideos.Count}/{_videoUrls.Count} Download Errors:{errorVideos.Count} Problem url:{urlProblemVideos.Count}\nDownloading:{inProgressVideos.Count} Waiting:{waitingToConvertVideos.Count} Converting:{convertingVideos.Count}");
+                Console.WriteLine($"Completed:{ completedVideos.Count}/{_videoUrls.Count} Download Errors:{errorVideos.Count} Problem url:{urlProblemVideos.Count}\nDownloading:{inProgressVideos.Count} Waiting:{waitingToConvertVideos.Count} Converting:{convertingVideos.Count} Moving:{movingVideos.Count}");
                 Console.WriteLine("\n---------------Threads info------------------------");
                 Console.WriteLine("Donwload threads {0}/{1} Converters threads {2}/{3}",
                     _launcher.GetAliveDownloadersCount(), _launcher.GetAllDownloadersCount(),
@@ -137,6 +144,7 @@ namespace Bazger.Tools.YouTubeDownloader.ConsoleApp
                 if (_launcherStopped)
                 {
                     Console.Write("Successfully stoped");
+                    Console.WriteLine("\n---------------------------------------------------\n");
                 }
                 else if (_onStopping)
                 {
@@ -147,9 +155,10 @@ namespace Bazger.Tools.YouTubeDownloader.ConsoleApp
                     }
                     _stopAnimationStage++;
                     Console.WriteLine();
+                    Console.WriteLine("\n---------------------------------------------------\n");
                 }
             }
-            Console.WriteLine("\n---------------------------------------------------\n");
+
         }
 
         private static void PrintConsoleLogWithRetries(string showStr, string video)
@@ -169,6 +178,7 @@ namespace Bazger.Tools.YouTubeDownloader.ConsoleApp
             {
                 return;
             }
+            Thread.CurrentThread.Name = "ConsoleCancelKeyPress";
             _onStopping = true;
             _launcher.Stop();
             _launcherStopped = true;

@@ -8,6 +8,7 @@ namespace Bazger.Tools.YouTubeDownloader.Core.Model
 
         protected readonly Thread JobThread;
         protected ManualResetEvent StopEvent;
+        protected ManualResetEvent StoppedEvent;
 
         public bool IsAlive => JobThread.IsAlive;
         public bool IsEnabled { get; private set; }
@@ -29,5 +30,10 @@ namespace Bazger.Tools.YouTubeDownloader.Core.Model
         // Override in base class
         protected abstract void Job();
         public abstract void Abort();
+
+        public bool WaitForStop(int waitTimeout = -1)
+        {
+            return StoppedEvent.WaitOne(waitTimeout);
+        }
     }
 }
