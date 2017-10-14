@@ -1,4 +1,5 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -15,16 +16,30 @@ namespace Bazger.Tools.YouTubeDownloader.Core.Utility
             return regex.Replace(path, "");
         }
 
-        //TODO: fix a bug
-        public static string GetAvailableFilePath(string directory, string fileName)
+        public static string GetAvailableFilePath(string futureFilePath)
         {
-            var count = 2;
-            var tempFileName = fileName;
-            while (Directory.GetFiles(directory).Contains(tempFileName))
+            var directory = Path.GetDirectoryName(futureFilePath);
+            if (directory == null)
             {
-                tempFileName = $"{fileName} ({count++})";
+                throw new NullReferenceException("Directory path can't be null");
             }
-            return tempFileName;
+            var directoryFiles = Directory.GetFiles(directory);
+            if (!directoryFiles.Contains(futureFilePath))
+            {
+                return futureFilePath;
+            }
+
+            var fileName = Path.GetFileNameWithoutExtension(futureFilePath);
+            var fileExtension = Path.GetExtension(futureFilePath);
+
+            string tempFilePath;
+            var count = 2;
+            do
+            {
+                tempFilePath = Path.Combine(directory, fileName + $" ({count++})" + fileExtension);
+            } while (directory.Contains(tempFilePath));
+
+            return tempFilePath;
         }
     }
 }

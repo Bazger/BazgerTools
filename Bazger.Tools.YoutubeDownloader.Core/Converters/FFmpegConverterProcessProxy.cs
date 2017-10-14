@@ -35,10 +35,10 @@ namespace Bazger.Tools.YouTubeDownloader.Core.Converters
             if (ExternalProcess.WaitForExit(_wairingTimeout))
             {
                 if (ExternalProcess.ExitCode == 0) { return; }
-                throw new ExternalException($"External process error occured | Bad exit_code={ExternalProcess.ExitCode}");
+                throw new ExternalException($"{ExternalProcess.StartInfo.FileName} has problem with converting a video| Bad exitCode={ExternalProcess.ExitCode}");
             }
             base.Stop();
-            throw new ExternalException($"Timeout expired. FFmpeg has problem with converting this video | timeout={_wairingTimeout}");
+            throw new ExternalException($"Waiting timeout for {ExternalProcess.StartInfo.FileName} expired. | timeout={_wairingTimeout}");
         }
     }
 }

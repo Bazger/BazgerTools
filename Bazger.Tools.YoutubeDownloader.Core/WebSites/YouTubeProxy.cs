@@ -20,12 +20,11 @@ namespace Bazger.Tools.YouTubeDownloader.Core.WebSites
 
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         private readonly int _videoFormatCode;
-        private readonly int _retriesCount;
 
-        public YouTubeProxy( int videoFormatCode = DefaultVideoFormatCode, int retriesCount = 3) 
+
+        public YouTubeProxy(int videoFormatCode = DefaultVideoFormatCode, int retriesCount = 3) : base(retriesCount)
         {
             _videoFormatCode = videoFormatCode;
-            _retriesCount = retriesCount;
         }
 
         public override void Download(VideoProgressMetadata videoMetadata)
@@ -37,12 +36,12 @@ namespace Bazger.Tools.YouTubeDownloader.Core.WebSites
              * Select the first .mp4 video with 360p resolution
              */
             var video = videoInfos
-                .First(info => info.FormatCode == _videoFormatCode);
+                .First(info => info.FormatCode == _videoFormatCode) ?? videoInfos
+                    .First(info => info.FormatCode == DefaultVideoFormatCode);
 
             if (video == null)
             {
-                video = videoInfos
-                    .First(info => info.FormatCode == DefaultVideoFormatCode);
+                throw new Exception("No VideoInfo to pick. Tried to chose default one, but failed");
             }
 
             /*
@@ -82,32 +81,8 @@ namespace Bazger.Tools.YouTubeDownloader.Core.WebSites
             {
                 Log.Warn(ex, LogHelper.Format("Can't download video, will retry", videoMetadata));
             }
-            RetryToDownload(videoDownloader, videoMetadata);
+            RetryToDownload(() => { videoDownloader.Execute(); }, videoMetadata);
         }
 
-        //TODO: Move to abstract class
-        private void RetryToDownload(Downloader videoDownloader, VideoProgressMetadata videoMetadata)
-        {
-            while (videoMetadata.Retries < _retriesCount)
-            {
-                try
-                {
-                    videoMetadata.Retries++;
-                    videoDownloader.Execute();
-                    break;
-                }
-                catch (Exception ex)
-                {
-                    if (videoMetadata.Retries < _retriesCount)
-                    {
-                        Log.Warn(ex, LogHelper.Format($"Can't download video | retry={videoMetadata.Retries}", videoMetadata));
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-            }
-        }
     }
 }

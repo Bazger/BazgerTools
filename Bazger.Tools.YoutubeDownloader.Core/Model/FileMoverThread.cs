@@ -14,31 +14,17 @@ namespace Bazger.Tools.YouTubeDownloader.Core.Model
     public class FileMoverThread : ServiceThread
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
-        private const int MillisecondsTimeout = 5000;
+        private const int MillisecondsTimeout = 1000;
 
         private readonly BlockingCollection<VideoProgressMetadata> _waitingForMoving;
         private readonly bool _overwrite;
 
-        //TODO: overwrite config
         public FileMoverThread(string name, BlockingCollection<VideoProgressMetadata> waitingForMoving, bool overwrite = true) : base(name)
         {
             _waitingForMoving = waitingForMoving;
             _overwrite = overwrite;
         }
 
-        public override void Start()
-        {
-            StopEvent = new ManualResetEvent(false);
-            StoppedEvent = new ManualResetEvent(false);
-
-            JobThread.Start();
-            IsStarted = true;
-        }
-
-        public override void Stop()
-        {
-            StopEvent.Set();
-        }
 
         protected override void Job()
         {
@@ -60,10 +46,10 @@ namespace Bazger.Tools.YouTubeDownloader.Core.Model
                     var sourceFilePath = videoMetadata.MovingFilePath;
                     var destFileName = FileHelper.RemoveIllegalPathCharacters(videoMetadata.Title) +
                                        Path.GetExtension(videoMetadata.MovingFilePath);
-                    string destFilePath;
+                    var destFilePath = Path.Combine(videoMetadata.SaveDir, destFileName);
                     if (_overwrite)
                     {
-                        destFilePath = Path.Combine(videoMetadata.SaveDir, destFileName);
+
                         if (File.Exists(destFilePath))
                         {
                             File.Delete(destFilePath);
@@ -71,7 +57,7 @@ namespace Bazger.Tools.YouTubeDownloader.Core.Model
                     }
                     else
                     {
-                        destFilePath = FileHelper.GetAvailableFilePath(videoMetadata.SaveDir, destFileName);
+                        destFilePath = FileHelper.GetAvailableFilePath(destFilePath);
                     }
                     Log.Info(LogHelper.Format($"Moving file... | source={sourceFilePath} | dest={destFilePath}", videoMetadata));
                     File.Move(sourceFilePath, destFilePath);
@@ -86,7 +72,29 @@ namespace Bazger.Tools.YouTubeDownloader.Core.Model
                     }
                     Log.Error(ex, LogHelper.Format($"Can't move file | saveDir={videoMetadata.SaveDir}", videoMetadata));
                     videoMetadata.Stage = VideoProgressStage.Error;
-                    //TODO: Remove temp files
+                    videoMetadata.ErrorArgs = ex.ToString();
+                    try
+                    {
+                        if (File.Exists(videoMetadata.VideoFilePath))
+                        {
+                            File.Delete(videoMetadata.VideoFilePath);
+                        }
+                    }
+                    catch (Exception innerEx)
+                    {
+                        Log.Warn(innerEx, LogHelper.Format($"Can't delete video file | path={videoMetadata.VideoFilePath}", videoMetadata));
+                    }
+                    try
+                    {
+                        if (File.Exists(videoMetadata.ConvertedFilePath))
+                        {
+                            File.Delete(videoMetadata.ConvertedFilePath);
+                        }
+                    }
+                    catch (Exception innerEx)
+                    {
+                        Log.Warn(innerEx, LogHelper.Format($"Can't delete converted audio file | path={videoMetadata.ConvertedFilePath}", videoMetadata));
+                    }
                 }
             }
         }

@@ -24,6 +24,7 @@ namespace Bazger.Tools.YouTubeDownloader.Core.Model
         private readonly string _saveDir;
         private readonly string _launcherTempDir;
         private string _downloaderTempDir;
+        private readonly WebSiteDownloaderProxy _youTubeProxy;
         private const int MillisecondsTimeout = 5000;
 
         public DownloaderThread(string name, ConcurrentDictionary<string, VideoProgressMetadata> videosProgress, string saveDir, string launcherTempDir, BlockingCollection<string> waitingForDownload, BlockingCollection<VideoProgressMetadata> waitingForConvertion, BlockingCollection<VideoProgressMetadata> waitingForMoving, bool isConvertionEnabled) : base(name)
@@ -35,6 +36,7 @@ namespace Bazger.Tools.YouTubeDownloader.Core.Model
             _videosProgress = videosProgress;
             _saveDir = saveDir;
             _launcherTempDir = launcherTempDir;
+            _youTubeProxy = new YouTubeProxy();
         }
 
         protected override void Job()
@@ -63,7 +65,7 @@ namespace Bazger.Tools.YouTubeDownloader.Core.Model
                     };
                     _videosProgress.TryAdd(videoUrl, videoMetadata);
                     Log.Info(LogHelper.Format("Downloading video", videoMetadata));
-                    new YouTubeProxy().Download(videoMetadata);
+                    _youTubeProxy.Download(videoMetadata);
                     Log.Info(LogHelper.Format("Video successfully dwonloaded", videoMetadata));
                     if (!_isConvertionEnabled)
                     {
@@ -102,7 +104,7 @@ namespace Bazger.Tools.YouTubeDownloader.Core.Model
                     }
                     else
                     {
-                        Log.Error(ex, "Not expected case");
+                        Log.Error(ex);
                     }
                     videoMetadata.Stage = VideoProgressStage.Error;
                     videoMetadata.ErrorArgs = ex.ToString();
@@ -111,22 +113,13 @@ namespace Bazger.Tools.YouTubeDownloader.Core.Model
             StoppedEvent.Set();
         }
 
-        public override void Start()
-        {
-            StopEvent = new ManualResetEvent(false);
-            StoppedEvent = new ManualResetEvent(false);
-
-            JobThread.Start();
-            IsStarted = true;
-        }
-
-        public override void Stop()
-        {
-            StopEvent.Set();
-        }
 
         public override void Abort()
         {
+            if (!IsAlive)
+            {
+                return;
+            }
             Log.Warn($"Abort downloader service ({Name})");
             JobThread.Abort();
         }

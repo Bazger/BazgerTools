@@ -17,9 +17,10 @@ namespace Bazger.Tools.YouTubeDownloader.Core
                 ConvertersCount = 4,
                 ConverterEnabled = true,
                 ConvertionFormat = "wav",
-                JournalFileName = "Journal.json",
+                JournalFilePath = "Journal.json",
                 WriteToJournal = false,
                 ReadFromJournal = false,
+                OverwriteEnabled = true
             };
         }
 
@@ -129,22 +130,22 @@ namespace Bazger.Tools.YouTubeDownloader.Core
             }
         }
 
-        [ConfigurationProperty("journalFileName", IsRequired = true)]
-        public string JournalFileName
+        [ConfigurationProperty("journalFilePath", IsRequired = true)]
+        public string JournalFilePath
         {
             get
             {
-                return (string)this["journalFileName"];
+                return (string)this["journalFilePath"];
             }
             set
             {
                 if (value == null)
                 {
-                    this["journalFileName"] = "Journal.json";
+                    this["journalFilePath"] = "Journal.json";
                 }
                 else
                 {
-                    this["journalFileName"] = value;
+                    this["journalFilePath"] = value;
                 }
             }
         }
@@ -172,6 +173,20 @@ namespace Bazger.Tools.YouTubeDownloader.Core
             set
             {
                 this["writeToJournal"] = value;
+            }
+        }
+
+
+        [ConfigurationProperty("overwriteEnabled", IsRequired = false, DefaultValue = true)]
+        public bool OverwriteEnabled
+        {
+            get
+            {
+                return (bool)this["overwriteEnabled"];
+            }
+            set
+            {
+                this["overwriteEnabled"] = value;
             }
         }
     }

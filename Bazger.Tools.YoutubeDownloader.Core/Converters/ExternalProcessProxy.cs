@@ -28,7 +28,7 @@ namespace Bazger.Tools.YouTubeDownloader.Core.Converters
         {
             if (IsAlive)
             {
-                throw new InvalidOperationException("External process already started");
+                throw new InvalidOperationException($"External process ({ExternalProcess.StartInfo.FileName}) already started");
             }
             IsStarted = true;
             IsAlive = true;
@@ -44,7 +44,7 @@ namespace Bazger.Tools.YouTubeDownloader.Core.Converters
             }
             catch (InvalidOperationException ex)
             {
-                Log.Warn(ex, "Process not started yet or hase bad ProcessInfo");
+                Log.Warn(ex, $"External process {ExternalProcess.StartInfo.FileName} not started yet or hase bad ProcessInfo");
             }
         }
     }

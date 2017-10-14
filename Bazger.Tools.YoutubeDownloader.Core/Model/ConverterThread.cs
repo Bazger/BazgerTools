@@ -17,19 +17,17 @@ namespace Bazger.Tools.YouTubeDownloader.Core.Model
         private readonly BlockingCollection<VideoProgressMetadata> _waitingForConvertion;
         private readonly BlockingCollection<VideoProgressMetadata> _waitingForMoving;
         private readonly string _convertionFormat;
-        private readonly List<DownloaderThread> _downloaderThreads;
         private readonly string _launcherTempDir;
         private ExternalProcessProxy _runningProcessProxy;
         private string _converterTempDir;
         private const int MillisecondsTimeout = 5000;
         private const int ExternalConverterWaitingTimeout = 30000;
 
-        public ConverterThread(string name, BlockingCollection<VideoProgressMetadata> waitingForConvertion, BlockingCollection<VideoProgressMetadata> waitingForMoving, string convertionFormat, List<DownloaderThread> downloaderThreads, string launcherTempDir) : base(name)
+        public ConverterThread(string name, BlockingCollection<VideoProgressMetadata> waitingForConvertion, BlockingCollection<VideoProgressMetadata> waitingForMoving, string convertionFormat, string launcherTempDir) : base(name)
         {
             _waitingForConvertion = waitingForConvertion;
             _waitingForMoving = waitingForMoving;
             _convertionFormat = convertionFormat;
-            _downloaderThreads = downloaderThreads;
             _launcherTempDir = launcherTempDir;
         }
 
@@ -38,10 +36,8 @@ namespace Bazger.Tools.YouTubeDownloader.Core.Model
             _converterTempDir = Path.Combine(_launcherTempDir, Guid.NewGuid().ToString());
             Directory.CreateDirectory(_converterTempDir);
 
-            //TODO: _downloaderThreads.Count may be replaced
             //WaitOne equals 0 because we are waiting when we taking from queue, so we dont need to wait on stop event
-            while ((_waitingForConvertion.Count != 0 || _downloaderThreads.Count(c => c.IsAlive) != 0 ||
-                    _downloaderThreads.FirstOrDefault(c => c.IsStarted) == null) && !StopEvent.WaitOne(0))
+            while (!StopEvent.WaitOne(0))
             {
                 _runningProcessProxy = null;
                 VideoProgressMetadata videoMetadata = null;
@@ -52,10 +48,9 @@ namespace Bazger.Tools.YouTubeDownloader.Core.Model
                     {
                         continue;
                     }
-
-                    videoMetadata.Stage = VideoProgressStage.Converting;
                     videoMetadata.ConverterTempDir = _converterTempDir;
                     videoMetadata.ConvertedFilePath = Path.Combine(_converterTempDir, Guid.NewGuid() + $".{_convertionFormat}");
+                    videoMetadata.Stage = VideoProgressStage.Converting;
                     _runningProcessProxy = new FFmpegConverterProcessProxy(videoMetadata,
                         ExternalConverterWaitingTimeout);
                     Log.Info(LogHelper.Format("Converting video", videoMetadata));
@@ -72,10 +67,18 @@ namespace Bazger.Tools.YouTubeDownloader.Core.Model
                     {
                         continue;
                     }
-                    Log.Error(ex,
-                        LogHelper.Format($"Can't convert video | path={videoMetadata.VideoFilePath}",
-                            videoMetadata));
-                    //TODO: Remove video file if err occured
+                    Log.Error(ex, LogHelper.Format($"Can't convert video | path={videoMetadata.VideoFilePath}", videoMetadata));
+                    try
+                    {
+                        if (File.Exists(videoMetadata.VideoFilePath))
+                        {
+                            File.Delete(videoMetadata.VideoFilePath);
+                        }
+                    }
+                    catch (Exception innerEx)
+                    {
+                        Log.Warn(innerEx, LogHelper.Format($"Can't delete video file | path={videoMetadata.VideoFilePath}", videoMetadata));
+                    }
                     videoMetadata.Stage = VideoProgressStage.Error;
                     videoMetadata.ErrorArgs = ex.ToString();
                 }
@@ -83,22 +86,13 @@ namespace Bazger.Tools.YouTubeDownloader.Core.Model
             StoppedEvent.Set();
         }
 
-        public override void Start()
-        {
-            StopEvent = new ManualResetEvent(false);
-            StoppedEvent = new ManualResetEvent(false);
-
-            JobThread.Start();
-            IsStarted = true;
-        }
-
-        public override void Stop()
-        {
-            StopEvent.Set();
-        }
 
         public override void Abort()
         {
+            if (!IsAlive)
+            {
+                return;
+            }
             Log.Warn($"Abort converter service ({Name})");
             _runningProcessProxy?.Stop();
             JobThread.Abort();

@@ -137,9 +137,9 @@ namespace Bazger.Tools.YouTubeDownloader.ConsoleApp
                 Console.WriteLine("\n-------------Video status info---------------------");
                 Console.WriteLine($"Completed:{ completedVideos.Count}/{_videoUrls.Count} Download Errors:{errorVideos.Count} Problem url:{urlProblemVideos.Count}\nDownloading:{inProgressVideos.Count} Waiting:{waitingToConvertVideos.Count} Converting:{convertingVideos.Count} Moving:{movingVideos.Count}");
                 Console.WriteLine("\n---------------Threads info------------------------");
-                Console.WriteLine("Donwload threads {0}/{1} Converters threads {2}/{3}",
+                Console.WriteLine("Donwload threads {0}/{1} Converters threads {2}/{3} File mover threads {4}/{5}",
                     _launcher.GetAliveDownloadersCount(), _launcher.GetAllDownloadersCount(),
-                   _launcher.GetAliveConvertersCount(), _launcher.GetAllConvertersCount());
+                   _launcher.GetAliveConvertersCount(), _launcher.GetAllConvertersCount(), _launcher.GetAliveFileMoversCount(), _launcher.GetAllFileMoversCount());
                 Console.WriteLine("\n---------------------------------------------------");
                 if (_launcherStopped)
                 {

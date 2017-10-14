@@ -14,7 +14,6 @@ namespace Bazger.Tools.YouTubeDownloader.Core.Model
         public bool IsEnabled { get; private set; }
         public bool IsStarted { get; protected set; }
 
-
         protected ServiceThread(string name)
         {
             IsEnabled = true;
@@ -24,10 +23,24 @@ namespace Bazger.Tools.YouTubeDownloader.Core.Model
             };
         }
 
-        // Thread methods / properties
-        public abstract void Start();
-        public abstract void Stop();
-        // Override in base class
+        public virtual void Start()
+        {
+            if (JobThread.IsAlive)
+            {
+                throw new ThreadStateException($"{Name} service already started");
+            }
+            StopEvent = new ManualResetEvent(false);
+            StoppedEvent = new ManualResetEvent(false);
+
+            JobThread.Start();
+            IsStarted = true;
+        }
+
+        public virtual void Stop()
+        {
+            StopEvent.Set();
+        }
+
         protected abstract void Job();
         public abstract void Abort();
 

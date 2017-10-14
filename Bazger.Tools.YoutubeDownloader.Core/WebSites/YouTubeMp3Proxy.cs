@@ -15,6 +15,10 @@ namespace Bazger.Tools.YouTubeDownloader.Core.WebSites
         private const string WebSiteUrl = @"http://www.youtube-mp3.org";
         private static readonly string SessionKeyJsScript = File.ReadAllText(ConfigurationManager.AppSettings["SessionKeyJsScript"]);
 
+        public YouTubeMp3Proxy(int retriesCount) : base(retriesCount)
+        {
+        }
+
         public override void Download(VideoProgressMetadata videoMetadata)
         {
             string videoId = YouTubeHelper.GetVideoId(videoMetadata.Url);
@@ -70,5 +74,6 @@ namespace Bazger.Tools.YouTubeDownloader.Core.WebSites
             engine.Execute(SessionKeyJsScript);
             return engine.GetValue("N").ToString();
         }
+
     }
 }
