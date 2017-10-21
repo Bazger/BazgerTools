@@ -69,5 +69,32 @@ namespace Bazger.Tools.App.Properties {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start.
+        /// </summary>
+        internal static string startBtn_Start {
+            get {
+                return ResourceManager.GetString("startBtn_Start", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stop.
+        /// </summary>
+        internal static string startBtn_Stop {
+            get {
+                return ResourceManager.GetString("startBtn_Stop", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter video or playlist url.
+        /// </summary>
+        internal static string youtubeDonwloaderUrlInfo {
+            get {
+                return ResourceManager.GetString("youtubeDonwloaderUrlInfo", resourceCulture);
+            }
+        }
     }
 }

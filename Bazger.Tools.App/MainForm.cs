@@ -1,15 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using Bazger.Tools.App.NLog;
 using Bazger.Tools.App.Pages;
 using Bazger.Tools.Clicker.Core;
+using NLog;
+using NLog.Config;
+using NLog.Filters;
+using NLog.Targets;
+using NLog.Windows.Forms;
 using Telerik.WinControls;
 
 namespace Bazger.Tools.App
 {
     public partial class MainForm : Telerik.WinControls.UI.RadForm
     {
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+        private ObservableCollection<string> _currentPageLogs;
+
         private readonly GlobalHotkey _altShiftO;
         private readonly GlobalHotkey _altShiftK;
         private readonly GlobalHotkey _altShiftL;
@@ -19,7 +31,7 @@ namespace Bazger.Tools.App
         public event EventHandler<PageEventArgs> AltShiftLCombinationPressed;
 
         private enum HotKeys { AltShiftO, AltShiftK, AltShiftL }
-        private List<IToolControl> _viewScreenControls;
+        private readonly List<IToolControl> _viewScreenControls;
 
         /// <summary>
         /// Constructor
@@ -34,10 +46,9 @@ namespace Bazger.Tools.App
             _altShiftK = new GlobalHotkey((int)HotKeys.AltShiftK, Constants.ALT + Constants.SHIFT, Keys.K, this);
             _altShiftL = new GlobalHotkey((int)HotKeys.AltShiftL, Constants.ALT + Constants.SHIFT, Keys.L, this);
 
-            _viewScreenControls = new List<IToolControl> { clickerControl, positionClickerControl, youTubeDownloaderControl};
-
-            //Initialize IToolControls
-            _viewScreenControls.ForEach(control => control.IntializeControl(this));
+            _viewScreenControls = new List<IToolControl> { clickerControl, positionClickerControl, youTubeDownloaderControl };
+            //Set loggers
+            _viewScreenControls.ForEach(c => CreatePageLogger(c.GetType().FullName, c.GetType().FullName));
 
             toolControlsPager_SelectedPageChanged(this, null);
         }
@@ -53,17 +64,36 @@ namespace Bazger.Tools.App
             var altShiftKRegistered = _altShiftK.Register();
             var altShiftLRegistered = _altShiftL.Register();
 
-            LogOutput(altShiftORegistered
-                ? "Hotkey: Alt+Shift+O registered"
-                : "Hotkey: Alt+Shift+O failed to registered!");
+            if (altShiftORegistered)
+            {
+                Log.Info("Hotkey: Alt+Shift+O registered");
+            }
+            else
+            {
+                Log.Error("Hotkey: Alt+Shift+O failed to registered!");
+            }
 
-            LogOutput(altShiftKRegistered
-                ? "Hotkey: Alt+Shift+K registered"
-                : "Hotkey: Alt+Shift+K failed to registered!");
+            if (altShiftKRegistered)
+            {
+                Log.Info("Hotkey: Alt+Shift+K registered");
+            }
+            else
+            {
+                Log.Error("Hotkey: Alt+Shift+K failed to registered!");
+            }
 
-            LogOutput(altShiftLRegistered
-                ? "Hotkey: Alt+Shift+L registered"
-                : "Hotkey: Alt+Shift+L failed to registered!");
+            if (altShiftLRegistered)
+            {
+                Log.Info("Hotkey: Alt+Shift+L registered");
+            }
+            else
+            {
+                Log.Error("Hotkey: Alt+Shift+L failed to registered!");
+            }
+
+            //Initialize IToolControls
+            _viewScreenControls.ForEach(control => control.IntializeControl(this));
+
         }
 
         /// <summary>
@@ -111,24 +141,54 @@ namespace Bazger.Tools.App
             base.WndProc(ref m);
         }
 
-        /// <summary>
-        /// Position Clicker Log
-        /// </summary>
-        /// <param name="text">String that will be added</param>
-        private void LogOutput(string text)
+        private void toolControlsPager_SelectedPageChanged(object sender, EventArgs e)
         {
-            logTxtBox.Text += text + Environment.NewLine;
+            var control = _viewScreenControls.Find(c => c.ParentPage.TabIndex == toolControlsPager.SelectedPage.TabIndex);
+            if (control == null)
+            {
+                return;
+            }
+            this.MinimumSize = new System.Drawing.Size(((UserControl)control).Size.Width + 13, this.MinimumSize.Height);
+
+            if (_currentPageLogs != null)
+            {
+                _currentPageLogs.CollectionChanged -= UpdateLogTexBox;
+            }
+            _currentPageLogs = ((ObservableMemoryTarget)LogManager.Configuration.FindTargetByName(control.GetType().FullName)).Logs;
+
+            var text = string.Empty;
+            _currentPageLogs.ToList().ForEach(l => text += l + Environment.NewLine);
+            logTxtBox.Text = text;
+            _currentPageLogs.CollectionChanged += UpdateLogTexBox;
             logTxtBox.SelectionStart = logTxtBox.Text.Length;
             logTxtBox.ScrollToCaret();
         }
 
-        private void toolControlsPager_SelectedPageChanged(object sender, EventArgs e)
+        private void UpdateLogTexBox(object sender, NotifyCollectionChangedEventArgs e)
         {
-            var control = _viewScreenControls.Find(c => c.ParentPage.TabIndex == toolControlsPager.SelectedPage.TabIndex);
-            if (control != null)
+            foreach (string newItem in e.NewItems)
             {
-                this.MinimumSize = new System.Drawing.Size(((UserControl)control).Size.Width + 13, this.MinimumSize.Height);
+                logTxtBox.AppendText(newItem + Environment.NewLine);
             }
+        }
+
+        private void CreatePageLogger(string loggerName, string targetName)
+        {
+            var config = Log.Factory.Configuration;
+
+            var memoryTarget = new ObservableMemoryTarget()
+            {
+                Layout = config.Variables["Layout"],
+                Name = targetName
+            };
+            config.AddTarget(memoryTarget);
+
+            var rule = new LoggingRule(loggerName, LogLevel.Info, memoryTarget);
+            //Write main window log to all targets
+            config.LoggingRules.First(r => r.LoggerNamePattern == this.GetType().FullName)?.Targets.Add(memoryTarget);
+            config.LoggingRules.Add(rule);
+
+            LogManager.Configuration = config;
         }
     }
 }

@@ -9,6 +9,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Bazger.Tools.Clicker.Core;
+using NLog;
+using NLog.Targets;
+using NLog.Targets.Wrappers;
 using Telerik.WinControls;
 using Telerik.WinControls.UI;
 
@@ -18,7 +21,7 @@ namespace Bazger.Tools.App.Pages
     {
         private MainForm _mainForm;
         public RadPageViewPage ParentPage { get; set; }
-        public List<string> Log { get; }
+        private readonly Logger _log = LogManager.GetCurrentClassLogger();
 
         private Thread _clickThread;
         private const string CountStr = "Count: ";
@@ -43,16 +46,13 @@ namespace Bazger.Tools.App.Pages
 
             _clickDelay = 20;
             deleySpin.Value = _clickDelay;
-
-            //TODO: LOG SUPPORT
-            Log = new List<string>();
-            ClickerLog("START/STOP: Try to press this combination: SHIFT+ALT+O");
         }
 
         public void IntializeControl(MainForm mainForm)
         {
             _mainForm = mainForm;
             mainForm.AltShiftOCombinationPressed += ClickerMainProcess;
+            _log.Info("START/STOP: Try to press this combination: SHIFT+ALT+O");
         }
 
         /// <summary>
@@ -62,7 +62,6 @@ namespace Bazger.Tools.App.Pages
         /// <param name="e">Event args</param>
         private void clickerStartButton_Click(object sender, EventArgs e)
         {
-            //ProgramClick.DoMouseClick(Cursor.Position.X, Cursor.Position.Y);
             _clicksCount++;
             UpdateCountLblText();
         }
@@ -86,7 +85,7 @@ namespace Bazger.Tools.App.Pages
                 UpdateCountLblText();
                 _clickThread = new Thread(ClickerThread);
                 _clickThread.Start();
-                Log.Add("Clicking Started");
+                _log.Info("Clicking Started");
                 _mainForm.ChangeEnabledStateOfNotSelectedTabs(false);
             }
             else
@@ -96,7 +95,7 @@ namespace Bazger.Tools.App.Pages
                 deleySpin.Enabled = true;
                 UpdateCountLblText();
                 UpdateAllCountLblText();
-                Log.Add("Clicking Stopped");
+                _log.Info("Clicking Stopped");
                 _mainForm.ChangeEnabledStateOfNotSelectedTabs(true);
             }
         }
@@ -110,18 +109,6 @@ namespace Bazger.Tools.App.Pages
                 _clicksCount++;
             }
         }
-
-        /// <summary>
-        /// Clicker Log
-        /// </summary>
-        /// <param name="text">String that will be added</param>
-        private void ClickerLog(string text)
-        {
-            //logTxtBox.Text += text + Environment.NewLine;
-            //logTxtBox.SelectionStart = logTxtBox.Text.Length;
-            //logTxtBox.ScrollToCaret();
-        }
-
 
         private void UpdateCountLblText()
         {

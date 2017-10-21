@@ -1,16 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using Bazger.Tools.Clicker.Core;
-using Telerik.WinControls;
+using Bazger.Tools.App.Properties;
+using NLog;
 using Telerik.WinControls.UI;
+using static System.String;
 
 namespace Bazger.Tools.App.Pages
 {
@@ -18,14 +12,14 @@ namespace Bazger.Tools.App.Pages
     {
         private MainForm _mainForm;
         public RadPageViewPage ParentPage { get; set; }
-        public List<string> Log { get; }
+        private Logger Log = LogManager.GetCurrentClassLogger();
+
+        private bool _isStarted;
 
         public YouTubeDownloaderControl()
         {
             InitializeComponent();
-
-            //TODO: LOG SUPPORT
-            Log = new List<string>();
+            _isStarted = false;
         }
 
         public void IntializeControl(MainForm mainForm)
@@ -34,7 +28,7 @@ namespace Bazger.Tools.App.Pages
         }
 
         /// <summary>
-        /// Clicker Log
+        /// Clicker LogList
         /// </summary>
         /// <param name="text">String that will be added</param>
         private static void DownloaderLog(string text)
@@ -42,6 +36,42 @@ namespace Bazger.Tools.App.Pages
             //logTxtBox.Text += text + Environment.NewLine;
             //logTxtBox.SelectionStart = logTxtBox.Text.Length;
             //logTxtBox.ScrollToCaret();
+        }
+
+        private void urlTxtBox_Focus(object sender, EventArgs e)
+        {
+            if (urlTxtBox.Text == Resources.youtubeDonwloaderUrlInfo)
+            {
+                urlTxtBox.Text = null;
+            }
+        }
+
+        private void urlTxtBox_Leave(object sender, EventArgs e)
+        {
+            if (IsNullOrEmpty(urlTxtBox.Text))
+            {
+                urlTxtBox.Text = Resources.youtubeDonwloaderUrlInfo;
+            }
+        }
+
+        private void startBtn_Click(object sender, EventArgs e)
+        {
+            if (!_isStarted)
+            {
+                _isStarted = true;
+                startBtn.Text = Resources.startBtn_Stop;
+                converterPnl.Enabled = false;
+                pathsPnl.Enabled = false;
+                threadPnl.Enabled = false;
+            }
+            else
+            {
+                _isStarted = false;
+                startBtn.Text = Resources.startBtn_Start;
+                converterPnl.Enabled = true;
+                pathsPnl.Enabled = true;
+                threadPnl.Enabled = true;
+            }
         }
     }
 }

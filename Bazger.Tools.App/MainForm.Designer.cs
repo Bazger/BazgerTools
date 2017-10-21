@@ -1,6 +1,7 @@
 ﻿using System.Drawing;
 using Bazger.Tools.App.Pages;
 using Telerik.WinControls;
+using Telerik.WinControls.RichTextEditor.UI;
 
 namespace Bazger.Tools.App
 {
@@ -35,7 +36,6 @@ namespace Bazger.Tools.App
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.object_b5396cdc_c5a7_4301_882f_ea3e4dbfb3fe = new Telerik.WinControls.RootRadElement();
             this.object_33836c11_b0e5_4111_89c3_e07e43b27c2c = new Telerik.WinControls.RootRadElement();
-            this.logTxtBox = new Telerik.WinControls.UI.RadTextBox();
             this.copyrightLabel = new Telerik.WinControls.UI.RadLabel();
             this.clickerPage = new Telerik.WinControls.UI.RadPageViewPage();
             this.clickerControl = new Bazger.Tools.App.Pages.ClickerControl();
@@ -46,13 +46,14 @@ namespace Bazger.Tools.App
             this.toolControlsPager = new Telerik.WinControls.UI.RadPageView();
             this.visualStudio2012DarkTheme = new Telerik.WinControls.Themes.VisualStudio2012DarkTheme();
             this.visualStudio2012LightTheme = new Telerik.WinControls.Themes.VisualStudio2012LightTheme();
-            ((System.ComponentModel.ISupportInitialize)(this.logTxtBox)).BeginInit();
+            this.logTxtBox = new Telerik.WinControls.UI.RadTextBox();
             ((System.ComponentModel.ISupportInitialize)(this.copyrightLabel)).BeginInit();
             this.clickerPage.SuspendLayout();
             this.positionClickerPage.SuspendLayout();
             this.downloaderPage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.toolControlsPager)).BeginInit();
             this.toolControlsPager.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.logTxtBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this)).BeginInit();
             this.SuspendLayout();
             // 
@@ -67,22 +68,6 @@ namespace Bazger.Tools.App
             this.object_33836c11_b0e5_4111_89c3_e07e43b27c2c.Name = "object_33836c11_b0e5_4111_89c3_e07e43b27c2c";
             this.object_33836c11_b0e5_4111_89c3_e07e43b27c2c.StretchHorizontally = true;
             this.object_33836c11_b0e5_4111_89c3_e07e43b27c2c.StretchVertically = true;
-            // 
-            // logTxtBox
-            // 
-            this.logTxtBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.logTxtBox.AutoScroll = true;
-            this.logTxtBox.AutoSize = false;
-            this.logTxtBox.Location = new System.Drawing.Point(0, 229);
-            this.logTxtBox.Multiline = true;
-            this.logTxtBox.Name = "logTxtBox";
-            this.logTxtBox.ReadOnly = true;
-            this.logTxtBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.logTxtBox.Size = new System.Drawing.Size(610, 202);
-            this.logTxtBox.TabIndex = 44;
-            this.logTxtBox.ThemeName = "VisualStudio2012Light";
             // 
             // copyrightLabel
             // 
@@ -167,6 +152,22 @@ namespace Bazger.Tools.App
             ((Telerik.WinControls.UI.RadPageViewStripElement)(this.toolControlsPager.GetChildAt(0))).ItemAlignment = Telerik.WinControls.UI.StripViewItemAlignment.Center;
             ((Telerik.WinControls.UI.RadPageViewStripElement)(this.toolControlsPager.GetChildAt(0))).ItemFitMode = ((Telerik.WinControls.UI.StripViewItemFitMode)((Telerik.WinControls.UI.StripViewItemFitMode.Shrink | Telerik.WinControls.UI.StripViewItemFitMode.Fill)));
             // 
+            // logTxtBox
+            // 
+            this.logTxtBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.logTxtBox.AutoScroll = true;
+            this.logTxtBox.AutoSize = false;
+            this.logTxtBox.Location = new System.Drawing.Point(0, 229);
+            this.logTxtBox.Multiline = true;
+            this.logTxtBox.Name = "logTxtBox";
+            this.logTxtBox.ReadOnly = true;
+            this.logTxtBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.logTxtBox.Size = new System.Drawing.Size(610, 202);
+            this.logTxtBox.TabIndex = 44;
+            this.logTxtBox.ThemeName = "VisualStudio2012Light";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -186,13 +187,13 @@ namespace Bazger.Tools.App
             this.ThemeName = "VisualStudio2012Light";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.Load += new System.EventHandler(this.MainForm_Load);
-            ((System.ComponentModel.ISupportInitialize)(this.logTxtBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.copyrightLabel)).EndInit();
             this.clickerPage.ResumeLayout(false);
             this.positionClickerPage.ResumeLayout(false);
             this.downloaderPage.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.toolControlsPager)).EndInit();
             this.toolControlsPager.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.logTxtBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -202,7 +203,6 @@ namespace Bazger.Tools.App
         #endregion
         private Telerik.WinControls.RootRadElement object_b5396cdc_c5a7_4301_882f_ea3e4dbfb3fe;
         private Telerik.WinControls.RootRadElement object_33836c11_b0e5_4111_89c3_e07e43b27c2c;
-        private Telerik.WinControls.UI.RadTextBox logTxtBox;
         private Telerik.WinControls.UI.RadLabel copyrightLabel;
         private Telerik.WinControls.UI.RadPageViewPage clickerPage;
         private Telerik.WinControls.UI.RadPageViewPage positionClickerPage;
@@ -213,5 +213,6 @@ namespace Bazger.Tools.App
         private PositionClickerControl positionClickerControl;
         private Telerik.WinControls.UI.RadPageViewPage downloaderPage;
         private YouTubeDownloaderControl youTubeDownloaderControl;
+        private Telerik.WinControls.UI.RadTextBox logTxtBox;
     }
 }

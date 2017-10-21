@@ -4,6 +4,9 @@ using System.Drawing;
 using System.Threading;
 using System.Windows.Forms;
 using Bazger.Tools.Clicker.Core;
+using NLog;
+using NLog.Targets;
+using NLog.Targets.Wrappers;
 using Telerik.WinControls.UI;
 
 namespace Bazger.Tools.App.Pages
@@ -12,7 +15,7 @@ namespace Bazger.Tools.App.Pages
     {
         private MainForm _mainForm;
         public RadPageViewPage ParentPage { get; set; }
-        public List<string> Log { get; }
+        private readonly Logger _log = LogManager.GetCurrentClassLogger();
 
         private const string StrCircles = "Circles Count: ";
         private Thread _posClickThread;
@@ -33,10 +36,7 @@ namespace Bazger.Tools.App.Pages
             _isPosClickerStarted = false;
             delaySpin.Value = _posClickDelay;
 
-            //TODO: LOG SUPPORT
-            Log = new List<string>();
-            PositionClickerLog("ADD: Try to press this combination: SHIFT+ALT+K");
-            PositionClickerLog("START/STOP: Try to press this combination: SHIFT+ALT+L");
+
         }
 
         public void IntializeControl(MainForm mainForm)
@@ -44,6 +44,8 @@ namespace Bazger.Tools.App.Pages
             _mainForm = mainForm;
             mainForm.AltShiftKCombinationPressed += AddData;
             mainForm.AltShiftLCombinationPressed += PositionClickerMainProcess;
+            _log.Info("ADD: Try to press this combination: SHIFT+ALT+K");
+            _log.Info("START/STOP: Try to press this combination: SHIFT+ALT+L");
         }
 
         /// <summary>
@@ -71,14 +73,14 @@ namespace Bazger.Tools.App.Pages
                 _posClickDelay = (int)delaySpin.Value;
                 _posClickThread = new Thread(PositionClickerThread);
                 _posClickThread.Start();
-                PositionClickerLog("Clicking Started");
+                _log.Info("Clicking Started");
                 _mainForm.ChangeEnabledStateOfNotSelectedTabs(false);
             }
             else
             {
                 _isPosClickerStarted = false;
                 ctrlsPnl.Enabled = true;
-                PositionClickerLog("Clicking Stopped");
+                _log.Info("Clicking Stopped");
                 circlesLbl.Text = StrCircles + _circlesCount;
                 _mainForm.ChangeEnabledStateOfNotSelectedTabs(true);
             }
@@ -114,12 +116,16 @@ namespace Bazger.Tools.App.Pages
                 {
                     Cursor = new Cursor(Cursor.Current.Handle);
                     positionsGrid.Rows.Add(Cursor.Position.X + "," + Cursor.Position.Y);
-                    PositionClickerLog("Position (" + Cursor.Position.X + ", " + Cursor.Position.Y + ") was added");
+                    _log.Info("Position (" + Cursor.Position.X + ", " + Cursor.Position.Y + ") was added");
                 }
                 else
-                    PositionClickerLog("Can't add cursor position!");
+                {
+                    _log.Error("Can't add cursor position!");
+                }
             else
-                PositionClickerLog("Clicking thread is working! Stop it for adding a new position");
+            {
+                _log.Warn("Clicking thread is working! Stop it for adding a new position");
+            }
 
         }
 
@@ -137,15 +143,15 @@ namespace Bazger.Tools.App.Pages
                     if (selectedIndex > -1)
                     {
                         positionsGrid.Rows.RemoveAt(selectedIndex);
-                        PositionClickerLog("Postition removed");
+                        _log.Info("Postition removed");
                     }
                 }
                 catch (InvalidOperationException)
                 {
-                    PositionClickerLog("Unable to remove selected row at this time");
+                    _log.Warn("Unable to remove selected row at this time");
                 }
             else
-                PositionClickerLog("Select the row");
+                _log.Info("Select the row");
 
         }
 
@@ -162,7 +168,7 @@ namespace Bazger.Tools.App.Pages
                 {
                     positionsGrid.Rows.RemoveAt(positionsGrid.Rows.Count - 1);
                 }
-                PositionClickerLog("All data was removed");
+                _log.Info("All data was removed");
             }
         }
 
@@ -202,22 +208,11 @@ namespace Bazger.Tools.App.Pages
                         positionsGrid.Rows[selectedIndex].IsSelected = false;
                         positionsGrid.Rows.Move(selectedIndex, selectedIndex + jumps);
                         positionsGrid.Rows[selectedIndex + jumps].IsSelected = true;
-                        PositionClickerLog("Postition moved UP/DOWN");
+                        _log.Info("Postition moved UP/DOWN");
                     }
 
                 }
             }
-        }
-
-        /// <summary>
-        /// Position Clicker Log
-        /// </summary>
-        /// <param name="text">String that will be added</param>
-        private static void PositionClickerLog(string text)
-        {
-//            logTxtBox.Text += text + Environment.NewLine;
-//            logTxtBox.SelectionStart = logTxtBox.Text.Length;
-//            logTxtBox.ScrollToCaret();
         }
     }
 }
