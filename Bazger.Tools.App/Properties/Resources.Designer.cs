@@ -89,6 +89,15 @@ namespace Bazger.Tools.App.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to AIzaSyAQXaMeoVZGg5DNr5M_tgAkh28QMLb1Q6U.
+        /// </summary>
+        internal static string youtubeApiKey {
+            get {
+                return ResourceManager.GetString("youtubeApiKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Enter video or playlist url.
         /// </summary>
         internal static string youtubeDonwloaderUrlInfo {

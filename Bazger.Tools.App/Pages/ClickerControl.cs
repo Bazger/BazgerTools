@@ -55,6 +55,10 @@ namespace Bazger.Tools.App.Pages
             _log.Info("START/STOP: Try to press this combination: SHIFT+ALT+O");
         }
 
+        public void OnFormClosing(object sender, FormClosingEventArgs e)
+        {
+        }
+
         /// <summary>
         ///  Button "Start" click event
         /// </summary>

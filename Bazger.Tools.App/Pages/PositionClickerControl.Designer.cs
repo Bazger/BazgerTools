@@ -28,8 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            Telerik.WinControls.UI.GridViewTextBoxColumn gridViewTextBoxColumn2 = new Telerik.WinControls.UI.GridViewTextBoxColumn();
-            Telerik.WinControls.UI.TableViewDefinition tableViewDefinition2 = new Telerik.WinControls.UI.TableViewDefinition();
+            Telerik.WinControls.UI.GridViewTextBoxColumn gridViewTextBoxColumn1 = new Telerik.WinControls.UI.GridViewTextBoxColumn();
+            Telerik.WinControls.UI.TableViewDefinition tableViewDefinition1 = new Telerik.WinControls.UI.TableViewDefinition();
             this.ctrlsPnl = new Telerik.WinControls.UI.RadPanel();
             this.circlesLbl = new Telerik.WinControls.UI.RadLabel();
             this.moveDownBtn = new Telerik.WinControls.UI.RadButton();
@@ -101,7 +101,12 @@
             0,
             0});
             this.delaySpin.Name = "delaySpin";
-            this.delaySpin.Size = new System.Drawing.Size(92, 27);
+            this.delaySpin.NullableValue = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.delaySpin.Size = new System.Drawing.Size(92, 24);
             this.delaySpin.TabIndex = 29;
             this.delaySpin.TabStop = false;
             this.delaySpin.ThemeName = "VisualStudio2012Light";
@@ -170,18 +175,18 @@
             this.positionsGrid.MasterTemplate.AllowColumnReorder = false;
             this.positionsGrid.MasterTemplate.AllowRowResize = false;
             this.positionsGrid.MasterTemplate.AutoGenerateColumns = false;
-            gridViewTextBoxColumn2.EnableExpressionEditor = false;
-            gridViewTextBoxColumn2.HeaderText = "Position";
-            gridViewTextBoxColumn2.Name = "posColumn";
-            gridViewTextBoxColumn2.ReadOnly = true;
-            gridViewTextBoxColumn2.Width = 215;
+            gridViewTextBoxColumn1.EnableExpressionEditor = false;
+            gridViewTextBoxColumn1.HeaderText = "Position";
+            gridViewTextBoxColumn1.Name = "position";
+            gridViewTextBoxColumn1.ReadOnly = true;
+            gridViewTextBoxColumn1.Width = 215;
             this.positionsGrid.MasterTemplate.Columns.AddRange(new Telerik.WinControls.UI.GridViewDataColumn[] {
-            gridViewTextBoxColumn2});
+            gridViewTextBoxColumn1});
             this.positionsGrid.MasterTemplate.EnableGrouping = false;
             this.positionsGrid.MasterTemplate.EnableSorting = false;
             this.positionsGrid.MasterTemplate.ShowRowHeaderColumn = false;
             this.positionsGrid.MasterTemplate.VerticalScrollState = Telerik.WinControls.UI.ScrollState.AlwaysShow;
-            this.positionsGrid.MasterTemplate.ViewDefinition = tableViewDefinition2;
+            this.positionsGrid.MasterTemplate.ViewDefinition = tableViewDefinition1;
             this.positionsGrid.Name = "positionsGrid";
             this.positionsGrid.ReadOnly = true;
             this.positionsGrid.RightToLeft = System.Windows.Forms.RightToLeft.No;

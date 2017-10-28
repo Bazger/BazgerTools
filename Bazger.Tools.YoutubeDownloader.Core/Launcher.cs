@@ -86,13 +86,12 @@ namespace Bazger.Tools.YouTubeDownloader.Core
                 Directory.Delete(_tempDir, true);
             }
 
-            if (!_configs.WriteToJournal)
+            if (_configs.WriteToJournal)
             {
-                return;
+                Log.Info("Writing to journal");
+                WriteToJournal();
+                Log.Info("Writing succeeded");
             }
-            Log.Info("Writing to journal");
-            WriteToJournal();
-            Log.Info("Writing succeeded");
 
             StoppedEvent.Set();
             Log.Info("Launcher stopped");
@@ -113,7 +112,7 @@ namespace Bazger.Tools.YouTubeDownloader.Core
             {
                 return;
             }
-            _tempDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+            _tempDir = Path.Combine(Path.GetTempPath(), "YouTubeDownloader-{" + Guid.NewGuid() + "}");
             Directory.CreateDirectory(_tempDir);
             Directory.CreateDirectory(_configs.SaveDir);
 
@@ -168,13 +167,12 @@ namespace Bazger.Tools.YouTubeDownloader.Core
             {
                 Directory.Delete(_tempDir, true);
             }
-            if (!_configs.WriteToJournal)
+            if (_configs.WriteToJournal)
             {
-                return;
+                Log.Info("Writing to journal");
+                WriteToJournal();
+                Log.Info("Writing succeeded");
             }
-            Log.Info("Writing to journal");
-            WriteToJournal();
-            Log.Info("Writing succeeded");
 
             StoppedEvent.Set();
             Log.Info("Launcher finished its work");
@@ -188,6 +186,24 @@ namespace Bazger.Tools.YouTubeDownloader.Core
             }
             Log.Warn($"Abort launcher service ({Name})");
             JobThread.Abort();
+        }
+
+
+        public void ForceStop()
+        {
+            if (!JobThread.IsAlive)
+            {
+                return;
+            }
+            Log.Warn($"Abort launcher service ({Name})");
+            AbortDownloaderThreads();
+            AbortConvertersThreads();
+            _fileMoverThread.Abort();
+            Log.Info("Removing temporary files");
+            if (Directory.Exists(_tempDir))
+            {
+                Directory.Delete(_tempDir, true);
+            }
         }
 
         private void StartDownloderThreads(BlockingCollection<string> waitingForDownload, BlockingCollection<VideoProgressMetadata> waitingForConvertion, BlockingCollection<VideoProgressMetadata> waitingForMoving)
@@ -335,7 +351,6 @@ namespace Bazger.Tools.YouTubeDownloader.Core
             }
             return null;
         }
-
 
         public int GetAllDownloadersCount()
         {

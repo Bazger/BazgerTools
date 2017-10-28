@@ -107,6 +107,7 @@ namespace Bazger.Tools.App
             {
                 MessageBox.Show("Some Hotkey failed to unregister!");
             }
+            _viewScreenControls.ForEach(c => c.OnFormClosing(sender, e));
         }
 
 

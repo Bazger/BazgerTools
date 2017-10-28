@@ -130,4 +130,7 @@
   <data name="startBtn_Start" xml:space="preserve">
     <value>Start</value>
   </data>
+  <data name="youtubeApiKey" xml:space="preserve">
+    <value>AIzaSyAQXaMeoVZGg5DNr5M_tgAkh28QMLb1Q6U</value>
+  </data>
 </root>

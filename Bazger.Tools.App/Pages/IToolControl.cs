@@ -13,5 +13,6 @@ namespace Bazger.Tools.App.Pages
     {
         RadPageViewPage ParentPage { get; set; }
         void IntializeControl(MainForm form);
+        void OnFormClosing(object sender, FormClosingEventArgs e);
     }
 }

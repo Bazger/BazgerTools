@@ -48,6 +48,10 @@ namespace Bazger.Tools.App.Pages
             _log.Info("START/STOP: Try to press this combination: SHIFT+ALT+L");
         }
 
+        public void OnFormClosing(object sender, FormClosingEventArgs e)
+        {
+        }
+
         /// <summary>
         /// Set the Current cursor, move the cursor's Position, and set its clipping rectangle to the form. 
         /// </summary>
