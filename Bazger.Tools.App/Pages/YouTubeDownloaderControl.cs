@@ -19,9 +19,9 @@ namespace Bazger.Tools.App.Pages
     {
         private MainForm _mainForm;
         public RadPageViewPage ParentPage { get; set; }
+        public string Title => this.GetType().FullName;
         private Logger Log = LogManager.GetCurrentClassLogger();
 
-        private bool _isStarted;
         private Launcher _launcher;
         private ManualResetEvent _stopEvent;
         private string _currentUrl;
@@ -30,25 +30,27 @@ namespace Bazger.Tools.App.Pages
         private Thread _gridUpdate;
         private Thread _progressBarUpdate;
         private RadGridView _videoStageGrid;
+        private RadGridView _videoStageStatsGrid;
+        private bool _isStarted;
 
         public YouTubeDownloaderControl()
         {
             InitializeComponent();
             _isStarted = false;
-            //TODO: show statistics
             //TODO: show video title
             //TODO: configs
+            //TODO: fix log showcast
             //TODO: fix resizing
-            //TODO: add all logs
-            //TODO: more logs
             //TODO: remove Video Stage from form class
         }
 
         public void IntializeControl(MainForm mainForm)
         {
             _mainForm = mainForm;
-            _videoStageGrid = _mainForm.videosStageGrid;
+            _videoStageGrid = _mainForm.videoStageGrid;
             _videoStageGrid.CellFormatting += radGridView_RowFormatting;
+            _videoStageStatsGrid = _mainForm.videoStageStatsGrid;
+            _mainForm.AddRuleToPageLoggerTarget("Bazger.Tools.YouTubeDownloader.Core.*", LogLevel.Info, Title);
         }
 
         public void OnFormClosing(object sender, FormClosingEventArgs e)
@@ -155,6 +157,7 @@ namespace Bazger.Tools.App.Pages
             _videoUrls = GetVideoUrls();
             if (_stopEvent.WaitOne(0) || _videoUrls == null)
             {
+                _stopEvent.Set();
                 ToIdleState();
                 return;
             }
@@ -169,6 +172,10 @@ namespace Bazger.Tools.App.Pages
                 });
                 stageGrid.TableElement.RowScroller.ScrollToFirstRow();
                 stageGrid.EndUpdate();
+            });
+            ControlInvoker(_videoStageStatsGrid, statsGrid =>
+            {
+                statsGrid.Rows.Add(GetVideoStageStatsRow().GetAllParams());
             });
             _launcher = new Launcher(_videoUrls, DownloaderConfigs.GetDefaultConfigs());
             _launcher.Start();
@@ -195,14 +202,70 @@ namespace Bazger.Tools.App.Pages
             _launcher?.Stop();
         }
 
+
+        private VideoStageStats GetVideoStageStatsRow()
+        {
+            var stats = new VideoStageStats { All = _videoUrls.Count };
+            foreach (var video in _launcher.VideosProgress)
+            {
+                switch (video.Value.Stage)
+                {
+                    case VideoProgressStage.Error:
+                        stats.Errors++;
+                        break;
+                    case VideoProgressStage.Converting:
+                        stats.Converting++;
+                        break;
+                    case VideoProgressStage.WaitingToConvertion:
+                        stats.Waiting++;
+                        break;
+                    case VideoProgressStage.Completed:
+                        stats.Completed++;
+                        break;
+                    case VideoProgressStage.VideoUrlProblem:
+                        stats.UrlProblem++;
+                        break;
+                    case VideoProgressStage.Moving:
+                        stats.Moving++;
+                        break;
+                    case VideoProgressStage.Downloading:
+                        stats.Downloading++;
+                        break;
+                    case VideoProgressStage.Exist:
+                        break;
+                }
+            }
+
+            return stats;
+        }
+
+        private class VideoStageStats
+        {
+            public int All { get; set; }
+            public int Downloading { get; set; }
+            public int Converting { get; set; }
+            public int Completed { get; set; }
+            public int Errors { get; set; }
+            public int UrlProblem { get; set; }
+            public int Waiting { get; set; }
+            public int Moving { get; set; }
+
+            public object[] GetAllParams()
+            {
+                return new object[]
+                {
+                    Downloading, Converting, $"{Completed}/{All}", Errors,
+                    UrlProblem, Waiting, Moving
+                };
+            }
+        }
+
         private List<string> GetVideoUrls()
         {
             try
             {
                 Log.Info("Trying to get all video urls");
-                var videoUrls = YouTubeHelper.GetVideosUrls(
-                    _currentUrl, _downloaderConfigs.YouTubeApiKey
-                    ).ToList();
+                var videoUrls = YouTubeHelper.GetVideosUrls(_currentUrl, _downloaderConfigs.YouTubeApiKey).ToList();
                 if (videoUrls.Any())
                 {
                     return videoUrls;
@@ -233,10 +296,23 @@ namespace Bazger.Tools.App.Pages
                         row.Cells["stage"].Value = _launcher.VideosProgress[url].Stage;
                     }
                 });
+                ControlInvoker(_videoStageStatsGrid, stageGrid =>
+                {
+                    var row = stageGrid.Rows.First();
+                    if (row == null)
+                    {
+                        return;
+                    }
+                    var stats = GetVideoStageStatsRow().GetAllParams();
+                    for (var i = 0; i < row.Cells.Count; i++)
+                    {
+                        row.Cells[i].Value = stats[i];
+                    }
+                });
             }
         }
 
-        protected static Color StageColorFactory(VideoProgressStage stage)
+        private static Color StageColorFactory(VideoProgressStage stage)
         {
             switch (stage)
             {
@@ -258,7 +334,7 @@ namespace Bazger.Tools.App.Pages
 
         private void radGridView_RowFormatting(object sender, CellFormattingEventArgs e)
         {
-            GridViewDataRowInfo dataRow = e.CellElement.RowInfo as GridViewDataRowInfo;
+            var dataRow = e.CellElement.RowInfo as GridViewDataRowInfo;
 
             if (dataRow == null)
             {
@@ -270,28 +346,28 @@ namespace Bazger.Tools.App.Pages
             {
                 e.CellElement.DrawFill = true;
                 e.CellElement.BackColor = StageColorFactory(_launcher.VideosProgress[e.Row.Cells["url"].Value.ToString()].Stage);
+                e.CellElement.ForeColor = Color.Black;
             }
             else
             {
                 e.CellElement.ResetValue(LightVisualElement.DrawFillProperty, ValueResetFlags.Local);
                 e.CellElement.ResetValue(VisualElement.BackColorProperty, ValueResetFlags.Local);
             }
-
         }
 
         private void ProgressBarUpdate()
         {
             const int waitingTimeout = 500;
-            var stageEvent = new ManualResetEvent(false);
             IsWaitingBar(true);
-            while (!stageEvent.WaitOne(waitingTimeout) && (_launcher == null || (_launcher != null && !_launcher.IsAlive)))
+            while (!_stopEvent.WaitOne(waitingTimeout) && (_launcher == null || (_launcher != null && !_launcher.IsAlive)))
             {
-                ControlInvoker(waitingBar, bar =>
-                {
-                    bar.Text = "Trying to get all video urls";
-                });
+                ControlInvoker(waitingBar, bar => { bar.Text = "Trying to get all video urls"; });
             }
             IsWaitingBar(false);
+            if (_launcher == null || _stopEvent.WaitOne(0))
+            {
+                return;
+            }
             while (!_launcher.WaitForStop(0) && !_stopEvent.WaitOne(waitingTimeout))
             {
                 ControlInvoker(downloadProgressBar, bar =>
@@ -302,8 +378,10 @@ namespace Bazger.Tools.App.Pages
                         {
                             return v.Progress;
                         }
+                        //If video not finished to downloading it will be differed by 3 percent
                         return 0.97 * v.Progress;
                     });
+                    //Staging 1 percent to finish downloading
                     var progress = sum / (_videoUrls.Count * 100) * 99;
                     bar.Value1 = (int)progress;
                     bar.Text = (int)progress + "%";
@@ -362,8 +440,7 @@ namespace Bazger.Tools.App.Pages
             }
         }
 
-        private static void ControlInvoker<T>(T control, Action<T> action)
-            where T : ScrollableControl, new()
+        private static void ControlInvoker<T>(T control, Action<T> action) where T : ScrollableControl, new()
         {
             if (control.InvokeRequired)
             {
@@ -378,8 +455,7 @@ namespace Bazger.Tools.App.Pages
         private bool ValidateUrl(string url)
         {
             Uri uriResult;
-            return Uri.TryCreate(urlTxtBox.Text, UriKind.Absolute, out uriResult)
-                && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
+            return Uri.TryCreate(urlTxtBox.Text, UriKind.Absolute, out uriResult) && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
         }
 
         private void urlTxtBox_TextChanging(object sender, Telerik.WinControls.TextChangingEventArgs e)

@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Windows;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Bazger.Tools.App.NLog;
 using Bazger.Tools.App.Pages;
@@ -38,7 +41,7 @@ namespace Bazger.Tools.App
         /// </summary>
         public MainForm()
         {
-            ThemeResolutionService.ApplicationThemeName = "VisualStudio2012Light";
+            ThemeResolutionService.ApplicationThemeName = "VisualStudio2012Dark";
             InitializeComponent();
 
             //Create HotKeys for the program
@@ -48,7 +51,7 @@ namespace Bazger.Tools.App
 
             _viewScreenControls = new List<IToolControl> { clickerControl, positionClickerControl, youTubeDownloaderControl };
             //Set loggers
-            _viewScreenControls.ForEach(c => CreatePageLogger(c.GetType().FullName, c.GetType().FullName));
+            _viewScreenControls.ForEach(c => CreatePageLogger(c.Title, c.Title));
 
             toolControlsPager_SelectedPageChanged(this, null);
         }
@@ -155,22 +158,99 @@ namespace Bazger.Tools.App
             {
                 _currentPageLogs.CollectionChanged -= UpdateLogTexBox;
             }
-            _currentPageLogs = ((ObservableMemoryTarget)LogManager.Configuration.FindTargetByName(control.GetType().FullName)).Logs;
+            _currentPageLogs = ((ObservableMemoryTarget)LogManager.Configuration.FindTargetByName(control.Title)).Logs;
 
             var text = string.Empty;
             _currentPageLogs.ToList().ForEach(l => text += l + Environment.NewLine);
             logTxtBox.Text = text;
             _currentPageLogs.CollectionChanged += UpdateLogTexBox;
-            logTxtBox.SelectionStart = logTxtBox.Text.Length;
-            logTxtBox.ScrollToCaret();
+
+            //logTxtBox.SelectionStart = logTxtBox.TextLength;
+            //SetScrollPos(logTxtBox.Handle, 1, 50, true);
+            //int b = SetScrollPos(logTxtBox.Handle, 1, 200, true);
+            //Debug.WriteLine($"scroll-{b}");
         }
 
-        private void UpdateLogTexBox(object sender, NotifyCollectionChangedEventArgs e)
+        unsafe private void hScrollBar1_Scroll(object sender, ScrollEventArgs e)
         {
+            int ScrollDelta;
+            var ScrollRect = new RECT();
+
+            ScrollDelta = 10 - e.NewValue; // FPosition is the previous scrollbar position
+            //FPosition = e.NewValue;
+            if (ScrollDelta != 0)
+            {
+                ScrollRect.Left = 100;
+                ScrollRect.Top = 50;
+                ScrollRect.Right = this.Width - SystemInformation.VerticalScrollBarWidth;
+                ScrollRect.Bottom = this.Height - 50;
+                IntPtr RectPointer = new IntPtr(&ScrollRect);
+                ScrollWindowEx(this.Handle, ScrollDelta, 0, RectPointer, RectPointer, (IntPtr)null, (IntPtr)0, 2);
+            }
+        }
+
+
+        unsafe private void UpdateLogTexBox(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            //var lockStatus = LockWindow(logTxtBox.Handle);
+            //Debug.WriteLine($"lockStatus-{lockStatus}");
+
             foreach (string newItem in e.NewItems)
             {
                 logTxtBox.AppendText(newItem + Environment.NewLine);
+
+                //int scrollPos = LogTextBoxVScrollPos;
+                //int pos = logTxtBox.SelectionStart;
+                //int len = logTxtBox.SelectionLength;
+                //logTxtBox.Text += newItem + Environment.NewLine;
+                //logTxtBox.SelectionStart = pos;
+                //logTxtBox.SelectionLength = len;
+                //LogTextBoxVScrollPos = scrollPos;
+
+                //Debug.WriteLine($"scroll-{LogTextBoxVScrollPos}");
+                //var currentPos = LogTextBoxVScrollPos;
+                //if (logTxtBox.Lines.Length - 1 > logTxtBox.GetLineFromCharIndex(logTxtBox.SelectionStart))
+                //{
+                //    logTxtBox.Text += newItem + Environment.NewLine;
+                //    int minScroll;
+                //    int maxScroll;
+                //    GetScrollRange(this.logTxtBox.Handle, Orientation.Vertical, out minScroll, out maxScroll);
+                //    Debug.WriteLine($"Min-{minScroll}");
+                //    Debug.WriteLine($"Max-{maxScroll}");
+                //    //SetScrollPos(logTxtBox.Handle, Orientation.Vertical, currentPos, true);
+                //    var update = new Rectangle();
+                //    ScrollWindowEx(logTxtBox.Handle, 0, 100, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero,
+                //        ref update, 0);
+                //}
+                //else
+                //{
+                //    logTxtBox.AppendText(newItem + Environment.NewLine);
+                //}
             }
+            //lockStatus = LockWindow(IntPtr.Zero);
+            //Debug.WriteLine($"lockStatus-{lockStatus}");
+
+            int ScrollDelta;
+            var ScrollRect = new RECT();
+
+            ScrollDelta = 10; // FPosition is the previous scrollbar position
+            //FPosition = e.NewValue;
+            //if (ScrollDelta != 0)
+            //{
+            //    ScrollRect.Left = 100;
+            //    ScrollRect.Top = 50;
+            //    ScrollRect.Right = this.Width - SystemInformation.VerticalScrollBarWidth;
+            //    ScrollRect.Bottom = this.Height - 50;
+            //    IntPtr RectPointer = new IntPtr(&ScrollRect);
+            //    var a = ScrollWindowEx(this.Handle, ScrollDelta, 0, RectPointer, RectPointer, (IntPtr)null, (IntPtr)0, 2);
+            //    Debug.WriteLine(a);
+            //}
+        }
+
+        int LogTextBoxVScrollPos
+        {
+            get { return GetScrollPos(logTxtBox.Handle, Orientation.Vertical); }
+            set { SetScrollPos(logTxtBox.Handle, Orientation.Vertical, value, true); }
         }
 
         private void CreatePageLogger(string loggerName, string targetName)
@@ -191,5 +271,48 @@ namespace Bazger.Tools.App
 
             LogManager.Configuration = config;
         }
+
+        public void AddRuleToPageLoggerTarget(string loggerName, LogLevel logLevel, string targetName)
+        {
+            var config = Log.Factory.Configuration;
+
+            //Searching the page logger target
+            var target = LogManager.Configuration.FindTargetByName(targetName);
+            if (target == null)
+            {
+                return;
+            }
+            var rule = new LoggingRule(loggerName, logLevel, target);
+            config.LoggingRules.Add(rule);
+
+            LogManager.Configuration = config;
+        }
+
+        [DllImport("user32.dll")]
+        static extern int SetScrollPos(IntPtr hWnd, Orientation nBar, int nPos, bool bRedraw);
+
+        [DllImport("user32.dll")]
+        static extern int SendMessage(IntPtr hWnd, int wMsg, int wParam, int lParam);
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        static extern int GetScrollPos(IntPtr hWnd, Orientation nBar);
+
+        [DllImport("user32.dll")]
+        static extern bool GetScrollRange(IntPtr hWnd, Orientation nBar, out int lpMinPos, out int lpMaxPos);
+
+        [DllImport("user32.dll")]
+        static extern int ScrollWindowEx(IntPtr hWnd, int dx, int dy, IntPtr prcScroll, IntPtr prcClip, IntPtr hrgnUpdate, IntPtr prcUpdate, uint flags);
+
+        [DllImport("user32.dll", EntryPoint = "LockWindowUpdate", SetLastError = true, CharSet = CharSet.Auto)]
+        private static extern IntPtr LockWindow(IntPtr hWnd);
+
+        private struct RECT
+        {
+            public long Left;
+            public long Top;
+            public long Right;
+            public long Bottom;
+        };
+
     }
 }

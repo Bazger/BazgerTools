@@ -14,6 +14,7 @@ namespace Bazger.Tools.App.Pages
     public partial class PositionClickerControl : UserControl, IToolControl
     {
         private MainForm _mainForm;
+        public string Title => this.GetType().FullName;
         public RadPageViewPage ParentPage { get; set; }
         private readonly Logger _log = LogManager.GetCurrentClassLogger();
 
@@ -35,8 +36,6 @@ namespace Bazger.Tools.App.Pages
             circlesLbl.Text = StrCircles + _circlesCount;
             _isPosClickerStarted = false;
             delaySpin.Value = _posClickDelay;
-
-
         }
 
         public void IntializeControl(MainForm mainForm)

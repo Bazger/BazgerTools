@@ -360,8 +360,8 @@ namespace Bazger.Tools.App.Pages
             this.downloadProgressBar.Size = new System.Drawing.Size(468, 32);
             this.downloadProgressBar.TabIndex = 60;
             this.downloadProgressBar.Text = "0%";
-            this.downloadProgressBar.Visible = false;
             this.downloadProgressBar.ThemeName = "VisualStudio2012Light";
+            this.downloadProgressBar.Visible = false;
             // 
             // waitingBar
             // 
@@ -373,7 +373,6 @@ namespace Bazger.Tools.App.Pages
             this.waitingBar.TabIndex = 63;
             this.waitingBar.Text = "0%";
             this.waitingBar.ThemeName = "VisualStudio2012Light";
-            this.waitingBar.Visible = true;
             this.waitingBar.WaitingIndicatorSize = new System.Drawing.Size(0, 100);
             this.waitingBar.WaitingSpeed = 100;
             this.waitingBar.WaitingStep = 4;
@@ -389,7 +388,7 @@ namespace Bazger.Tools.App.Pages
             this.Controls.Add(this.threadPnl);
             this.Controls.Add(this.converterPnl);
             this.Name = "YouTubeDownloaderControl";
-            this.Size = new System.Drawing.Size(610, 210);
+            this.Size = new System.Drawing.Size(610, 208);
             ((System.ComponentModel.ISupportInitialize)(this.urlTxtBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.threadPnl)).EndInit();
             this.threadPnl.ResumeLayout(false);
