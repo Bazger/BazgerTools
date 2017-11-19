@@ -10,6 +10,7 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Bazger.Tools.App.NLog;
 using Bazger.Tools.App.Pages;
+using Bazger.Tools.App.Utils;
 using Bazger.Tools.Clicker.Core;
 using NLog;
 using NLog.Config;
@@ -54,6 +55,8 @@ namespace Bazger.Tools.App
             _viewScreenControls.ForEach(c => CreatePageLogger(c.Title, c.Title));
 
             toolControlsPager_SelectedPageChanged(this, null);
+
+            FormSerialisor.Deserialise(this, Application.StartupPath + @"\serialise.xml");
         }
 
         /// <summary>
@@ -111,6 +114,7 @@ namespace Bazger.Tools.App
                 MessageBox.Show("Some Hotkey failed to unregister!");
             }
             _viewScreenControls.ForEach(c => c.OnFormClosing(sender, e));
+            FormSerialisor.Serialise(this, Application.StartupPath + @"\serialise.xml");
         }
 
 
@@ -171,80 +175,42 @@ namespace Bazger.Tools.App
             //Debug.WriteLine($"scroll-{b}");
         }
 
-        unsafe private void hScrollBar1_Scroll(object sender, ScrollEventArgs e)
-        {
-            int ScrollDelta;
-            var ScrollRect = new RECT();
-
-            ScrollDelta = 10 - e.NewValue; // FPosition is the previous scrollbar position
-            //FPosition = e.NewValue;
-            if (ScrollDelta != 0)
-            {
-                ScrollRect.Left = 100;
-                ScrollRect.Top = 50;
-                ScrollRect.Right = this.Width - SystemInformation.VerticalScrollBarWidth;
-                ScrollRect.Bottom = this.Height - 50;
-                IntPtr RectPointer = new IntPtr(&ScrollRect);
-                ScrollWindowEx(this.Handle, ScrollDelta, 0, RectPointer, RectPointer, (IntPtr)null, (IntPtr)0, 2);
-            }
-        }
-
-
         unsafe private void UpdateLogTexBox(object sender, NotifyCollectionChangedEventArgs e)
         {
-            //var lockStatus = LockWindow(logTxtBox.Handle);
-            //Debug.WriteLine($"lockStatus-{lockStatus}");
+            var lockStatus = LockWindow(logTxtBox.Handle);
+            Debug.WriteLine($"lockStatus-{lockStatus}");
 
             foreach (string newItem in e.NewItems)
             {
                 logTxtBox.AppendText(newItem + Environment.NewLine);
 
-                //int scrollPos = LogTextBoxVScrollPos;
-                //int pos = logTxtBox.SelectionStart;
-                //int len = logTxtBox.SelectionLength;
-                //logTxtBox.Text += newItem + Environment.NewLine;
-                //logTxtBox.SelectionStart = pos;
-                //logTxtBox.SelectionLength = len;
-                //LogTextBoxVScrollPos = scrollPos;
+                int scrollPos = LogTextBoxVScrollPos;
+                int pos = logTxtBox.SelectionStart;
+                int len = logTxtBox.SelectionLength;
+                logTxtBox.Text += newItem + Environment.NewLine;
+                logTxtBox.SelectionStart = pos;
+                logTxtBox.SelectionLength = len;
+                LogTextBoxVScrollPos = scrollPos;
 
-                //Debug.WriteLine($"scroll-{LogTextBoxVScrollPos}");
-                //var currentPos = LogTextBoxVScrollPos;
-                //if (logTxtBox.Lines.Length - 1 > logTxtBox.GetLineFromCharIndex(logTxtBox.SelectionStart))
-                //{
-                //    logTxtBox.Text += newItem + Environment.NewLine;
-                //    int minScroll;
-                //    int maxScroll;
-                //    GetScrollRange(this.logTxtBox.Handle, Orientation.Vertical, out minScroll, out maxScroll);
-                //    Debug.WriteLine($"Min-{minScroll}");
-                //    Debug.WriteLine($"Max-{maxScroll}");
-                //    //SetScrollPos(logTxtBox.Handle, Orientation.Vertical, currentPos, true);
-                //    var update = new Rectangle();
-                //    ScrollWindowEx(logTxtBox.Handle, 0, 100, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero,
-                //        ref update, 0);
-                //}
-                //else
-                //{
-                //    logTxtBox.AppendText(newItem + Environment.NewLine);
-                //}
+                Debug.WriteLine($"scroll-{LogTextBoxVScrollPos}");
+                var currentPos = LogTextBoxVScrollPos;
+                if (logTxtBox.Lines.Length - 1 > logTxtBox.GetLineFromCharIndex(logTxtBox.SelectionStart))
+                {
+                    logTxtBox.Text += newItem + Environment.NewLine;
+                    int minScroll;
+                    int maxScroll;
+                    GetScrollRange(this.logTxtBox.Handle, Orientation.Vertical, out minScroll, out maxScroll);
+                    Debug.WriteLine($"Min-{minScroll}");
+                    Debug.WriteLine($"Max-{maxScroll}");
+                    //SetScrollPos(logTxtBox.Handle, Orientation.Vertical, currentPos, true);
+                }
+                else
+                {
+                    logTxtBox.AppendText(newItem + Environment.NewLine);
+                }
             }
-            //lockStatus = LockWindow(IntPtr.Zero);
-            //Debug.WriteLine($"lockStatus-{lockStatus}");
-
-            int ScrollDelta;
-            var ScrollRect = new RECT();
-
-            ScrollDelta = 10; // FPosition is the previous scrollbar position
-            //FPosition = e.NewValue;
-            //if (ScrollDelta != 0)
-            //{
-            //    ScrollRect.Left = 100;
-            //    ScrollRect.Top = 50;
-            //    ScrollRect.Right = this.Width - SystemInformation.VerticalScrollBarWidth;
-            //    ScrollRect.Bottom = this.Height - 50;
-            //    IntPtr RectPointer = new IntPtr(&ScrollRect);
-            //    var a = ScrollWindowEx(this.Handle, ScrollDelta, 0, RectPointer, RectPointer, (IntPtr)null, (IntPtr)0, 2);
-            //    Debug.WriteLine(a);
-            //}
+            lockStatus = LockWindow(IntPtr.Zero);
+            Debug.WriteLine($"lockStatus-{lockStatus}");
         }
 
         int LogTextBoxVScrollPos
@@ -305,14 +271,5 @@ namespace Bazger.Tools.App
 
         [DllImport("user32.dll", EntryPoint = "LockWindowUpdate", SetLastError = true, CharSet = CharSet.Auto)]
         private static extern IntPtr LockWindow(IntPtr hWnd);
-
-        private struct RECT
-        {
-            public long Left;
-            public long Top;
-            public long Right;
-            public long Bottom;
-        };
-
     }
 }

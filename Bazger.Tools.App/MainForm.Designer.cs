@@ -1,5 +1,7 @@
 ﻿using System.Windows.Forms;
 using Bazger.Tools.App.Pages;
+using Telerik.WinControls.UI;
+
 namespace Bazger.Tools.App
 {
     partial class MainForm
@@ -30,11 +32,6 @@ namespace Bazger.Tools.App
         /// </summary>
         private void InitializeComponent()
         {
-            Telerik.WinControls.UI.GridViewDecimalColumn gridViewDecimalColumn1 = new Telerik.WinControls.UI.GridViewDecimalColumn();
-            Telerik.WinControls.UI.GridViewHyperlinkColumn gridViewHyperlinkColumn1 = new Telerik.WinControls.UI.GridViewHyperlinkColumn();
-            Telerik.WinControls.UI.GridViewDecimalColumn gridViewDecimalColumn2 = new Telerik.WinControls.UI.GridViewDecimalColumn();
-            Telerik.WinControls.UI.GridViewTextBoxColumn gridViewTextBoxColumn8 = new Telerik.WinControls.UI.GridViewTextBoxColumn();
-            Telerik.WinControls.UI.TableViewDefinition tableViewDefinition2 = new Telerik.WinControls.UI.TableViewDefinition();
             Telerik.WinControls.UI.GridViewTextBoxColumn gridViewTextBoxColumn1 = new Telerik.WinControls.UI.GridViewTextBoxColumn();
             Telerik.WinControls.UI.GridViewTextBoxColumn gridViewTextBoxColumn2 = new Telerik.WinControls.UI.GridViewTextBoxColumn();
             Telerik.WinControls.UI.GridViewTextBoxColumn gridViewTextBoxColumn3 = new Telerik.WinControls.UI.GridViewTextBoxColumn();
@@ -43,6 +40,12 @@ namespace Bazger.Tools.App
             Telerik.WinControls.UI.GridViewTextBoxColumn gridViewTextBoxColumn6 = new Telerik.WinControls.UI.GridViewTextBoxColumn();
             Telerik.WinControls.UI.GridViewTextBoxColumn gridViewTextBoxColumn7 = new Telerik.WinControls.UI.GridViewTextBoxColumn();
             Telerik.WinControls.UI.TableViewDefinition tableViewDefinition1 = new Telerik.WinControls.UI.TableViewDefinition();
+            Telerik.WinControls.UI.GridViewDecimalColumn gridViewDecimalColumn1 = new Telerik.WinControls.UI.GridViewDecimalColumn();
+            Telerik.WinControls.UI.GridViewHyperlinkColumn gridViewHyperlinkColumn1 = new Telerik.WinControls.UI.GridViewHyperlinkColumn();
+            Telerik.WinControls.UI.GridViewTextBoxColumn gridViewTextBoxColumn8 = new Telerik.WinControls.UI.GridViewTextBoxColumn();
+            Telerik.WinControls.UI.GridViewDecimalColumn gridViewDecimalColumn2 = new Telerik.WinControls.UI.GridViewDecimalColumn();
+            Telerik.WinControls.UI.GridViewTextBoxColumn gridViewTextBoxColumn9 = new Telerik.WinControls.UI.GridViewTextBoxColumn();
+            Telerik.WinControls.UI.TableViewDefinition tableViewDefinition2 = new Telerik.WinControls.UI.TableViewDefinition();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.object_b5396cdc_c5a7_4301_882f_ea3e4dbfb3fe = new Telerik.WinControls.RootRadElement();
             this.object_33836c11_b0e5_4111_89c3_e07e43b27c2c = new Telerik.WinControls.RootRadElement();
@@ -54,10 +57,10 @@ namespace Bazger.Tools.App
             this.visualStudio2012DarkTheme = new Telerik.WinControls.Themes.VisualStudio2012DarkTheme();
             this.visualStudio2012LightTheme = new Telerik.WinControls.Themes.VisualStudio2012LightTheme();
             this.downloderVideosStagePage = new Telerik.WinControls.UI.RadPageViewPage();
-            this.videoStageGrid = new Telerik.WinControls.UI.RadGridView();
             this.videoStageStatsGrid = new Telerik.WinControls.UI.RadGridView();
+            this.videoStageGrid = new Telerik.WinControls.UI.RadGridView();
             this.logPage = new Telerik.WinControls.UI.RadPageViewPage();
-            this.logTxtBox = new System.Windows.Forms.TextBox();
+            this.logTxtBox = new Telerik.WinControls.UI.RadTextBox();
             this.infoPager = new Telerik.WinControls.UI.RadPageView();
             this.clickerControl = new Bazger.Tools.App.Pages.ClickerControl();
             this.positionClickerControl = new Bazger.Tools.App.Pages.PositionClickerControl();
@@ -69,10 +72,10 @@ namespace Bazger.Tools.App
             ((System.ComponentModel.ISupportInitialize)(this.toolControlsPager)).BeginInit();
             this.toolControlsPager.SuspendLayout();
             this.downloderVideosStagePage.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.videoStageGrid)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.videoStageGrid.MasterTemplate)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.videoStageStatsGrid)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.videoStageStatsGrid.MasterTemplate)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.videoStageGrid)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.videoStageGrid.MasterTemplate)).BeginInit();
             this.logPage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.infoPager)).BeginInit();
             this.infoPager.SuspendLayout();
@@ -155,61 +158,6 @@ namespace Bazger.Tools.App
             this.downloderVideosStagePage.Size = new System.Drawing.Size(610, 274);
             this.downloderVideosStagePage.Text = "Videos Stage";
             // 
-            // videoStageGrid
-            // 
-            this.videoStageGrid.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
-            this.videoStageGrid.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(246)))), ((int)(((byte)(246)))), ((int)(((byte)(246)))));
-            this.videoStageGrid.Cursor = System.Windows.Forms.Cursors.Default;
-            this.videoStageGrid.Font = new System.Drawing.Font("Segoe UI", 9.75F);
-            this.videoStageGrid.ForeColor = System.Drawing.Color.Black;
-            this.videoStageGrid.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.videoStageGrid.Location = new System.Drawing.Point(3, 59);
-            // 
-            // 
-            // 
-            this.videoStageGrid.MasterTemplate.AllowAddNewRow = false;
-            this.videoStageGrid.MasterTemplate.AllowColumnReorder = false;
-            this.videoStageGrid.MasterTemplate.AllowDeleteRow = false;
-            this.videoStageGrid.MasterTemplate.AllowRowResize = false;
-            this.videoStageGrid.MasterTemplate.AutoGenerateColumns = false;
-            gridViewDecimalColumn1.DataType = typeof(int);
-            gridViewDecimalColumn1.EnableExpressionEditor = false;
-            gridViewDecimalColumn1.HeaderText = "Id";
-            gridViewDecimalColumn1.Name = "id";
-            gridViewDecimalColumn1.Width = 56;
-            gridViewHyperlinkColumn1.EnableExpressionEditor = false;
-            gridViewHyperlinkColumn1.HeaderText = "Url";
-            gridViewHyperlinkColumn1.Name = "url";
-            gridViewHyperlinkColumn1.ReadOnly = false;
-            gridViewHyperlinkColumn1.Width = 322;
-            gridViewDecimalColumn2.EnableExpressionEditor = false;
-            gridViewDecimalColumn2.HeaderText = "Progress";
-            gridViewDecimalColumn2.Name = "progress";
-            gridViewDecimalColumn2.TextAlignment = System.Drawing.ContentAlignment.MiddleCenter;
-            gridViewDecimalColumn2.Width = 74;
-            gridViewTextBoxColumn8.EnableExpressionEditor = false;
-            gridViewTextBoxColumn8.HeaderText = "Stage";
-            gridViewTextBoxColumn8.Name = "stage";
-            gridViewTextBoxColumn8.TextAlignment = System.Drawing.ContentAlignment.MiddleCenter;
-            gridViewTextBoxColumn8.Width = 139;
-            this.videoStageGrid.MasterTemplate.Columns.AddRange(new Telerik.WinControls.UI.GridViewDataColumn[] {
-            gridViewDecimalColumn1,
-            gridViewHyperlinkColumn1,
-            gridViewDecimalColumn2,
-            gridViewTextBoxColumn8});
-            this.videoStageGrid.MasterTemplate.EnableGrouping = false;
-            this.videoStageGrid.MasterTemplate.EnableSorting = false;
-            this.videoStageGrid.MasterTemplate.ShowRowHeaderColumn = false;
-            this.videoStageGrid.MasterTemplate.VerticalScrollState = Telerik.WinControls.UI.ScrollState.AlwaysShow;
-            this.videoStageGrid.MasterTemplate.ViewDefinition = tableViewDefinition2;
-            this.videoStageGrid.Name = "videoStageGrid";
-            this.videoStageGrid.ReadOnly = true;
-            this.videoStageGrid.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.videoStageGrid.ShowGroupPanel = false;
-            this.videoStageGrid.Size = new System.Drawing.Size(605, 215);
-            this.videoStageGrid.TabIndex = 39;
-            this.videoStageGrid.ThemeName = "VisualStudio2012Light";
-            // 
             // videoStageStatsGrid
             // 
             this.videoStageStatsGrid.Anchor = System.Windows.Forms.AnchorStyles.Top;
@@ -291,6 +239,69 @@ namespace Bazger.Tools.App
             this.videoStageStatsGrid.TabIndex = 41;
             this.videoStageStatsGrid.ThemeName = "VisualStudio2012Light";
             // 
+            // videoStageGrid
+            // 
+            this.videoStageGrid.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.videoStageGrid.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(246)))), ((int)(((byte)(246)))), ((int)(((byte)(246)))));
+            this.videoStageGrid.Cursor = System.Windows.Forms.Cursors.Default;
+            this.videoStageGrid.Font = new System.Drawing.Font("Segoe UI", 9.75F);
+            this.videoStageGrid.ForeColor = System.Drawing.Color.Black;
+            this.videoStageGrid.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.videoStageGrid.Location = new System.Drawing.Point(3, 59);
+            // 
+            // 
+            // 
+            this.videoStageGrid.MasterTemplate.AllowAddNewRow = false;
+            this.videoStageGrid.MasterTemplate.AllowColumnReorder = false;
+            this.videoStageGrid.MasterTemplate.AllowDeleteRow = false;
+            this.videoStageGrid.MasterTemplate.AllowRowResize = false;
+            this.videoStageGrid.MasterTemplate.AutoGenerateColumns = false;
+            this.videoStageGrid.MasterTemplate.AutoSizeColumnsMode = Telerik.WinControls.UI.GridViewAutoSizeColumnsMode.Fill;
+            gridViewDecimalColumn1.DataType = typeof(int);
+            gridViewDecimalColumn1.EnableExpressionEditor = false;
+            gridViewDecimalColumn1.HeaderText = "Id";
+            gridViewDecimalColumn1.Name = "id";
+            gridViewDecimalColumn1.Width = 56;
+            gridViewHyperlinkColumn1.EnableExpressionEditor = false;
+            gridViewHyperlinkColumn1.HeaderText = "Url";
+            gridViewHyperlinkColumn1.Name = "url";
+            gridViewHyperlinkColumn1.ReadOnly = false;
+            gridViewHyperlinkColumn1.Width = 123;
+            gridViewTextBoxColumn8.EnableExpressionEditor = false;
+            gridViewTextBoxColumn8.HeaderText = "Title";
+            gridViewTextBoxColumn8.Name = "title";
+            gridViewTextBoxColumn8.Width = 230;
+            gridViewDecimalColumn2.EnableExpressionEditor = false;
+            gridViewDecimalColumn2.HeaderText = "Progress";
+            gridViewDecimalColumn2.Name = "progress";
+            gridViewDecimalColumn2.TextAlignment = System.Drawing.ContentAlignment.MiddleCenter;
+            gridViewDecimalColumn2.Width = 61;
+            gridViewTextBoxColumn9.EnableExpressionEditor = false;
+            gridViewTextBoxColumn9.HeaderText = "Stage";
+            gridViewTextBoxColumn9.Name = "stage";
+            gridViewTextBoxColumn9.TextAlignment = System.Drawing.ContentAlignment.MiddleCenter;
+            gridViewTextBoxColumn9.Width = 118;
+            this.videoStageGrid.MasterTemplate.Columns.AddRange(new Telerik.WinControls.UI.GridViewDataColumn[] {
+            gridViewDecimalColumn1,
+            gridViewHyperlinkColumn1,
+            gridViewTextBoxColumn8,
+            gridViewDecimalColumn2,
+            gridViewTextBoxColumn9});
+            this.videoStageGrid.MasterTemplate.EnableGrouping = false;
+            this.videoStageGrid.MasterTemplate.EnableSorting = false;
+            this.videoStageGrid.MasterTemplate.ShowRowHeaderColumn = false;
+            this.videoStageGrid.MasterTemplate.VerticalScrollState = Telerik.WinControls.UI.ScrollState.AlwaysShow;
+            this.videoStageGrid.MasterTemplate.ViewDefinition = tableViewDefinition2;
+            this.videoStageGrid.Name = "videoStageGrid";
+            this.videoStageGrid.ReadOnly = true;
+            this.videoStageGrid.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.videoStageGrid.ShowGroupPanel = false;
+            this.videoStageGrid.Size = new System.Drawing.Size(605, 215);
+            this.videoStageGrid.TabIndex = 39;
+            this.videoStageGrid.ThemeName = "VisualStudio2012Light";
+            // 
             // logPage
             // 
             this.logPage.Controls.Add(this.logTxtBox);
@@ -322,7 +333,7 @@ namespace Bazger.Tools.App
             this.infoPager.Controls.Add(this.downloderVideosStagePage);
             this.infoPager.Location = new System.Drawing.Point(0, 229);
             this.infoPager.Name = "infoPager";
-            this.infoPager.SelectedPage = this.downloderVideosStagePage;
+            this.infoPager.SelectedPage = this.logPage;
             this.infoPager.Size = new System.Drawing.Size(819, 284);
             this.infoPager.TabIndex = 49;
             this.infoPager.ThemeName = "VisualStudio2012Light";
@@ -381,10 +392,10 @@ namespace Bazger.Tools.App
             ((System.ComponentModel.ISupportInitialize)(this.toolControlsPager)).EndInit();
             this.toolControlsPager.ResumeLayout(false);
             this.downloderVideosStagePage.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.videoStageGrid.MasterTemplate)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.videoStageGrid)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.videoStageStatsGrid.MasterTemplate)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.videoStageStatsGrid)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.videoStageGrid.MasterTemplate)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.videoStageGrid)).EndInit();
             this.logPage.ResumeLayout(false);
             this.logPage.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.infoPager)).EndInit();
@@ -412,7 +423,7 @@ namespace Bazger.Tools.App
         public Telerik.WinControls.UI.RadGridView videoStageStatsGrid;
         public Telerik.WinControls.UI.RadGridView videoStageGrid;
         private Telerik.WinControls.UI.RadPageViewPage logPage;
-        private TextBox logTxtBox;
+        private Telerik.WinControls.UI.RadTextBox logTxtBox;
         private Telerik.WinControls.UI.RadPageView infoPager;
     }
 }

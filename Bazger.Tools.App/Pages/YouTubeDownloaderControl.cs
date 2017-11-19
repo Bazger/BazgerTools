@@ -1,13 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 using Bazger.Tools.App.Properties;
+using Bazger.Tools.App.Utils;
 using Bazger.Tools.YouTubeDownloader.Core;
 using Bazger.Tools.YouTubeDownloader.Core.Model;
 using Bazger.Tools.YouTubeDownloader.Core.Utility;
+using Microsoft.WindowsAPICodePack.Dialogs;
 using NLog;
 using Telerik.WinControls;
 using Telerik.WinControls.UI;
@@ -37,8 +41,9 @@ namespace Bazger.Tools.App.Pages
         {
             InitializeComponent();
             _isStarted = false;
-            //TODO: show video title
-            //TODO: configs
+            //TODO: test journal
+            //TODO: form serializer
+            //TODO: browse dirs
             //TODO: fix log showcast
             //TODO: fix resizing
             //TODO: remove Video Stage from form class
@@ -153,7 +158,6 @@ namespace Bazger.Tools.App.Pages
                 WriteToJournal = writeToJournalChkBox.IsChecked,
                 OverwriteEnabled = overwriteFilesChkBox.IsChecked
             };
-            _downloaderConfigs = DownloaderConfigs.GetDefaultConfigs();
             _videoUrls = GetVideoUrls();
             if (_stopEvent.WaitOne(0) || _videoUrls == null)
             {
@@ -177,7 +181,7 @@ namespace Bazger.Tools.App.Pages
             {
                 statsGrid.Rows.Add(GetVideoStageStatsRow().GetAllParams());
             });
-            _launcher = new Launcher(_videoUrls, DownloaderConfigs.GetDefaultConfigs());
+            _launcher = new Launcher(_videoUrls, _downloaderConfigs);
             _launcher.Start();
 
             _gridUpdate = new Thread(GridUpdate) { Name = "GridUpdate" };
@@ -294,6 +298,7 @@ namespace Bazger.Tools.App.Pages
                         }
                         row.Cells["progress"].Value = _launcher.VideosProgress[url].Progress;
                         row.Cells["stage"].Value = _launcher.VideosProgress[url].Stage;
+                        row.Cells["title"].Value = _launcher.VideosProgress[url].Title;
                     }
                 });
                 ControlInvoker(_videoStageStatsGrid, stageGrid =>
@@ -461,6 +466,77 @@ namespace Bazger.Tools.App.Pages
         private void urlTxtBox_TextChanging(object sender, Telerik.WinControls.TextChangingEventArgs e)
         {
             startBtn.Enabled = !IsNullOrEmpty(e.NewValue);
+        }
+
+        private void goToFolderBtn_Click(object sender, EventArgs e)
+        {
+            if (Directory.Exists(downloadsFolderDropDown.Text))
+            {
+                Process.Start(downloadsFolderDropDown.Text);
+            }
+        }
+
+        private void browseJournalBtn_Click(object sender, EventArgs e)
+        {
+            using (var ofd = new OpenFileDialog() { Filter = "Json Files (.json)|*.json|All Files (*.*)|*.*" })
+            {
+                DialogResult result = ofd.ShowDialog();
+
+                if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(ofd.SafeFileName))
+                {
+                    journalFileDropDown.Text = ofd.FileName;
+                }
+            }
+        }
+
+        private void browseDownloadsBtn_Click(object sender, EventArgs e)
+        {
+            using (var dialog = new CommonOpenFileDialog())
+            {
+                dialog.InitialDirectory = "C:\\Users";
+                dialog.IsFolderPicker = true;
+                if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+                {
+                    downloadsFolderDropDown.Text = dialog.FileName;
+                }
+            }
+        }
+
+        private void downloadsFolderDropDown_TextChanged(object sender, EventArgs e)
+        {
+            var text = downloadsFolderDropDown.Text;
+            downloadsFolderDropDown.SelectionStart = text.Length;
+            try
+            {
+                var directory = Path.GetDirectoryName(downloadsFolderDropDown.Text);
+                if (IsNullOrEmpty(directory))
+                {
+                    if (Directory.Exists(text))
+                    {
+                        directory = text;
+                    }
+                    else
+                    {
+                        return;
+                    }
+                }
+                if (downloadsFolderDropDown.SelectedItem == null)
+                {
+                    var allDirs = Directory.GetDirectories(directory).Where(dir => dir.Contains(text)).ToList();
+                    if (!IsNullOrEmpty(downloadsFolderDropDown.Text))
+                    {
+                        //allDirs.Insert(0, downloadsFolderDropDown.Text);
+                    }
+                    downloadsFolderDropDown.DataSource = allDirs;
+                    downloadsFolderDropDown.SelectionStart = text.Length;
+                    downloadsFolderDropDown.ShowDropDown();
+                    //downloadsFolderDropDown.AutoCompleteDataSource = Directory.GetDirectories(directory).ToList();
+                }
+            }
+            catch (Exception)
+            {
+                //Nothing to do
+            }
         }
     }
 }
