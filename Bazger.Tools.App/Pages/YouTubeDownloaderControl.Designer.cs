@@ -48,9 +48,6 @@ namespace Bazger.Tools.App.Pages
             this.converterThreadsLbl = new Telerik.WinControls.UI.RadLabel();
             this.threadsLbl = new Telerik.WinControls.UI.RadLabel();
             this.downloaderThreadsSpin = new Telerik.WinControls.UI.RadSpinEditor();
-            this.convertionFormatsDropDownList = new Telerik.WinControls.UI.RadDropDownList();
-            this.converterPnl = new Telerik.WinControls.UI.RadPanel();
-            this.convertionEnabledChkBox = new Telerik.WinControls.UI.RadCheckBox();
             this.pathsPnl = new Telerik.WinControls.UI.RadPanel();
             this.overwriteFilesChkBox = new Telerik.WinControls.UI.RadCheckBox();
             this.journalFileLbl = new Telerik.WinControls.UI.RadLabel();
@@ -64,12 +61,15 @@ namespace Bazger.Tools.App.Pages
             this.goToFolderBtn = new Telerik.WinControls.UI.RadButton();
             this.downloadProgressBar = new Telerik.WinControls.UI.RadProgressBar();
             this.waitingBar = new Telerik.WinControls.UI.RadWaitingBar();
-            this.radPanel1 = new Telerik.WinControls.UI.RadPanel();
-            this.radLabel1 = new Telerik.WinControls.UI.RadLabel();
-            this.radDropDownList1 = new Telerik.WinControls.UI.RadDropDownList();
             this.startBtn = new Telerik.WinControls.UI.RadSplitButton();
             this.startMenuItem = new Telerik.WinControls.UI.RadMenuItem();
             this.previewMenuItem = new Telerik.WinControls.UI.RadMenuItem();
+            this.radPanel1 = new Telerik.WinControls.UI.RadPanel();
+            this.radDropDownList1 = new Telerik.WinControls.UI.RadDropDownList();
+            this.radLabel1 = new Telerik.WinControls.UI.RadLabel();
+            this.converterPnl = new Telerik.WinControls.UI.RadPanel();
+            this.convertionFormatsDropDownList = new Telerik.WinControls.UI.RadDropDownList();
+            this.convertionEnabledChkBox = new Telerik.WinControls.UI.RadCheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.urlTxtBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.threadPnl)).BeginInit();
             this.threadPnl.SuspendLayout();
@@ -79,10 +79,6 @@ namespace Bazger.Tools.App.Pages
             ((System.ComponentModel.ISupportInitialize)(this.converterThreadsLbl)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.threadsLbl)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.downloaderThreadsSpin)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.convertionFormatsDropDownList)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.converterPnl)).BeginInit();
-            this.converterPnl.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.convertionEnabledChkBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pathsPnl)).BeginInit();
             this.pathsPnl.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.overwriteFilesChkBox)).BeginInit();
@@ -97,11 +93,15 @@ namespace Bazger.Tools.App.Pages
             ((System.ComponentModel.ISupportInitialize)(this.goToFolderBtn)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.downloadProgressBar)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.waitingBar)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.startBtn)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.radPanel1)).BeginInit();
             this.radPanel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.radLabel1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.radDropDownList1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.startBtn)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.radLabel1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.converterPnl)).BeginInit();
+            this.converterPnl.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.convertionFormatsDropDownList)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.convertionEnabledChkBox)).BeginInit();
             this.SuspendLayout();
             // 
             // urlTxtBox
@@ -127,7 +127,7 @@ namespace Bazger.Tools.App.Pages
             this.threadPnl.Controls.Add(this.downloaderThreadsSpin);
             this.threadPnl.Location = new System.Drawing.Point(4, 27);
             this.threadPnl.Name = "threadPnl";
-            this.threadPnl.Size = new System.Drawing.Size(189, 93);
+            this.threadPnl.Size = new System.Drawing.Size(189, 96);
             this.threadPnl.TabIndex = 55;
             this.threadPnl.ThemeName = "VisualStudio2012Light";
             // 
@@ -248,44 +248,6 @@ namespace Bazger.Tools.App.Pages
             0,
             0,
             0});
-            // 
-            // convertionFormatsDropDownList
-            // 
-            this.convertionFormatsDropDownList.DropDownStyle = Telerik.WinControls.RadDropDownStyle.DropDownList;
-            this.convertionFormatsDropDownList.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            radListDataItem1.Selected = true;
-            radListDataItem1.Text = ".wav";
-            radListDataItem2.Text = ".mp3";
-            this.convertionFormatsDropDownList.Items.Add(radListDataItem1);
-            this.convertionFormatsDropDownList.Items.Add(radListDataItem2);
-            this.convertionFormatsDropDownList.Location = new System.Drawing.Point(3, 36);
-            this.convertionFormatsDropDownList.Name = "convertionFormatsDropDownList";
-            this.convertionFormatsDropDownList.Size = new System.Drawing.Size(183, 27);
-            this.convertionFormatsDropDownList.TabIndex = 42;
-            this.convertionFormatsDropDownList.Text = ".wav";
-            this.convertionFormatsDropDownList.ThemeName = "VisualStudio2012Light";
-            // 
-            // converterPnl
-            // 
-            this.converterPnl.Controls.Add(this.convertionFormatsDropDownList);
-            this.converterPnl.Controls.Add(this.convertionEnabledChkBox);
-            this.converterPnl.Location = new System.Drawing.Point(4, 116);
-            this.converterPnl.Name = "converterPnl";
-            this.converterPnl.Size = new System.Drawing.Size(189, 75);
-            this.converterPnl.TabIndex = 58;
-            this.converterPnl.ThemeName = "VisualStudio2012Light";
-            // 
-            // convertionEnabledChkBox
-            // 
-            this.convertionEnabledChkBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.convertionEnabledChkBox.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.convertionEnabledChkBox.Location = new System.Drawing.Point(3, 13);
-            this.convertionEnabledChkBox.Name = "convertionEnabledChkBox";
-            this.convertionEnabledChkBox.Size = new System.Drawing.Size(140, 21);
-            this.convertionEnabledChkBox.TabIndex = 41;
-            this.convertionEnabledChkBox.Text = "Convertion Enabled";
-            this.convertionEnabledChkBox.ThemeName = "VisualStudio2012Light";
-            this.convertionEnabledChkBox.ToggleState = Telerik.WinControls.Enumerations.ToggleState.On;
             // 
             // pathsPnl
             // 
@@ -435,43 +397,9 @@ namespace Bazger.Tools.App.Pages
             ((Telerik.WinControls.UI.RadWaitingBarElement)(this.waitingBar.GetChildAt(0))).WaitingSpeed = 100;
             ((Telerik.WinControls.UI.RadWaitingBarElement)(this.waitingBar.GetChildAt(0))).WaitingStep = 4;
             // 
-            // radPanel1
-            // 
-            this.radPanel1.Controls.Add(this.radLabel1);
-            this.radPanel1.Controls.Add(this.radDropDownList1);
-            this.radPanel1.Location = new System.Drawing.Point(195, 27);
-            this.radPanel1.Name = "radPanel1";
-            this.radPanel1.Size = new System.Drawing.Size(412, 34);
-            this.radPanel1.TabIndex = 77;
-            this.radPanel1.ThemeName = "VisualStudio2012Light";
-            // 
-            // radLabel1
-            // 
-            this.radLabel1.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.radLabel1.Location = new System.Drawing.Point(4, 6);
-            this.radLabel1.Name = "radLabel1";
-            this.radLabel1.Size = new System.Drawing.Size(90, 21);
-            this.radLabel1.TabIndex = 43;
-            this.radLabel1.Text = "Video Format:";
-            this.radLabel1.ThemeName = "VisualStudio2012Light";
-            // 
-            // radDropDownList1
-            // 
-            this.radDropDownList1.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            radListDataItem3.Selected = true;
-            radListDataItem3.Text = ".wav";
-            radListDataItem4.Text = ".mp3";
-            this.radDropDownList1.Items.Add(radListDataItem3);
-            this.radDropDownList1.Items.Add(radListDataItem4);
-            this.radDropDownList1.Location = new System.Drawing.Point(96, 3);
-            this.radDropDownList1.Name = "radDropDownList1";
-            this.radDropDownList1.Size = new System.Drawing.Size(316, 27);
-            this.radDropDownList1.TabIndex = 42;
-            this.radDropDownList1.Text = ".wav";
-            this.radDropDownList1.ThemeName = "VisualStudio2012Light";
-            // 
             // startBtn
             // 
+            this.startBtn.DefaultItem = this.startMenuItem;
             this.startBtn.Items.AddRange(new Telerik.WinControls.RadItem[] {
             this.startMenuItem,
             this.previewMenuItem});
@@ -486,10 +414,8 @@ namespace Bazger.Tools.App.Pages
             this.startBtn.Text = "Start";
             this.startBtn.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.startBtn.ThemeName = "VisualStudio2012Light";
-            this.startBtn.DropDownButtonElement.ActionButton.Click += new System.EventHandler(this.startBtn_Click);           
-            this.startBtn.DropDownButtonElement.DropDownMenu.PopupElement.Visibility = ElementVisibility.Collapsed;
             // 
-            // StartMenuItem
+            // startMenuItem
             // 
             this.startMenuItem.Name = "startMenuItem";
             this.startMenuItem.Text = "Start";
@@ -500,6 +426,79 @@ namespace Bazger.Tools.App.Pages
             this.previewMenuItem.Name = "previewMenuItem";
             this.previewMenuItem.Text = "Preview";
             this.previewMenuItem.Click += new System.EventHandler(this.previewMenuItem_Click);
+            // 
+            // radPanel1
+            // 
+            this.radPanel1.Controls.Add(this.radLabel1);
+            this.radPanel1.Controls.Add(this.radDropDownList1);
+            this.radPanel1.Location = new System.Drawing.Point(195, 27);
+            this.radPanel1.Name = "radPanel1";
+            this.radPanel1.Size = new System.Drawing.Size(412, 34);
+            this.radPanel1.TabIndex = 77;
+            this.radPanel1.ThemeName = "VisualStudio2012Light";
+            // 
+            // radDropDownList1
+            // 
+            this.radDropDownList1.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            radListDataItem1.Selected = true;
+            radListDataItem1.Text = ".wav";
+            radListDataItem2.Text = ".mp3";
+            this.radDropDownList1.Items.Add(radListDataItem1);
+            this.radDropDownList1.Items.Add(radListDataItem2);
+            this.radDropDownList1.Location = new System.Drawing.Point(100, 3);
+            this.radDropDownList1.Name = "radDropDownList1";
+            this.radDropDownList1.Size = new System.Drawing.Size(309, 27);
+            this.radDropDownList1.TabIndex = 42;
+            this.radDropDownList1.Text = ".wav";
+            this.radDropDownList1.ThemeName = "VisualStudio2012Light";
+            // 
+            // radLabel1
+            // 
+            this.radLabel1.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.radLabel1.Location = new System.Drawing.Point(4, 6);
+            this.radLabel1.Name = "radLabel1";
+            this.radLabel1.Size = new System.Drawing.Size(90, 21);
+            this.radLabel1.TabIndex = 43;
+            this.radLabel1.Text = "Video Format:";
+            this.radLabel1.ThemeName = "VisualStudio2012Light";
+            // 
+            // converterPnl
+            // 
+            this.converterPnl.Controls.Add(this.convertionFormatsDropDownList);
+            this.converterPnl.Controls.Add(this.convertionEnabledChkBox);
+            this.converterPnl.Location = new System.Drawing.Point(4, 126);
+            this.converterPnl.Name = "converterPnl";
+            this.converterPnl.Size = new System.Drawing.Size(189, 65);
+            this.converterPnl.TabIndex = 58;
+            this.converterPnl.ThemeName = "VisualStudio2012Light";
+            // 
+            // convertionFormatsDropDownList
+            // 
+            this.convertionFormatsDropDownList.DropDownStyle = Telerik.WinControls.RadDropDownStyle.DropDownList;
+            this.convertionFormatsDropDownList.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            radListDataItem3.Selected = true;
+            radListDataItem3.Text = ".wav";
+            radListDataItem4.Text = ".mp3";
+            this.convertionFormatsDropDownList.Items.Add(radListDataItem3);
+            this.convertionFormatsDropDownList.Items.Add(radListDataItem4);
+            this.convertionFormatsDropDownList.Location = new System.Drawing.Point(3, 27);
+            this.convertionFormatsDropDownList.Name = "convertionFormatsDropDownList";
+            this.convertionFormatsDropDownList.Size = new System.Drawing.Size(182, 27);
+            this.convertionFormatsDropDownList.TabIndex = 44;
+            this.convertionFormatsDropDownList.Text = ".wav";
+            this.convertionFormatsDropDownList.ThemeName = "VisualStudio2012Light";
+            // 
+            // convertionEnabledChkBox
+            // 
+            this.convertionEnabledChkBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.convertionEnabledChkBox.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.convertionEnabledChkBox.Location = new System.Drawing.Point(3, 3);
+            this.convertionEnabledChkBox.Name = "convertionEnabledChkBox";
+            this.convertionEnabledChkBox.Size = new System.Drawing.Size(140, 21);
+            this.convertionEnabledChkBox.TabIndex = 43;
+            this.convertionEnabledChkBox.Text = "Convertion Enabled";
+            this.convertionEnabledChkBox.ThemeName = "VisualStudio2012Light";
+            this.convertionEnabledChkBox.ToggleState = Telerik.WinControls.Enumerations.ToggleState.On;
             // 
             // YouTubeDownloaderControl
             // 
@@ -524,11 +523,6 @@ namespace Bazger.Tools.App.Pages
             ((System.ComponentModel.ISupportInitialize)(this.converterThreadsLbl)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.threadsLbl)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.downloaderThreadsSpin)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.convertionFormatsDropDownList)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.converterPnl)).EndInit();
-            this.converterPnl.ResumeLayout(false);
-            this.converterPnl.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.convertionEnabledChkBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pathsPnl)).EndInit();
             this.pathsPnl.ResumeLayout(false);
             this.pathsPnl.PerformLayout();
@@ -544,12 +538,17 @@ namespace Bazger.Tools.App.Pages
             ((System.ComponentModel.ISupportInitialize)(this.goToFolderBtn)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.downloadProgressBar)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.waitingBar)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.startBtn)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.radPanel1)).EndInit();
             this.radPanel1.ResumeLayout(false);
             this.radPanel1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.radLabel1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.radDropDownList1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.startBtn)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.radLabel1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.converterPnl)).EndInit();
+            this.converterPnl.ResumeLayout(false);
+            this.converterPnl.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.convertionFormatsDropDownList)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.convertionEnabledChkBox)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -564,9 +563,6 @@ namespace Bazger.Tools.App.Pages
         private Telerik.WinControls.UI.RadLabel converterThreadsLbl;
         private Telerik.WinControls.UI.RadLabel threadsLbl;
         private Telerik.WinControls.UI.RadSpinEditor downloaderThreadsSpin;
-        private Telerik.WinControls.UI.RadDropDownList convertionFormatsDropDownList;
-        private Telerik.WinControls.UI.RadPanel converterPnl;
-        private Telerik.WinControls.UI.RadCheckBox convertionEnabledChkBox;
         private Telerik.WinControls.UI.RadPanel pathsPnl;
         private Telerik.WinControls.UI.RadLabel journalFileLbl;
         private Telerik.WinControls.UI.RadDropDownList journalFileDropDown;
@@ -582,11 +578,14 @@ namespace Bazger.Tools.App.Pages
         private Telerik.WinControls.UI.RadWaitingBar waitingBar;
         private Telerik.WinControls.UI.RadSpinEditor radSpinEditor1;
         private Telerik.WinControls.UI.RadLabel fileMoverThreadsLbl;
-        private Telerik.WinControls.UI.RadPanel radPanel1;
-        private Telerik.WinControls.UI.RadLabel radLabel1;
-        private Telerik.WinControls.UI.RadDropDownList radDropDownList1;
         private Telerik.WinControls.UI.RadSplitButton startBtn;
         private Telerik.WinControls.UI.RadMenuItem startMenuItem;
         private Telerik.WinControls.UI.RadMenuItem previewMenuItem;
+        private RadPanel radPanel1;
+        private RadLabel radLabel1;
+        private RadDropDownList radDropDownList1;
+        private RadPanel converterPnl;
+        private RadDropDownList convertionFormatsDropDownList;
+        private RadCheckBox convertionEnabledChkBox;
     }
 }

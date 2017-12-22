@@ -124,7 +124,7 @@ namespace Bazger.Tools.YouTubeDownloader.Core
 
             StartupVidesoProgress();
 
-            var waitingForDownload = new BlockingCollection<VideoProgressMetadata>(new ConcurrentQueue<VideoProgressMetadata>(VideosProgress.Values));
+            var waitingForDownload = new BlockingCollection<VideoProgressMetadata>(new ConcurrentQueue<VideoProgressMetadata>(_videoUrls.Select(url => VideosProgress[url])));
             var waitingForConvertion = new BlockingCollection<VideoProgressMetadata>();
             var waitingForMoving = new BlockingCollection<VideoProgressMetadata>();
 
