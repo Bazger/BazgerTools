@@ -14,7 +14,7 @@ using YoutubeExtractor;
 
 namespace Bazger.Tools.YouTubeDownloader.Core.WebSites
 {
-    public class YouTubeProxy : WebSiteDownloaderProxy
+    public class YouTubeProxy : WebSiteDownloaderProxy, IPreviewVideoProxy
     {
         private const int DefaultVideoFormatCode = 18;
 
@@ -27,10 +27,19 @@ namespace Bazger.Tools.YouTubeDownloader.Core.WebSites
             _videoFormatCode = videoFormatCode;
         }
 
+        public void Preview(VideoProgressMetadata videoMetadata)
+        {
+            videoMetadata.VideoInfos = DownloadUrlResolver.GetDownloadUrls(videoMetadata.Url, false).ToList();
+        }
+
+        public void DownloadFromPriview(VideoProgressMetadata videoMetadata)
+        {
+            
+        }
+
         public override void Download(VideoProgressMetadata videoMetadata)
         {
-            List<VideoInfo> videoInfos = new List<VideoInfo>();
-            videoInfos = DownloadUrlResolver.GetDownloadUrls(videoMetadata.Url, false).ToList();
+            var videoInfos = DownloadUrlResolver.GetDownloadUrls(videoMetadata.Url, false).ToList();
 
             /*
              * Select the first .mp4 video with 360p resolution
@@ -83,6 +92,5 @@ namespace Bazger.Tools.YouTubeDownloader.Core.WebSites
             }
             RetryToDownload(() => { videoDownloader.Execute(); }, videoMetadata);
         }
-
     }
 }

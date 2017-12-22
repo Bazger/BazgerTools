@@ -77,6 +77,7 @@ namespace Bazger.Tools.App
             ((System.ComponentModel.ISupportInitialize)(this.videoStageGrid)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.videoStageGrid.MasterTemplate)).BeginInit();
             this.logPage.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.logTxtBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.infoPager)).BeginInit();
             this.infoPager.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this)).BeginInit();
@@ -98,7 +99,7 @@ namespace Bazger.Tools.App
             // 
             this.copyrightLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.copyrightLabel.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.copyrightLabel.Location = new System.Drawing.Point(0, 519);
+            this.copyrightLabel.Location = new System.Drawing.Point(0, 530);
             this.copyrightLabel.Name = "copyrightLabel";
             this.copyrightLabel.Size = new System.Drawing.Size(146, 19);
             this.copyrightLabel.TabIndex = 46;
@@ -110,7 +111,7 @@ namespace Bazger.Tools.App
             this.clickerPage.ItemSize = new System.Drawing.SizeF(120F, 24F);
             this.clickerPage.Location = new System.Drawing.Point(204, 5);
             this.clickerPage.Name = "clickerPage";
-            this.clickerPage.Size = new System.Drawing.Size(610, 213);
+            this.clickerPage.Size = new System.Drawing.Size(610, 229);
             this.clickerPage.Text = "Clicker";
             // 
             // positionClickerPage
@@ -120,7 +121,7 @@ namespace Bazger.Tools.App
             this.positionClickerPage.ItemSize = new System.Drawing.SizeF(120F, 24F);
             this.positionClickerPage.Location = new System.Drawing.Point(204, 5);
             this.positionClickerPage.Name = "positionClickerPage";
-            this.positionClickerPage.Size = new System.Drawing.Size(610, 259);
+            this.positionClickerPage.Size = new System.Drawing.Size(610, 213);
             this.positionClickerPage.Text = "Multiply Clicks";
             // 
             // downloaderPage
@@ -130,7 +131,7 @@ namespace Bazger.Tools.App
             this.downloaderPage.ItemSize = new System.Drawing.SizeF(120F, 24F);
             this.downloaderPage.Location = new System.Drawing.Point(204, 5);
             this.downloaderPage.Name = "downloaderPage";
-            this.downloaderPage.Size = new System.Drawing.Size(610, 213);
+            this.downloaderPage.Size = new System.Drawing.Size(610, 229);
             this.downloaderPage.Text = "YouTube Downloader";
             // 
             // toolControlsPager
@@ -142,7 +143,7 @@ namespace Bazger.Tools.App
             this.toolControlsPager.Location = new System.Drawing.Point(0, 0);
             this.toolControlsPager.Name = "toolControlsPager";
             this.toolControlsPager.SelectedPage = this.downloaderPage;
-            this.toolControlsPager.Size = new System.Drawing.Size(819, 223);
+            this.toolControlsPager.Size = new System.Drawing.Size(819, 239);
             this.toolControlsPager.TabIndex = 0;
             this.toolControlsPager.ThemeName = "VisualStudio2012Light";
             this.toolControlsPager.ViewMode = Telerik.WinControls.UI.PageViewMode.Backstage;
@@ -155,7 +156,7 @@ namespace Bazger.Tools.App
             this.downloderVideosStagePage.ItemSize = new System.Drawing.SizeF(77F, 24F);
             this.downloderVideosStagePage.Location = new System.Drawing.Point(204, 5);
             this.downloderVideosStagePage.Name = "downloderVideosStagePage";
-            this.downloderVideosStagePage.Size = new System.Drawing.Size(610, 274);
+            this.downloderVideosStagePage.Size = new System.Drawing.Size(610, 270);
             this.downloderVideosStagePage.Text = "Videos Stage";
             // 
             // videoStageStatsGrid
@@ -298,7 +299,7 @@ namespace Bazger.Tools.App
             this.videoStageGrid.ReadOnly = true;
             this.videoStageGrid.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.videoStageGrid.ShowGroupPanel = false;
-            this.videoStageGrid.Size = new System.Drawing.Size(605, 215);
+            this.videoStageGrid.Size = new System.Drawing.Size(605, 211);
             this.videoStageGrid.TabIndex = 39;
             this.videoStageGrid.ThemeName = "VisualStudio2012Light";
             // 
@@ -308,7 +309,7 @@ namespace Bazger.Tools.App
             this.logPage.ItemSize = new System.Drawing.SizeF(77F, 24F);
             this.logPage.Location = new System.Drawing.Point(204, 5);
             this.logPage.Name = "logPage";
-            this.logPage.Size = new System.Drawing.Size(610, 274);
+            this.logPage.Size = new System.Drawing.Size(610, 270);
             this.logPage.Text = "Log";
             // 
             // logTxtBox
@@ -316,12 +317,13 @@ namespace Bazger.Tools.App
             this.logTxtBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.logTxtBox.AutoSize = false;
             this.logTxtBox.Location = new System.Drawing.Point(0, 1);
             this.logTxtBox.Multiline = true;
             this.logTxtBox.Name = "logTxtBox";
             this.logTxtBox.ReadOnly = true;
             this.logTxtBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.logTxtBox.Size = new System.Drawing.Size(610, 271);
+            this.logTxtBox.Size = new System.Drawing.Size(610, 267);
             this.logTxtBox.TabIndex = 51;
             // 
             // infoPager
@@ -331,10 +333,10 @@ namespace Bazger.Tools.App
             | System.Windows.Forms.AnchorStyles.Right)));
             this.infoPager.Controls.Add(this.logPage);
             this.infoPager.Controls.Add(this.downloderVideosStagePage);
-            this.infoPager.Location = new System.Drawing.Point(0, 229);
+            this.infoPager.Location = new System.Drawing.Point(0, 244);
             this.infoPager.Name = "infoPager";
-            this.infoPager.SelectedPage = this.logPage;
-            this.infoPager.Size = new System.Drawing.Size(819, 284);
+            this.infoPager.SelectedPage = this.downloderVideosStagePage;
+            this.infoPager.Size = new System.Drawing.Size(819, 280);
             this.infoPager.TabIndex = 49;
             this.infoPager.ThemeName = "VisualStudio2012Light";
             this.infoPager.ViewMode = Telerik.WinControls.UI.PageViewMode.Backstage;
@@ -342,7 +344,7 @@ namespace Bazger.Tools.App
             // clickerControl
             // 
             this.clickerControl.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.clickerControl.Location = new System.Drawing.Point(110, 13);
+            this.clickerControl.Location = new System.Drawing.Point(68, 13);
             this.clickerControl.Name = "clickerControl";
             this.clickerControl.ParentPage = this.clickerPage;
             this.clickerControl.Size = new System.Drawing.Size(465, 164);
@@ -363,14 +365,14 @@ namespace Bazger.Tools.App
             this.youTubeDownloaderControl.Location = new System.Drawing.Point(0, 0);
             this.youTubeDownloaderControl.Name = "youTubeDownloaderControl";
             this.youTubeDownloaderControl.ParentPage = this.downloaderPage;
-            this.youTubeDownloaderControl.Size = new System.Drawing.Size(610, 210);
+            this.youTubeDownloaderControl.Size = new System.Drawing.Size(610, 233);
             this.youTubeDownloaderControl.TabIndex = 0;
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(819, 537);
+            this.ClientSize = new System.Drawing.Size(819, 548);
             this.Controls.Add(this.infoPager);
             this.Controls.Add(this.copyrightLabel);
             this.Controls.Add(this.toolControlsPager);
@@ -397,7 +399,7 @@ namespace Bazger.Tools.App
             ((System.ComponentModel.ISupportInitialize)(this.videoStageGrid.MasterTemplate)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.videoStageGrid)).EndInit();
             this.logPage.ResumeLayout(false);
-            this.logPage.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.logTxtBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.infoPager)).EndInit();
             this.infoPager.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this)).EndInit();

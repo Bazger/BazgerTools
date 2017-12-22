@@ -69,10 +69,13 @@
   <ItemGroup>
     <Compile Include="Converters\FFmpegConverterProcessProxy.cs" />
     <Compile Include="Converters\ExternalProcessProxy.cs" />
-    <Compile Include="Launcher.cs" />
+    <Compile Include="MainLauncher.cs" />
     <Compile Include="Model\ConverterThread.cs" />
     <Compile Include="Model\DownloaderThread.cs" />
     <Compile Include="Model\FileMoverThread.cs" />
+    <Compile Include="Model\LauncherBase.cs" />
+    <Compile Include="Model\PreviewThread.cs" />
+    <Compile Include="PreviewLauncher.cs" />
     <Compile Include="Utility\FileHelper.cs" />
     <Compile Include="Model\ServiceThread.cs" />
     <Compile Include="Model\VideoProgressMetadata.cs" />
@@ -83,6 +86,7 @@
     <Compile Include="Utility\ProcessHelper.cs" />
     <Compile Include="Utility\SerDeHelper.cs" />
     <Compile Include="Utility\YouTubeHelper.cs" />
+    <Compile Include="WebSites\IPreviewVideoProxy.cs" />
     <Compile Include="WebSites\WebSiteDownloaderProxy.cs" />
     <Compile Include="WebSites\YouTubeProxy.cs" />
     <Compile Include="WebSites\YouTubeMp3Proxy.cs" />

@@ -7,6 +7,7 @@ using Bazger.Tools.YouTubeDownloader.Core;
 using Bazger.Tools.YouTubeDownloader.Core.Model;
 using Bazger.Tools.YouTubeDownloader.Core.Utility;
 using NLog;
+using YoutubeExtractor;
 
 namespace Bazger.Tools.YouTubeDownloader.ConsoleApp
 {
@@ -16,7 +17,7 @@ namespace Bazger.Tools.YouTubeDownloader.ConsoleApp
         private static readonly DownloaderConfigs Configs = DownloaderConfigs.GetConfig();
 
         private static List<string> _videoUrls;
-        private static Launcher _launcher;
+        private static MainLauncher _launcher;
         private static Thread _uiThread;
         private static AutoResetEvent _stopUiEvent;
         private static bool _onStopping;
@@ -44,7 +45,7 @@ namespace Bazger.Tools.YouTubeDownloader.ConsoleApp
                 return;
             }
 
-            _launcher = new Launcher(_videoUrls, Configs);
+            _launcher = new MainLauncher(_videoUrls, Configs);
             _launcher.Start();
 
             _stopUiEvent = new AutoResetEvent(true);
@@ -95,7 +96,7 @@ namespace Bazger.Tools.YouTubeDownloader.ConsoleApp
                         case VideoProgressStage.Moving:
                             movingVideos.Add(video.Key);
                             break;
-                        default:
+                        case VideoProgressStage.Downloading:
                             inProgressVideos.Add(video.Key);
                             break;
                     }

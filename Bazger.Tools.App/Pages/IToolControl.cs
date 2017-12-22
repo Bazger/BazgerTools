@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Bazger.Tools.App.State;
 using NLog;
 using Telerik.WinControls.UI;
 
@@ -15,6 +16,6 @@ namespace Bazger.Tools.App.Pages
         string Title { get; }
         RadPageViewPage ParentPage { get; set; }
         void IntializeControl(MainForm form);
-        void OnFormClosing(object sender, FormClosingEventArgs e);
+        void OnFormClosing(object sender, FormClosingEventArgs e);        
     }
 }

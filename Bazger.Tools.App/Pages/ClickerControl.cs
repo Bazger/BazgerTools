@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Bazger.Tools.App.State;
 using Bazger.Tools.Clicker.Core;
 using NLog;
 using NLog.Targets;

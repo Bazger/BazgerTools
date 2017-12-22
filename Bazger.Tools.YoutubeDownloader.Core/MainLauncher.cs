@@ -6,13 +6,11 @@ using System.Linq;
 using System.Threading;
 using Bazger.Tools.YouTubeDownloader.Core.Model;
 using Bazger.Tools.YouTubeDownloader.Core.Utility;
-using Bazger.Tools.YouTubeDownloader.Core.WebSites;
-using ConcurrentCollections;
 using NLog;
 
 namespace Bazger.Tools.YouTubeDownloader.Core
 {
-    public class Launcher : ServiceThread
+    public class MainLauncher : LauncherBase
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
@@ -28,7 +26,7 @@ namespace Bazger.Tools.YouTubeDownloader.Core
         private string _tempDir;
 
         //TODO: Add option to chose video quality and resolution
-        public Launcher(IEnumerable<string> videoUrls, DownloaderConfigs configs, string name = "Launcher") : base(name)
+        public MainLauncher(IEnumerable<string> videoUrls, DownloaderConfigs configs, string name = "MainLauncher") : base(name)
         {
             _configs = configs;
             _videoUrls = videoUrls;
@@ -53,10 +51,10 @@ namespace Bazger.Tools.YouTubeDownloader.Core
 
             Log.Info("Stopping launcher service");
             StopEvent.Set();
-            StopDownloaderThreads();
+            StopServices(_downloaderThreads);
             if (_configs.ConverterEnabled)
             {
-                StopConvertersThreads();
+                StopServices(_converterThreads);
             }
 
             var waitEvent = new AutoResetEvent(false);
@@ -68,8 +66,8 @@ namespace Bazger.Tools.YouTubeDownloader.Core
                     waitEvent.Set();
                     break;
                 }
-                AbortDownloaderThreads();
-                AbortConvertersThreads();
+                AbortServices(_downloaderThreads);
+                AbortServices(_converterThreads);
                 this.Abort();
             }
 
@@ -103,10 +101,6 @@ namespace Bazger.Tools.YouTubeDownloader.Core
             _downloaderThreads.Clear();
             _converterThreads.Clear();
 
-            var waitingForDownload = new BlockingCollection<string>(new ConcurrentQueue<string>(_videoUrls));
-            var waitingForConvertion = new BlockingCollection<VideoProgressMetadata>();
-            var waitingForMoving = new BlockingCollection<VideoProgressMetadata>();
-
             //STAGE I - Initializing
             if (StopEvent.WaitOne(0))
             {
@@ -126,8 +120,13 @@ namespace Bazger.Tools.YouTubeDownloader.Core
                     _videoUrls = _videoUrls.Except(downloadedVideos);
                     Log.Info("Journal file loaded successfully");
                 }
-
             }
+
+            StartupVidesoProgress();
+
+            var waitingForDownload = new BlockingCollection<VideoProgressMetadata>(new ConcurrentQueue<VideoProgressMetadata>(VideosProgress.Values));
+            var waitingForConvertion = new BlockingCollection<VideoProgressMetadata>();
+            var waitingForMoving = new BlockingCollection<VideoProgressMetadata>();
 
             StartDownloderThreads(waitingForDownload, waitingForConvertion, waitingForMoving);
             if (_configs.ConverterEnabled)
@@ -148,7 +147,7 @@ namespace Bazger.Tools.YouTubeDownloader.Core
                 }
                 if (_downloaderThreads.Count(c => c.IsAlive) == 0 && waitingForConvertion.Count == 0 && waitingForDownload.Count == 0)
                 {
-                    StopConvertersThreads();
+                    StopServices(_converterThreads);
                     if (_converterThreads.Count(c => c.IsAlive) == 0 && waitingForMoving.Count == 0)
                     {
                         _fileMoverThread.Stop();
@@ -178,6 +177,20 @@ namespace Bazger.Tools.YouTubeDownloader.Core
             Log.Info("Launcher finished its work");
         }
 
+        private void StartupVidesoProgress()
+        {
+            foreach (var url in _videoUrls)
+            {
+                var progressMetadata = new VideoProgressMetadata(url)
+                {
+                    SaveDir = _configs.SaveDir,
+                    Stage = VideoProgressStage.Idling,
+                    Progress = 0
+                };
+                VideosProgress.TryAdd(url, progressMetadata);
+            }
+        }
+
         public override void Abort()
         {
             if (!JobThread.IsAlive)
@@ -188,7 +201,6 @@ namespace Bazger.Tools.YouTubeDownloader.Core
             JobThread.Abort();
         }
 
-
         public void ForceStop()
         {
             if (!JobThread.IsAlive)
@@ -196,8 +208,8 @@ namespace Bazger.Tools.YouTubeDownloader.Core
                 return;
             }
             Log.Warn($"Abort launcher service ({Name})");
-            AbortDownloaderThreads();
-            AbortConvertersThreads();
+            AbortServices(_downloaderThreads);
+            AbortServices(_converterThreads);
             _fileMoverThread.Abort();
             Log.Info("Removing temporary files");
             if (Directory.Exists(_tempDir))
@@ -206,52 +218,17 @@ namespace Bazger.Tools.YouTubeDownloader.Core
             }
         }
 
-        private void StartDownloderThreads(BlockingCollection<string> waitingForDownload, BlockingCollection<VideoProgressMetadata> waitingForConvertion, BlockingCollection<VideoProgressMetadata> waitingForMoving)
+        private void StartDownloderThreads(BlockingCollection<VideoProgressMetadata> waitingForDownload, BlockingCollection<VideoProgressMetadata> waitingForConvertion, BlockingCollection<VideoProgressMetadata> waitingForMoving)
         {
             //Inialing once because method are safe for multithreaded usage
             for (var i = 0; i < _configs.ParallelDownloadsCount; i++)
             {
-                _downloaderThreads.Add(new DownloaderThread($"Downloader {i}", VideosProgress, _configs.SaveDir, _tempDir, waitingForDownload, waitingForConvertion, waitingForMoving, _configs.ConverterEnabled));
+                _downloaderThreads.Add(new DownloaderThread($"Downloader {i}", waitingForDownload, waitingForConvertion, waitingForMoving, _tempDir, _configs.ConverterEnabled));
             }
 
             Log.Info("Starting downloader threads");
-            foreach (var service in _downloaderThreads.Where(c => !c.IsAlive && c.IsEnabled))
-            {
-                try
-                {
-                    Log.Info("Starting service ({0})", service.Name);
-                    service.Start();
-                }
-                catch (Exception ex)
-                {
-                    Log.Error(ex, "Error starting service ({0})", service.Name);
-                }
-            }
-            Log.Info("{0} downloading threads was started", _downloaderThreads.Count(c => c.IsStarted));
-        }
-
-        private void StopDownloaderThreads()
-        {
-            foreach (var service in _downloaderThreads.Reverse<DownloaderThread>())
-            {
-                try
-                {
-                    Log.Info("Stopping service ({0})", service.Name);
-                    service.Stop();
-                }
-                catch (Exception ex)
-                {
-                    Log.Error(ex, "Error stopping service ({0})", service.Name);
-                }
-            }
-        }
-
-        private void AbortDownloaderThreads()
-        {
-            foreach (var service in _downloaderThreads.Reverse<DownloaderThread>())
-            {
-                service.Abort();
-            }
+            StartServices(_downloaderThreads);
+            Log.Info("Downloader threads was started");
         }
 
         private void StartConverterThreads(BlockingCollection<VideoProgressMetadata> waitingForConvertion, BlockingCollection<VideoProgressMetadata> waitingForMoving)
@@ -262,43 +239,8 @@ namespace Bazger.Tools.YouTubeDownloader.Core
             }
 
             Log.Info("Starting converter threads");
-            foreach (var service in _converterThreads.Where(c => !c.IsAlive && c.IsEnabled))
-            {
-                try
-                {
-                    Log.Info("Starting service ({0})", service.Name);
-                    service.Start();
-                }
-                catch (Exception ex)
-                {
-                    Log.Error(ex, "Error starting service ({0})", service.Name);
-                }
-            }
-            Log.Info("{0} converter threads was started", _converterThreads.Count(c => c.IsStarted));
-        }
-
-        private void StopConvertersThreads()
-        {
-            foreach (var service in _converterThreads.Reverse<ConverterThread>())
-            {
-                try
-                {
-                    Log.Info("Stopping service ({0})", service.Name);
-                    service.Stop();
-                }
-                catch (Exception ex)
-                {
-                    Log.Error(ex, "Error stopping service ({0})", service.Name);
-                }
-            }
-        }
-
-        private void AbortConvertersThreads()
-        {
-            foreach (var service in _converterThreads.Reverse<ConverterThread>())
-            {
-                service.Abort();
-            }
+            StartServices(_converterThreads);
+            Log.Info("Converter threads was started");
         }
 
         private void WriteToJournal()
@@ -327,7 +269,6 @@ namespace Bazger.Tools.YouTubeDownloader.Core
                 Log.Error(ex, "There is a problem to write to a journal file");
             }
         }
-
 
         private IEnumerable<string> ReadFromJournal()
         {

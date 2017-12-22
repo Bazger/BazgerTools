@@ -10,7 +10,7 @@ namespace Bazger.Tools.YouTubeDownloader.Core.Model
         protected ManualResetEvent StopEvent;
         protected ManualResetEvent StoppedEvent;
 
-        public bool IsAlive => JobThread.IsAlive;
+        public bool IsAlive => JobThread?.IsAlive ?? false;
 
         public bool IsEnabled { get; protected set; }
         public bool IsStarted { get; protected set; }

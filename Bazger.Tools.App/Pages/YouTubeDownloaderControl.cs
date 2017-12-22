@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 using Bazger.Tools.App.Properties;
+using Bazger.Tools.App.State;
 using Bazger.Tools.App.Utils;
 using Bazger.Tools.YouTubeDownloader.Core;
 using Bazger.Tools.YouTubeDownloader.Core.Model;
@@ -15,18 +16,17 @@ using Microsoft.WindowsAPICodePack.Dialogs;
 using NLog;
 using Telerik.WinControls;
 using Telerik.WinControls.UI;
-using static System.String;
 
 namespace Bazger.Tools.App.Pages
 {
-    public partial class YouTubeDownloaderControl : UserControl, IToolControl
+    public partial class YouTubeDownloaderControl : UserControl, IToolControl, IControlStateChanger
     {
         private MainForm _mainForm;
         public RadPageViewPage ParentPage { get; set; }
         public string Title => this.GetType().FullName;
         private Logger Log = LogManager.GetCurrentClassLogger();
 
-        private Launcher _launcher;
+        private MainLauncher _launcher;
         private ManualResetEvent _stopEvent;
         private string _currentUrl;
         private List<string> _videoUrls;
@@ -42,10 +42,8 @@ namespace Bazger.Tools.App.Pages
             InitializeComponent();
             _isStarted = false;
             //TODO: test journal
-            //TODO: form serializer
-            //TODO: browse dirs
-            //TODO: fix log showcast
             //TODO: fix resizing
+            //TODO: dropdown list
             //TODO: remove Video Stage from form class
         }
 
@@ -56,6 +54,47 @@ namespace Bazger.Tools.App.Pages
             _videoStageGrid.CellFormatting += radGridView_RowFormatting;
             _videoStageStatsGrid = _mainForm.videoStageStatsGrid;
             _mainForm.AddRuleToPageLoggerTarget("Bazger.Tools.YouTubeDownloader.Core.*", LogLevel.Info, Title);
+        }
+
+        public void LoadState(IControlState controlState)
+        {
+            var state = controlState as YouTubeDownloaderControlState;
+            if (state == null)
+            { return; }
+
+            if (!string.IsNullOrEmpty(state.Url))
+            {
+                urlTxtBox.Text = state.Url;
+            }
+            converterThreadsSpin.Value = state.ConvertersThreadSpin;
+            //TODO: state.ConvertionFormat;
+            if (convertionFormatsDropDownList.Items.Contains(state.ConvertionFormat))
+            {
+                convertionFormatsDropDownList.Text = state.ConvertionFormat;
+            }
+            downloaderThreadsSpin.Value = state.DownloadersThreadSpin;
+            //downloadsFolderDropDown.Text = state.DownloadsFolderPath;
+            overwriteFilesChkBox.Checked = state.IsOverwriteChecked;
+            readFromJournalChkBox.Checked = state.IsReadFromJournalChecked;
+            writeToJournalChkBox.Checked = state.IsWriteToJournalCheked;
+            //journalFileDropDown.Text = state.JournalFilePath;
+            //TODO: state.VideoFormat;
+        }
+
+        public IControlState SaveState()
+        {
+            return new YouTubeDownloaderControlState
+            {
+                Url = _currentUrl,
+                ConvertersThreadSpin = (int)converterThreadsSpin.Value,
+                DownloadersThreadSpin = (int)downloaderThreadsSpin.Value,
+                DownloadsFolderPath = downloadsFolderDropDown.Text,
+                IsOverwriteChecked = overwriteFilesChkBox.Checked,
+                IsReadFromJournalChecked = readFromJournalChkBox.Checked,
+                IsWriteToJournalCheked = writeToJournalChkBox.Checked,
+                JournalFilePath = journalFileDropDown.Text,
+                ConvertionFormat = convertionFormatsDropDownList.Text
+            };
         }
 
         public void OnFormClosing(object sender, FormClosingEventArgs e)
@@ -75,7 +114,7 @@ namespace Bazger.Tools.App.Pages
 
         private void urlTxtBox_Leave(object sender, EventArgs e)
         {
-            if (IsNullOrEmpty(urlTxtBox.Text))
+            if (string.IsNullOrEmpty(urlTxtBox.Text))
             {
                 urlTxtBox.Text = Resources.youtubeDonwloaderUrlInfo;
                 startBtn.Enabled = false;
@@ -88,6 +127,7 @@ namespace Bazger.Tools.App.Pages
 
         private void startBtn_Click(object sender, EventArgs e)
         {
+            startBtn.DropDownButtonElement.DropDownMenu.Hide();
             if (!_isStarted)
             {
                 _currentUrl = urlTxtBox.Text;
@@ -181,7 +221,7 @@ namespace Bazger.Tools.App.Pages
             {
                 statsGrid.Rows.Add(GetVideoStageStatsRow().GetAllParams());
             });
-            _launcher = new Launcher(_videoUrls, _downloaderConfigs);
+            _launcher = new MainLauncher(_videoUrls, _downloaderConfigs);
             _launcher.Start();
 
             _gridUpdate = new Thread(GridUpdate) { Name = "GridUpdate" };
@@ -465,7 +505,7 @@ namespace Bazger.Tools.App.Pages
 
         private void urlTxtBox_TextChanging(object sender, Telerik.WinControls.TextChangingEventArgs e)
         {
-            startBtn.Enabled = !IsNullOrEmpty(e.NewValue);
+            startBtn.Enabled = !string.IsNullOrEmpty(e.NewValue);
         }
 
         private void goToFolderBtn_Click(object sender, EventArgs e)
@@ -505,38 +545,53 @@ namespace Bazger.Tools.App.Pages
         private void downloadsFolderDropDown_TextChanged(object sender, EventArgs e)
         {
             var text = downloadsFolderDropDown.Text;
-            downloadsFolderDropDown.SelectionStart = text.Length;
+            if (string.IsNullOrEmpty(text) || !text.Contains(":\\"))
+            {
+                return;
+            }
             try
             {
-                var directory = Path.GetDirectoryName(downloadsFolderDropDown.Text);
-                if (IsNullOrEmpty(directory))
+                var selectionStart = downloadsFolderDropDown.SelectionStart;
+                var fullPath = Path.GetFullPath(text);
+                var directory = Path.GetDirectoryName(fullPath);
+                Debug.WriteLine("FullPath - " + fullPath);
+                Debug.WriteLine("Directory - " + directory);
+                if (string.IsNullOrEmpty(directory) && Directory.Exists(text))
                 {
-                    if (Directory.Exists(text))
-                    {
-                        directory = text;
-                    }
-                    else
-                    {
-                        return;
-                    }
+                    directory = text;
                 }
+                else if (!Directory.Exists(directory) || !Path.IsPathRooted(text))
+                {
+                    return;
+                }
+                //Check if entered text has been changed and not when only selected index.
                 if (downloadsFolderDropDown.SelectedItem == null)
                 {
-                    var allDirs = Directory.GetDirectories(directory).Where(dir => dir.Contains(text)).ToList();
-                    if (!IsNullOrEmpty(downloadsFolderDropDown.Text))
-                    {
-                        //allDirs.Insert(0, downloadsFolderDropDown.Text);
-                    }
-                    downloadsFolderDropDown.DataSource = allDirs;
-                    downloadsFolderDropDown.SelectionStart = text.Length;
-                    downloadsFolderDropDown.ShowDropDown();
                     //downloadsFolderDropDown.AutoCompleteDataSource = Directory.GetDirectories(directory).ToList();
+                    //downloadsFolderDropDown.AutoCompleteDisplayMember = text;                    
+                    var allDirectories =
+                        Directory.GetDirectories(directory)
+                            .Where(dir => dir.ToLower().Contains(text.ToLower()))
+                            .ToList();
+                    allDirectories.Insert(0, text);
+                    downloadsFolderDropDown.DataSource = allDirectories;
+                    downloadsFolderDropDown.ShowDropDown();
+                    downloadsFolderDropDown.SelectionStart = selectionStart;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                //Nothing to do
             }
+        }
+
+        private void downloadsFolderDropDown_SelectedIndexChanged(object sender, Telerik.WinControls.UI.Data.PositionChangedEventArgs e)
+        {
+            downloadsFolderDropDown.SelectionStart = downloadsFolderDropDown.Text.Length;
+        }
+
+        private void previewMenuItem_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

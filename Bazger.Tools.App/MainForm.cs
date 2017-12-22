@@ -1,28 +1,27 @@
 ﻿using System;
-using System.Windows;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.Diagnostics;
-using System.Drawing;
+using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Bazger.Tools.App.NLog;
 using Bazger.Tools.App.Pages;
+using Bazger.Tools.App.State;
 using Bazger.Tools.App.Utils;
 using Bazger.Tools.Clicker.Core;
+using Bazger.Tools.YouTubeDownloader.Core.Utility;
+using Newtonsoft.Json;
 using NLog;
 using NLog.Config;
-using NLog.Filters;
 using NLog.Targets;
-using NLog.Windows.Forms;
 using Telerik.WinControls;
 
 namespace Bazger.Tools.App
 {
     public partial class MainForm : Telerik.WinControls.UI.RadForm
     {
+        private const string StateFilePath = "state.json";
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         private ObservableCollection<string> _currentPageLogs;
 
@@ -55,8 +54,6 @@ namespace Bazger.Tools.App
             _viewScreenControls.ForEach(c => CreatePageLogger(c.Title, c.Title));
 
             toolControlsPager_SelectedPageChanged(this, null);
-
-            FormSerialisor.Deserialise(this, Application.StartupPath + @"\serialise.xml");
         }
 
         /// <summary>
@@ -100,6 +97,34 @@ namespace Bazger.Tools.App
             //Initialize IToolControls
             _viewScreenControls.ForEach(control => control.IntializeControl(this));
 
+            try
+            {
+                var formState = File.Exists(StateFilePath)
+                    ? SerDeHelper.DeserializeJsonFile<FormState>(StateFilePath,
+                        new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All })
+                    : null;
+                if (formState != null)
+                {
+                    _viewScreenControls.ForEach(c =>
+                    {
+                        var stateControl = c as IControlStateChanger;
+                        if (stateControl == null)
+                        {
+                            return;
+                        }
+                        if (formState.ControlStates.ContainsKey(c.Title))
+                        {
+                            stateControl.LoadState(formState.ControlStates[c.Title]);
+                        }
+
+                    });
+                    Log.Info("Successfully loaded state for controls");
+                }
+            }
+            catch (Exception)
+            {
+                Log.Error("Can't load states for controls fron ");
+            }
         }
 
         /// <summary>
@@ -114,7 +139,18 @@ namespace Bazger.Tools.App
                 MessageBox.Show("Some Hotkey failed to unregister!");
             }
             _viewScreenControls.ForEach(c => c.OnFormClosing(sender, e));
-            FormSerialisor.Serialise(this, Application.StartupPath + @"\serialise.xml");
+
+            var formSate = new FormState();
+            _viewScreenControls.ForEach(c =>
+            {
+                var stateControl = c as IControlStateChanger;
+                var state = stateControl?.SaveState();
+                if (state != null)
+                {
+                    formSate.ControlStates.Add(c.Title, state);
+                }
+            });
+            SerDeHelper.SerializeToJsonFile(formSate, StateFilePath, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All });
         }
 
 
@@ -156,7 +192,7 @@ namespace Bazger.Tools.App
             {
                 return;
             }
-            this.MinimumSize = new System.Drawing.Size(((UserControl)control).Size.Width + 13, this.MinimumSize.Height);
+            MinimumSize = new System.Drawing.Size(((UserControl)control).Size.Width + 13, MinimumSize.Height);
 
             if (_currentPageLogs != null)
             {
@@ -168,55 +204,14 @@ namespace Bazger.Tools.App
             _currentPageLogs.ToList().ForEach(l => text += l + Environment.NewLine);
             logTxtBox.Text = text;
             _currentPageLogs.CollectionChanged += UpdateLogTexBox;
-
-            //logTxtBox.SelectionStart = logTxtBox.TextLength;
-            //SetScrollPos(logTxtBox.Handle, 1, 50, true);
-            //int b = SetScrollPos(logTxtBox.Handle, 1, 200, true);
-            //Debug.WriteLine($"scroll-{b}");
         }
 
-        unsafe private void UpdateLogTexBox(object sender, NotifyCollectionChangedEventArgs e)
+        private void UpdateLogTexBox(object sender, NotifyCollectionChangedEventArgs e)
         {
-            var lockStatus = LockWindow(logTxtBox.Handle);
-            Debug.WriteLine($"lockStatus-{lockStatus}");
-
             foreach (string newItem in e.NewItems)
             {
                 logTxtBox.AppendText(newItem + Environment.NewLine);
-
-                int scrollPos = LogTextBoxVScrollPos;
-                int pos = logTxtBox.SelectionStart;
-                int len = logTxtBox.SelectionLength;
-                logTxtBox.Text += newItem + Environment.NewLine;
-                logTxtBox.SelectionStart = pos;
-                logTxtBox.SelectionLength = len;
-                LogTextBoxVScrollPos = scrollPos;
-
-                Debug.WriteLine($"scroll-{LogTextBoxVScrollPos}");
-                var currentPos = LogTextBoxVScrollPos;
-                if (logTxtBox.Lines.Length - 1 > logTxtBox.GetLineFromCharIndex(logTxtBox.SelectionStart))
-                {
-                    logTxtBox.Text += newItem + Environment.NewLine;
-                    int minScroll;
-                    int maxScroll;
-                    GetScrollRange(this.logTxtBox.Handle, Orientation.Vertical, out minScroll, out maxScroll);
-                    Debug.WriteLine($"Min-{minScroll}");
-                    Debug.WriteLine($"Max-{maxScroll}");
-                    //SetScrollPos(logTxtBox.Handle, Orientation.Vertical, currentPos, true);
-                }
-                else
-                {
-                    logTxtBox.AppendText(newItem + Environment.NewLine);
-                }
             }
-            lockStatus = LockWindow(IntPtr.Zero);
-            Debug.WriteLine($"lockStatus-{lockStatus}");
-        }
-
-        int LogTextBoxVScrollPos
-        {
-            get { return GetScrollPos(logTxtBox.Handle, Orientation.Vertical); }
-            set { SetScrollPos(logTxtBox.Handle, Orientation.Vertical, value, true); }
         }
 
         private void CreatePageLogger(string loggerName, string targetName)
@@ -232,7 +227,7 @@ namespace Bazger.Tools.App
 
             var rule = new LoggingRule(loggerName, LogLevel.Info, memoryTarget);
             //Write main window log to all targets
-            config.LoggingRules.First(r => r.LoggerNamePattern == this.GetType().FullName)?.Targets.Add(memoryTarget);
+            config.LoggingRules.First(r => r.LoggerNamePattern == GetType().FullName)?.Targets.Add(memoryTarget);
             config.LoggingRules.Add(rule);
 
             LogManager.Configuration = config;
@@ -253,23 +248,5 @@ namespace Bazger.Tools.App
 
             LogManager.Configuration = config;
         }
-
-        [DllImport("user32.dll")]
-        static extern int SetScrollPos(IntPtr hWnd, Orientation nBar, int nPos, bool bRedraw);
-
-        [DllImport("user32.dll")]
-        static extern int SendMessage(IntPtr hWnd, int wMsg, int wParam, int lParam);
-
-        [DllImport("user32.dll", CharSet = CharSet.Auto)]
-        static extern int GetScrollPos(IntPtr hWnd, Orientation nBar);
-
-        [DllImport("user32.dll")]
-        static extern bool GetScrollRange(IntPtr hWnd, Orientation nBar, out int lpMinPos, out int lpMaxPos);
-
-        [DllImport("user32.dll")]
-        static extern int ScrollWindowEx(IntPtr hWnd, int dx, int dy, IntPtr prcScroll, IntPtr prcClip, IntPtr hrgnUpdate, IntPtr prcUpdate, uint flags);
-
-        [DllImport("user32.dll", EntryPoint = "LockWindowUpdate", SetLastError = true, CharSet = CharSet.Auto)]
-        private static extern IntPtr LockWindow(IntPtr hWnd);
     }
 }

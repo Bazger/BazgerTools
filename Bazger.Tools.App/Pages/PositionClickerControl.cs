@@ -1,17 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
+using Bazger.Tools.App.State;
 using Bazger.Tools.Clicker.Core;
 using NLog;
-using NLog.Targets;
-using NLog.Targets.Wrappers;
 using Telerik.WinControls.UI;
 
 namespace Bazger.Tools.App.Pages
 {
-    public partial class PositionClickerControl : UserControl, IToolControl
+    public partial class PositionClickerControl : UserControl, IToolControl, IControlStateChanger
     {
         private MainForm _mainForm;
         public string Title => this.GetType().FullName;
@@ -20,7 +20,6 @@ namespace Bazger.Tools.App.Pages
 
         private const string StrCircles = "Circles Count: ";
         private Thread _posClickThread;
-
 
         private int _circlesCount;
         private int _posClickDelay;
@@ -45,10 +44,45 @@ namespace Bazger.Tools.App.Pages
             mainForm.AltShiftLCombinationPressed += PositionClickerMainProcess;
             _log.Info("ADD: Try to press this combination: SHIFT+ALT+K");
             _log.Info("START/STOP: Try to press this combination: SHIFT+ALT+L");
+            LoadFromState();
+        }
+
+        public void LoadState(IControlState controlState)
+        {
+            var state = controlState as PositionClickerControlState;
+            if (state == null)
+            { return; }
+
+            delaySpin.Value = state.DelaySpin;
+            foreach (var row in state.PositionsGrid)
+            {
+                var regex = new Regex("^[0-9]+,[0-9]+$");
+                if (!regex.IsMatch(row))
+                {
+                    continue;
+                }
+                positionsGrid.Rows.Add(row);
+            }
+        }
+
+        public IControlState SaveState()
+        {
+            return new PositionClickerControlState
+            {
+                DelaySpin = (int)delaySpin.Value,
+                PositionsGrid = positionsGrid.Rows.Select(r => r.Cells["position"].Value.ToString()).ToList()
+            };
+        }
+
+
+        private void LoadFromState()
+        {
+
         }
 
         public void OnFormClosing(object sender, FormClosingEventArgs e)
         {
+
         }
 
         /// <summary>

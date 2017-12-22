@@ -16,25 +16,22 @@ namespace Bazger.Tools.YouTubeDownloader.Core.Model
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
-        private readonly BlockingCollection<string> _waitingForDownload;
+        private readonly BlockingCollection<VideoProgressMetadata> _waitingForDownload;
         private readonly BlockingCollection<VideoProgressMetadata> _waitingForConvertion;
         private readonly BlockingCollection<VideoProgressMetadata> _waitingForMoving;
         private readonly bool _isConvertionEnabled;
         private readonly ConcurrentDictionary<string, VideoProgressMetadata> _videosProgress;
-        private readonly string _saveDir;
         private readonly string _launcherTempDir;
         private string _downloaderTempDir;
         private readonly WebSiteDownloaderProxy _youTubeProxy;
         private const int MillisecondsTimeout = 5000;
 
-        public DownloaderThread(string name, ConcurrentDictionary<string, VideoProgressMetadata> videosProgress, string saveDir, string launcherTempDir, BlockingCollection<string> waitingForDownload, BlockingCollection<VideoProgressMetadata> waitingForConvertion, BlockingCollection<VideoProgressMetadata> waitingForMoving, bool isConvertionEnabled) : base(name)
+        public DownloaderThread(string name, BlockingCollection<VideoProgressMetadata> waitingForDownload, BlockingCollection<VideoProgressMetadata> waitingForConvertion, BlockingCollection<VideoProgressMetadata> waitingForMoving, string launcherTempDir, bool isConvertionEnabled) : base(name)
         {
             _waitingForDownload = waitingForDownload;
             _waitingForConvertion = waitingForConvertion;
             _waitingForMoving = waitingForMoving;
             _isConvertionEnabled = isConvertionEnabled;
-            _videosProgress = videosProgress;
-            _saveDir = saveDir;
             _launcherTempDir = launcherTempDir;
             _youTubeProxy = new YouTubeProxy();
         }
@@ -50,20 +47,15 @@ namespace Bazger.Tools.YouTubeDownloader.Core.Model
                 VideoProgressMetadata videoMetadata = null;
                 try
                 {
-                    string videoUrl;
-                    _waitingForDownload.TryTake(out videoUrl, MillisecondsTimeout);
-                    if (string.IsNullOrEmpty(videoUrl))
+                    _waitingForDownload.TryTake(out videoMetadata, MillisecondsTimeout);
+                    if (videoMetadata == null)
                     {
                         continue;
                     }
-                    videoMetadata = new VideoProgressMetadata(videoUrl)
-                    {
-                        Stage = VideoProgressStage.Downloading,
-                        Progress = 0,
-                        SaveDir = _saveDir,
-                        DownloaderTempDir = _downloaderTempDir,
-                    };
-                    _videosProgress.TryAdd(videoUrl, videoMetadata);
+
+                    videoMetadata.Stage = VideoProgressStage.Downloading;
+                    videoMetadata.DownloaderTempDir = _downloaderTempDir;
+
                     Log.Info(LogHelper.Format("Downloading video", videoMetadata));
                     _youTubeProxy.Download(videoMetadata);
                     Log.Info(LogHelper.Format("Video successfully dwonloaded", videoMetadata));
@@ -74,7 +66,7 @@ namespace Bazger.Tools.YouTubeDownloader.Core.Model
                         videoMetadata.Stage = VideoProgressStage.Moving;
                         continue;
                     }
-                    _waitingForConvertion?.TryAdd(_videosProgress[videoUrl]);
+                    _waitingForConvertion?.TryAdd(videoMetadata);
                     videoMetadata.Stage = VideoProgressStage.WaitingToConvertion;
                 }
                 catch (Exception ex)
@@ -112,7 +104,6 @@ namespace Bazger.Tools.YouTubeDownloader.Core.Model
             }
             StoppedEvent.Set();
         }
-
 
         public override void Abort()
         {
