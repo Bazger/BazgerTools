@@ -71,6 +71,15 @@ namespace Bazger.Tools.App.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Download.
+        /// </summary>
+        internal static string startBtn_Download {
+            get {
+                return ResourceManager.GetString("startBtn_Download", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Start.
         /// </summary>
         internal static string startBtn_Start {

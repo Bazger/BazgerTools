@@ -75,6 +75,7 @@
     <Compile Include="Model\FileMoverThread.cs" />
     <Compile Include="Model\LauncherBase.cs" />
     <Compile Include="Model\PreviewThread.cs" />
+    <Compile Include="Model\VideoQuality.cs" />
     <Compile Include="PreviewLauncher.cs" />
     <Compile Include="Utility\FileHelper.cs" />
     <Compile Include="Model\ServiceThread.cs" />

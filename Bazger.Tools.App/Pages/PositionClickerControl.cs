@@ -111,7 +111,7 @@ namespace Bazger.Tools.App.Pages
                 _posClickThread = new Thread(PositionClickerThread);
                 _posClickThread.Start();
                 _log.Info("Clicking Started");
-                _mainForm.ChangeEnabledStateOfNotSelectedTabs(false);
+                _mainForm.IsPageSwitichingEnabled(false);
             }
             else
             {
@@ -119,7 +119,7 @@ namespace Bazger.Tools.App.Pages
                 ctrlsPnl.Enabled = true;
                 _log.Info("Clicking Stopped");
                 circlesLbl.Text = StrCircles + _circlesCount;
-                _mainForm.ChangeEnabledStateOfNotSelectedTabs(true);
+                _mainForm.IsPageSwitichingEnabled(true);
             }
         }
 

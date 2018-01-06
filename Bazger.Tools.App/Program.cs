@@ -6,7 +6,7 @@ namespace Bazger.Tools.App
 {
     static class Program
     {
-        public static MainForm MainForm;
+        public static Form MainForm;
         public static SphlashScreen SphlashForm;
 
         /// <summary>

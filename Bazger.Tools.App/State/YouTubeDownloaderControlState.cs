@@ -19,6 +19,12 @@ namespace Bazger.Tools.App.State
         [JsonProperty("ConvertersThreadSpin")]
         public int ConvertersThreadSpin { get; set; }
 
+        [JsonProperty("IsConversionChecked")]
+        public bool IsConversionChecked { get; set; }
+
+        [JsonProperty("ConvertionFormat")]
+        public string ConvertionFormat { get; set; }
+
         [JsonProperty("IsWriteToJournalCheked")]
         public bool IsWriteToJournalCheked { get; set; }
 
@@ -30,9 +36,6 @@ namespace Bazger.Tools.App.State
 
         [JsonProperty("VideoFormat")]
         public string VideoFormat { get; set; }
-
-        [JsonProperty("ConvertionFormat")]
-        public string ConvertionFormat { get; set; }
 
         [JsonProperty("JournalFilePath")]
         public string JournalFilePath { get; set; }

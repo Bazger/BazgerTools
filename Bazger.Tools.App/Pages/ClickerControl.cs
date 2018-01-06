@@ -92,7 +92,7 @@ namespace Bazger.Tools.App.Pages
                 _clickThread = new Thread(ClickerThread);
                 _clickThread.Start();
                 _log.Info("Clicking Started");
-                _mainForm.ChangeEnabledStateOfNotSelectedTabs(false);
+                _mainForm.IsPageSwitichingEnabled(false);
             }
             else
             {
@@ -102,7 +102,7 @@ namespace Bazger.Tools.App.Pages
                 UpdateCountLblText();
                 UpdateAllCountLblText();
                 _log.Info("Clicking Stopped");
-                _mainForm.ChangeEnabledStateOfNotSelectedTabs(true);
+                _mainForm.IsPageSwitichingEnabled(true);
             }
         }
 

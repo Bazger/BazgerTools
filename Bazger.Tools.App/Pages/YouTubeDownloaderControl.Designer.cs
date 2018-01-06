@@ -65,8 +65,8 @@ namespace Bazger.Tools.App.Pages
             this.startMenuItem = new Telerik.WinControls.UI.RadMenuItem();
             this.previewMenuItem = new Telerik.WinControls.UI.RadMenuItem();
             this.radPanel1 = new Telerik.WinControls.UI.RadPanel();
-            this.radDropDownList1 = new Telerik.WinControls.UI.RadDropDownList();
             this.radLabel1 = new Telerik.WinControls.UI.RadLabel();
+            this.radDropDownList1 = new Telerik.WinControls.UI.RadDropDownList();
             this.converterPnl = new Telerik.WinControls.UI.RadPanel();
             this.convertionFormatsDropDownList = new Telerik.WinControls.UI.RadDropDownList();
             this.convertionEnabledChkBox = new Telerik.WinControls.UI.RadCheckBox();
@@ -96,8 +96,8 @@ namespace Bazger.Tools.App.Pages
             ((System.ComponentModel.ISupportInitialize)(this.startBtn)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.radPanel1)).BeginInit();
             this.radPanel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.radDropDownList1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.radLabel1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.radDropDownList1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.converterPnl)).BeginInit();
             this.converterPnl.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.convertionFormatsDropDownList)).BeginInit();
@@ -362,7 +362,7 @@ namespace Bazger.Tools.App.Pages
             // 
             this.goToFolderBtn.Location = new System.Drawing.Point(3, 197);
             this.goToFolderBtn.Name = "goToFolderBtn";
-            this.goToFolderBtn.Size = new System.Drawing.Size(81, 32);
+            this.goToFolderBtn.Size = new System.Drawing.Size(80, 32);
             this.goToFolderBtn.TabIndex = 72;
             this.goToFolderBtn.Text = "Downloads";
             this.goToFolderBtn.ThemeName = "VisualStudio2012Light";
@@ -371,10 +371,10 @@ namespace Bazger.Tools.App.Pages
             // downloadProgressBar
             // 
             this.downloadProgressBar.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.downloadProgressBar.Location = new System.Drawing.Point(90, 197);
+            this.downloadProgressBar.Location = new System.Drawing.Point(89, 197);
             this.downloadProgressBar.Name = "downloadProgressBar";
             this.downloadProgressBar.SeparatorColor1 = System.Drawing.Color.FromArgb(((int)(((byte)(239)))), ((int)(((byte)(239)))), ((int)(((byte)(239)))));
-            this.downloadProgressBar.Size = new System.Drawing.Size(438, 32);
+            this.downloadProgressBar.Size = new System.Drawing.Size(430, 32);
             this.downloadProgressBar.TabIndex = 60;
             this.downloadProgressBar.Text = "0%";
             this.downloadProgressBar.ThemeName = "VisualStudio2012Light";
@@ -383,10 +383,10 @@ namespace Bazger.Tools.App.Pages
             // waitingBar
             // 
             this.waitingBar.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.waitingBar.Location = new System.Drawing.Point(90, 197);
+            this.waitingBar.Location = new System.Drawing.Point(89, 197);
             this.waitingBar.Name = "waitingBar";
             this.waitingBar.ShowText = true;
-            this.waitingBar.Size = new System.Drawing.Size(438, 32);
+            this.waitingBar.Size = new System.Drawing.Size(430, 32);
             this.waitingBar.TabIndex = 75;
             this.waitingBar.Text = "0%";
             this.waitingBar.ThemeName = "VisualStudio2012Light";
@@ -401,15 +401,14 @@ namespace Bazger.Tools.App.Pages
             // 
             this.startBtn.DefaultItem = this.startMenuItem;
             this.startBtn.Items.AddRange(new Telerik.WinControls.RadItem[] {
-            this.startMenuItem,
             this.previewMenuItem});
-            this.startBtn.Location = new System.Drawing.Point(534, 197);
+            this.startBtn.Location = new System.Drawing.Point(525, 197);
             this.startBtn.Name = "startBtn";
             // 
             // 
             // 
             this.startBtn.RootElement.AutoSizeMode = Telerik.WinControls.RadAutoSizeMode.WrapAroundChildren;
-            this.startBtn.Size = new System.Drawing.Size(73, 32);
+            this.startBtn.Size = new System.Drawing.Size(82, 32);
             this.startBtn.TabIndex = 71;
             this.startBtn.Text = "Start";
             this.startBtn.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -437,6 +436,16 @@ namespace Bazger.Tools.App.Pages
             this.radPanel1.TabIndex = 77;
             this.radPanel1.ThemeName = "VisualStudio2012Light";
             // 
+            // radLabel1
+            // 
+            this.radLabel1.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.radLabel1.Location = new System.Drawing.Point(4, 6);
+            this.radLabel1.Name = "radLabel1";
+            this.radLabel1.Size = new System.Drawing.Size(90, 21);
+            this.radLabel1.TabIndex = 43;
+            this.radLabel1.Text = "Video Format:";
+            this.radLabel1.ThemeName = "VisualStudio2012Light";
+            // 
             // radDropDownList1
             // 
             this.radDropDownList1.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
@@ -451,16 +460,6 @@ namespace Bazger.Tools.App.Pages
             this.radDropDownList1.TabIndex = 42;
             this.radDropDownList1.Text = ".wav";
             this.radDropDownList1.ThemeName = "VisualStudio2012Light";
-            // 
-            // radLabel1
-            // 
-            this.radLabel1.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.radLabel1.Location = new System.Drawing.Point(4, 6);
-            this.radLabel1.Name = "radLabel1";
-            this.radLabel1.Size = new System.Drawing.Size(90, 21);
-            this.radLabel1.TabIndex = 43;
-            this.radLabel1.Text = "Video Format:";
-            this.radLabel1.ThemeName = "VisualStudio2012Light";
             // 
             // converterPnl
             // 
@@ -542,8 +541,8 @@ namespace Bazger.Tools.App.Pages
             ((System.ComponentModel.ISupportInitialize)(this.radPanel1)).EndInit();
             this.radPanel1.ResumeLayout(false);
             this.radPanel1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.radDropDownList1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.radLabel1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.radDropDownList1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.converterPnl)).EndInit();
             this.converterPnl.ResumeLayout(false);
             this.converterPnl.PerformLayout();
@@ -579,7 +578,6 @@ namespace Bazger.Tools.App.Pages
         private Telerik.WinControls.UI.RadSpinEditor radSpinEditor1;
         private Telerik.WinControls.UI.RadLabel fileMoverThreadsLbl;
         private Telerik.WinControls.UI.RadSplitButton startBtn;
-        private Telerik.WinControls.UI.RadMenuItem startMenuItem;
         private Telerik.WinControls.UI.RadMenuItem previewMenuItem;
         private RadPanel radPanel1;
         private RadLabel radLabel1;
@@ -587,5 +585,6 @@ namespace Bazger.Tools.App.Pages
         private RadPanel converterPnl;
         private RadDropDownList convertionFormatsDropDownList;
         private RadCheckBox convertionEnabledChkBox;
+        private RadMenuItem startMenuItem;
     }
 }

@@ -96,17 +96,8 @@ namespace Bazger.Tools.YouTubeDownloader.Core.Model
                         Log.Warn(innerEx, LogHelper.Format($"Can't delete converted audio file | path={videoMetadata.ConvertedFilePath}", videoMetadata));
                     }
                 }
+                base.Job();
             }
-        }
-
-        public override void Abort()
-        {
-            if (!IsAlive)
-            {
-                return;
-            }
-            Log.Warn($"Abort converter service ({Name})");
-            JobThread.Abort();
         }
     }
 }

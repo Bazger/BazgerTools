@@ -62,16 +62,7 @@ namespace Bazger.Tools.YouTubeDownloader.Core.Model
                     videoMetadata.ErrorArgs = ex.ToString();
                 }
             }
-        }
-
-        public override void Abort()
-        {
-            if (!IsAlive)
-            {
-                return;
-            }
-            Log.Warn($"Abort converter service ({Name})");
-            JobThread.Abort();
+            base.Job();
         }
     }
 }

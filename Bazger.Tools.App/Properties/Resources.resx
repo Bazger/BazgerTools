@@ -133,4 +133,7 @@
   <data name="youtubeApiKey" xml:space="preserve">
     <value>AIzaSyAQXaMeoVZGg5DNr5M_tgAkh28QMLb1Q6U</value>
   </data>
+  <data name="startBtn_Download" xml:space="preserve">
+    <value>Download</value>
+  </data>
 </root>

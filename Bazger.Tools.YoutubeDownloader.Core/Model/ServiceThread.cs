@@ -1,9 +1,12 @@
 ﻿using System.Threading;
+using NLog;
 
 namespace Bazger.Tools.YouTubeDownloader.Core.Model
 {
     public abstract class ServiceThread
     {
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+
         public string Name => JobThread.Name;
 
         protected readonly Thread JobThread;
@@ -24,7 +27,7 @@ namespace Bazger.Tools.YouTubeDownloader.Core.Model
             };
         }
 
-        public virtual void Start()
+        public void Start()
         {
             if (JobThread.IsAlive)
             {
@@ -40,12 +43,25 @@ namespace Bazger.Tools.YouTubeDownloader.Core.Model
         public virtual void Stop()
         {
             StopEvent.Set();
+            StoppedEvent.Set();
         }
 
-        protected abstract void Job();
-        public abstract void Abort();
+        protected virtual void Job()
+        {
+            StoppedEvent.Set();
+        }
 
-        public bool WaitForStop(int waitTimeout = -1)
+        public virtual void Abort()
+        {
+            if (!JobThread.IsAlive)
+            {
+                return;
+            }
+            Log.Warn($"Abort service ({Name})");
+            JobThread.Abort();
+        }
+
+        public bool Wait(int waitTimeout = -1)
         {
             return StoppedEvent.WaitOne(waitTimeout);
         }

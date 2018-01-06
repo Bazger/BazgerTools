@@ -20,18 +20,20 @@ namespace Bazger.Tools.YouTubeDownloader.Core.Model
         private readonly BlockingCollection<VideoProgressMetadata> _waitingForConvertion;
         private readonly BlockingCollection<VideoProgressMetadata> _waitingForMoving;
         private readonly bool _isConvertionEnabled;
+        private readonly bool _isAfterPreview;
         private readonly ConcurrentDictionary<string, VideoProgressMetadata> _videosProgress;
         private readonly string _launcherTempDir;
         private string _downloaderTempDir;
         private readonly WebSiteDownloaderProxy _youTubeProxy;
         private const int MillisecondsTimeout = 5000;
 
-        public DownloaderThread(string name, BlockingCollection<VideoProgressMetadata> waitingForDownload, BlockingCollection<VideoProgressMetadata> waitingForConvertion, BlockingCollection<VideoProgressMetadata> waitingForMoving, string launcherTempDir, bool isConvertionEnabled) : base(name)
+        public DownloaderThread(string name, BlockingCollection<VideoProgressMetadata> waitingForDownload, BlockingCollection<VideoProgressMetadata> waitingForConvertion, BlockingCollection<VideoProgressMetadata> waitingForMoving, string launcherTempDir, bool isConvertionEnabled, bool isAfterPreview) : base(name)
         {
             _waitingForDownload = waitingForDownload;
             _waitingForConvertion = waitingForConvertion;
             _waitingForMoving = waitingForMoving;
             _isConvertionEnabled = isConvertionEnabled;
+            _isAfterPreview = isAfterPreview;
             _launcherTempDir = launcherTempDir;
             _youTubeProxy = new YouTubeProxy();
         }
@@ -57,7 +59,22 @@ namespace Bazger.Tools.YouTubeDownloader.Core.Model
                     videoMetadata.DownloaderTempDir = _downloaderTempDir;
 
                     Log.Info(LogHelper.Format("Downloading video", videoMetadata));
-                    _youTubeProxy.Download(videoMetadata);
+                    if (!_isAfterPreview)
+                    {
+                        _youTubeProxy.Download(videoMetadata);
+                    }
+                    else
+                    {
+                        var previewProxy = _youTubeProxy as IPreviewVideoProxy;
+                        if (previewProxy != null && videoMetadata.SelectedVideoInfo != null)
+                        {
+                            previewProxy.DownloadFromPriview(videoMetadata);
+                        }
+                        else
+                        {
+                            _youTubeProxy.Download(videoMetadata);
+                        }
+                    }
                     Log.Info(LogHelper.Format("Video successfully dwonloaded", videoMetadata));
                     if (!_isConvertionEnabled)
                     {
@@ -102,17 +119,7 @@ namespace Bazger.Tools.YouTubeDownloader.Core.Model
                     videoMetadata.ErrorArgs = ex.ToString();
                 }
             }
-            StoppedEvent.Set();
-        }
-
-        public override void Abort()
-        {
-            if (!IsAlive)
-            {
-                return;
-            }
-            Log.Warn($"Abort downloader service ({Name})");
-            JobThread.Abort();
+            base.Job();
         }
     }
 }

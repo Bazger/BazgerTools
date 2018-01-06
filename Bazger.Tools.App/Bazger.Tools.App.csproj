@@ -122,7 +122,6 @@
     <Compile Include="State\IControlStateChanger.cs" />
     <Compile Include="State\PositionClickerControlState.cs" />
     <Compile Include="State\YouTubeDownloaderControlState.cs" />
-    <Compile Include="Utils\FormSerialisor.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -156,6 +155,7 @@
     <Compile Include="SphlashScreen.designer.cs">
       <DependentUpon>SphlashScreen.cs</DependentUpon>
     </Compile>
+    <Compile Include="Utils\FormHelper.cs" />
     <EmbeddedResource Include="Controls\RadDropDownAutoCompleteList.resx">
       <DependentUpon>RadDropDownAutoCompleteList.cs</DependentUpon>
     </EmbeddedResource>
@@ -238,6 +238,10 @@
     <ProjectReference Include="..\Bazger.Tools.YoutubeDownloader.Core\Bazger.Tools.YouTubeDownloader.Core.csproj">
       <Project>{FCED1C65-44E5-433A-AFE5-5FA31174B0B2}</Project>
       <Name>Bazger.Tools.YouTubeDownloader.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\YoutubeExtractor\YoutubeExtractor\YoutubeExtractor.csproj">
+      <Project>{ecdc127f-8def-4f99-8300-72c13597339d}</Project>
+      <Name>YoutubeExtractor</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

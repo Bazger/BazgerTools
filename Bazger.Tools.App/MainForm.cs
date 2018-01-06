@@ -154,7 +154,7 @@ namespace Bazger.Tools.App
         }
 
 
-        public void ChangeEnabledStateOfNotSelectedTabs(bool isEnabled)
+        public void IsPageSwitichingEnabled(bool isEnabled)
         {
             toolControlsPager.Pages.ToList().ForEach(p =>
             {
@@ -210,7 +210,7 @@ namespace Bazger.Tools.App
         {
             foreach (string newItem in e.NewItems)
             {
-                logTxtBox.AppendText(newItem + Environment.NewLine);
+                FormHelper.ControlInvoker(logTxtBox, control => control.AppendText(newItem + Environment.NewLine));
             }
         }
 

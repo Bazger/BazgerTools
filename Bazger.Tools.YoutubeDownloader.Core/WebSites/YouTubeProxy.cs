@@ -34,24 +34,7 @@ namespace Bazger.Tools.YouTubeDownloader.Core.WebSites
 
         public void DownloadFromPriview(VideoProgressMetadata videoMetadata)
         {
-            
-        }
-
-        public override void Download(VideoProgressMetadata videoMetadata)
-        {
-            var videoInfos = DownloadUrlResolver.GetDownloadUrls(videoMetadata.Url, false).ToList();
-
-            /*
-             * Select the first .mp4 video with 360p resolution
-             */
-            var video = videoInfos
-                .First(info => info.FormatCode == _videoFormatCode) ?? videoInfos
-                    .First(info => info.FormatCode == DefaultVideoFormatCode);
-
-            if (video == null)
-            {
-                throw new Exception("No VideoInfo to pick. Tried to chose default one, but failed");
-            }
+            var video = videoMetadata.SelectedVideoInfo;
 
             /*
              * If the video has a decrypted signature, decipher it
@@ -69,13 +52,13 @@ namespace Bazger.Tools.YouTubeDownloader.Core.WebSites
              * The second argument is the path to save the video file.
              */
             videoMetadata.VideoFilePath = Path.Combine(videoMetadata.DownloaderTempDir,
-              Guid.NewGuid() + video.VideoExtension);
+                Guid.NewGuid() + video.VideoExtension);
             var videoDownloader = new VideoDownloader(video, videoMetadata.VideoFilePath);
 
 
             // Register the ProgressChanged event and print the current progress
             videoDownloader.DownloadProgressChanged += (sender, args) =>
-               videoMetadata.Progress = Math.Round(args.ProgressPercentage, 2);
+                videoMetadata.Progress = Math.Round(args.ProgressPercentage, 2);
 
             /*
              * Execute the video downloader.
@@ -91,6 +74,26 @@ namespace Bazger.Tools.YouTubeDownloader.Core.WebSites
                 Log.Warn(ex, LogHelper.Format("Can't download video, will retry", videoMetadata));
             }
             RetryToDownload(() => { videoDownloader.Execute(); }, videoMetadata);
+        }
+
+        public override void Download(VideoProgressMetadata videoMetadata)
+        {
+            var videoInfos = DownloadUrlResolver.GetDownloadUrls(videoMetadata.Url, false).ToList();
+
+            /*
+             * Select the first .mp4 video with 360p resolution
+             */
+            var video = videoInfos
+                .First(info => info.FormatCode == _videoFormatCode) ?? videoInfos
+                    .First(info => info.FormatCode == DefaultVideoFormatCode);
+
+            if (video == null)
+            {
+                throw new Exception("No VideoInfo to pick. Tried to chose default one, but failed");
+            }
+            videoMetadata.SelectedVideoInfo = video;
+
+            DownloadFromPriview(videoMetadata);
         }
     }
 }

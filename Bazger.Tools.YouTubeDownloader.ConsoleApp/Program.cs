@@ -62,7 +62,7 @@ namespace Bazger.Tools.YouTubeDownloader.ConsoleApp
             var drawLastTime = false;
             while (!drawLastTime)
             {
-                if (_stopUiEvent.WaitOne(1000) || _launcher.WaitForStop(0))
+                if (_stopUiEvent.WaitOne(1000) || _launcher.Wait(0))
                 {
                     drawLastTime = true;
                 }

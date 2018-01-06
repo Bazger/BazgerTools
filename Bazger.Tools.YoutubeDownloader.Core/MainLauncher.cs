@@ -14,42 +14,53 @@ namespace Bazger.Tools.YouTubeDownloader.Core
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
-        public ConcurrentDictionary<string, VideoProgressMetadata> VideosProgress { get; }
-
         private readonly DownloaderConfigs _configs;
         private IEnumerable<string> _videoUrls;
+        private readonly IDictionary<string, VideoProgressMetadata> _inputVideosProgress;
 
         private readonly List<DownloaderThread> _downloaderThreads;
         private readonly List<ConverterThread> _converterThreads;
         private FileMoverThread _fileMoverThread;
 
         private string _tempDir;
+        private readonly bool _isAfterPreview;
 
+        public MainLauncher(IDictionary<string, VideoProgressMetadata> videosProgress, DownloaderConfigs configs, IEnumerable<string> videoUrls = null, string name = "MainLauncher") :
+            this(configs, name)
+        {
+            _inputVideosProgress = videosProgress ?? new Dictionary<string, VideoProgressMetadata>();
+            _videoUrls = videoUrls ?? _inputVideosProgress.Keys;
+            _isAfterPreview = true;
+        }
         //TODO: Add option to chose video quality and resolution
-        public MainLauncher(IEnumerable<string> videoUrls, DownloaderConfigs configs, string name = "MainLauncher") : base(name)
+        public MainLauncher(IEnumerable<string> videoUrls, DownloaderConfigs configs, string name = "MainLauncher") :
+            this(configs, name)
+        {
+            _videoUrls = videoUrls;
+        }
+
+        private MainLauncher(DownloaderConfigs configs, string name) : base(name)
         {
             _configs = configs;
-            _videoUrls = videoUrls;
-
-            VideosProgress = new ConcurrentDictionary<string, VideoProgressMetadata>();
             _downloaderThreads = new List<DownloaderThread>();
             _converterThreads = new List<ConverterThread>();
+            _isAfterPreview = false;
         }
 
         public override void Stop()
         {
             if (StoppedEvent.WaitOne(0))
             {
-                Log.Info("Launcher service already stopped");
+                Log.Info($"{Name} service already stopped");
                 return;
             }
             if (StopEvent.WaitOne(0))
             {
-                Log.Info("Launcher service is stopping now");
+                Log.Info($"{Name} service is stopping now");
                 return;
             }
 
-            Log.Info("Stopping launcher service");
+            Log.Info($"Stopping {Name} service");
             StopEvent.Set();
             StopServices(_downloaderThreads);
             if (_configs.ConverterEnabled)
@@ -60,15 +71,13 @@ namespace Bazger.Tools.YouTubeDownloader.Core
             var waitEvent = new AutoResetEvent(false);
             while (!waitEvent.WaitOne(5000))
             {
-                if (!JobThread.IsAlive && _downloaderThreads.Count(c => c.IsAlive) == 0 &&
-                    _converterThreads.Count(c => c.IsAlive) == 0)
+                if (!JobThread.IsAlive && GetAliveDownloadersCount() == 0 && GetAliveConvertersCount() == 0)
                 {
                     waitEvent.Set();
                     break;
                 }
                 AbortServices(_downloaderThreads);
                 AbortServices(_converterThreads);
-                this.Abort();
             }
 
             Log.Info("Stopping File Mover service");
@@ -92,7 +101,7 @@ namespace Bazger.Tools.YouTubeDownloader.Core
             }
 
             StoppedEvent.Set();
-            Log.Info("Launcher stopped");
+            Log.Info($"{Name} service stopped");
         }
 
         protected override void Job()
@@ -122,9 +131,17 @@ namespace Bazger.Tools.YouTubeDownloader.Core
                 }
             }
 
-            StartupVidesoProgress();
-
-            var waitingForDownload = new BlockingCollection<VideoProgressMetadata>(new ConcurrentQueue<VideoProgressMetadata>(_videoUrls.Select(url => VideosProgress[url])));
+            StartupVideosProgress();
+            BlockingCollection<VideoProgressMetadata> waitingForDownload;
+            if (_videoUrls != null && !_videoUrls.Any())
+            {
+                waitingForDownload = new BlockingCollection<VideoProgressMetadata>(
+                    new ConcurrentQueue<VideoProgressMetadata>(_videoUrls.Select(url => VideosProgress[url])));
+            }
+            else
+            {
+                waitingForDownload = new BlockingCollection<VideoProgressMetadata>(new ConcurrentQueue<VideoProgressMetadata>(VideosProgress.Values));
+            }
             var waitingForConvertion = new BlockingCollection<VideoProgressMetadata>();
             var waitingForMoving = new BlockingCollection<VideoProgressMetadata>();
 
@@ -138,17 +155,17 @@ namespace Bazger.Tools.YouTubeDownloader.Core
 
             //STAGE II - Processing
             //Check if threads downloading and converting
-            while (_downloaderThreads.Count(c => c.IsAlive) != 0 || _converterThreads.Count(c => c.IsAlive) != 0 || _fileMoverThread.IsAlive)
+            while (GetAliveDownloadersCount() != 0 || GetAliveConvertersCount() != 0 || GetAliveFileMoversCount() != 0)
             {
                 //Check if stop of thread called
                 if (StopEvent.WaitOne(1000))
                 {
                     return;
                 }
-                if (_downloaderThreads.Count(c => c.IsAlive) == 0 && waitingForConvertion.Count == 0 && waitingForDownload.Count == 0)
+                if (GetAliveDownloadersCount() == 0 && waitingForConvertion.Count == 0 && waitingForDownload.Count == 0)
                 {
                     StopServices(_converterThreads);
-                    if (_converterThreads.Count(c => c.IsAlive) == 0 && waitingForMoving.Count == 0)
+                    if (GetAliveConvertersCount() == 0 && waitingForMoving.Count == 0)
                     {
                         _fileMoverThread.Stop();
                     }
@@ -173,11 +190,11 @@ namespace Bazger.Tools.YouTubeDownloader.Core
                 Log.Info("Writing succeeded");
             }
 
-            StoppedEvent.Set();
-            Log.Info("Launcher finished its work");
+            Log.Info($"{Name} finished its work");
+            base.Job();
         }
 
-        private void StartupVidesoProgress()
+        private void StartupVideosProgress()
         {
             foreach (var url in _videoUrls)
             {
@@ -187,6 +204,10 @@ namespace Bazger.Tools.YouTubeDownloader.Core
                     Stage = VideoProgressStage.Idling,
                     Progress = 0
                 };
+                if (_isAfterPreview)
+                {
+                    progressMetadata.SelectedVideoInfo = _inputVideosProgress[url].SelectedVideoInfo;
+                }
                 VideosProgress.TryAdd(url, progressMetadata);
             }
         }
@@ -198,16 +219,7 @@ namespace Bazger.Tools.YouTubeDownloader.Core
                 return;
             }
             Log.Warn($"Abort launcher service ({Name})");
-            JobThread.Abort();
-        }
-
-        public void ForceStop()
-        {
-            if (!JobThread.IsAlive)
-            {
-                return;
-            }
-            Log.Warn($"Abort launcher service ({Name})");
+            StopEvent.Set();
             AbortServices(_downloaderThreads);
             AbortServices(_converterThreads);
             _fileMoverThread.Abort();
@@ -223,7 +235,7 @@ namespace Bazger.Tools.YouTubeDownloader.Core
             //Inialing once because method are safe for multithreaded usage
             for (var i = 0; i < _configs.ParallelDownloadsCount; i++)
             {
-                _downloaderThreads.Add(new DownloaderThread($"Downloader {i}", waitingForDownload, waitingForConvertion, waitingForMoving, _tempDir, _configs.ConverterEnabled));
+                _downloaderThreads.Add(new DownloaderThread($"Downloader {i}", waitingForDownload, waitingForConvertion, waitingForMoving, _tempDir, _configs.ConverterEnabled, _isAfterPreview));
             }
 
             Log.Info("Starting downloader threads");
