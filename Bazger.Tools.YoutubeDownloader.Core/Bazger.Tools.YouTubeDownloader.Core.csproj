@@ -55,7 +55,6 @@
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Diagnostics.Contracts" />
     <Reference Include="System.Management" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Web" />
@@ -75,7 +74,8 @@
     <Compile Include="Model\FileMoverThread.cs" />
     <Compile Include="Model\LauncherBase.cs" />
     <Compile Include="Model\PreviewThread.cs" />
-    <Compile Include="Model\VideoQuality.cs" />
+    <Compile Include="Model\VideoFormat.cs" />
+    <Compile Include="Model\VideoType.cs" />
     <Compile Include="PreviewLauncher.cs" />
     <Compile Include="Utility\FileHelper.cs" />
     <Compile Include="Model\ServiceThread.cs" />

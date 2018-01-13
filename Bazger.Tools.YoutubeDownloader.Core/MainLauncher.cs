@@ -206,7 +206,8 @@ namespace Bazger.Tools.YouTubeDownloader.Core
                 };
                 if (_isAfterPreview)
                 {
-                    progressMetadata.SelectedVideoInfo = _inputVideosProgress[url].SelectedVideoInfo;
+                    progressMetadata.SelectedVideoType = _inputVideosProgress[url].SelectedVideoType;
+                    progressMetadata.Title = _inputVideosProgress[url].Title;
                 }
                 VideosProgress.TryAdd(url, progressMetadata);
             }
@@ -218,6 +219,7 @@ namespace Bazger.Tools.YouTubeDownloader.Core
             {
                 return;
             }
+            //TODO: Remove temp dir without collition with stop method call
             Log.Warn($"Abort launcher service ({Name})");
             StopEvent.Set();
             AbortServices(_downloaderThreads);

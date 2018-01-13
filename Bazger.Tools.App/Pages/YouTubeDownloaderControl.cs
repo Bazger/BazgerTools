@@ -19,6 +19,7 @@ using NLog;
 using Telerik.WinControls;
 using Telerik.WinControls.UI;
 using YoutubeExtractor;
+using VideoType = Bazger.Tools.YouTubeDownloader.Core.Model.VideoType;
 
 namespace Bazger.Tools.App.Pages
 {
@@ -28,6 +29,7 @@ namespace Bazger.Tools.App.Pages
         public RadPageViewPage ParentPage { get; set; }
         public string Title => this.GetType().FullName;
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+        private IEnumerable<VideoType> AvailableVideoTypes;
 
         private MainLauncher _launcher;
         private ManualResetEvent _stopEvent;
@@ -52,9 +54,13 @@ namespace Bazger.Tools.App.Pages
             //TODO: Fix resizing
             //TODO: Dropdown list
             //TODO: Remove Video Stage from form class
-            //TODO: Disable editing for all columns excepts for quality
+            //TODO: Disable editing for all columns excepts for video_types
             //TODO: After stop pressing the state will be returned to previous stage
             //TODO: Rerun from preview after finishing                      
+            //TODO: Add option to download again with changing preview
+            //TODO: Bug fix - can't do preview more than one time
+            //TODO: Set stat button disable at the startup when url is empty
+            //TODO: Show error when now preview
         }
 
 
@@ -64,15 +70,17 @@ namespace Bazger.Tools.App.Pages
             _videoStageGrid = _mainForm.videoStageGrid;
             _videoStageGrid.CellFormatting += videoStageGrid_CellFormatting;
             _videoStageGrid.CellValueChanged += videoStageGrid_CellValueChanged;
+            _videoStageGrid.CellBeginEdit += videoStageGrid_CellClick;
             _videoStageStatsGrid = _mainForm.videoStageStatsGrid;
             _mainForm.AddRuleToPageLoggerTarget("Bazger.Tools.YouTubeDownloader.Core.*", LogLevel.Info, Title);
             startBtn.DropDownButtonElement.ActionButton.Click += startBtn_Click;
+            videoTypesDropDown.DataSource = VideoType.AvailabledVideoTypes;
+            AvailableVideoTypes = VideoType.AvailabledVideoTypes;
         }
 
         public void LoadState(IControlState controlState)
         {
-            var state = controlState as YouTubeDownloaderControlState;
-            if (state == null)
+            if (!(controlState is YouTubeDownloaderControlState state))
             { return; }
 
             if (!string.IsNullOrEmpty(state.Url))
@@ -90,6 +98,7 @@ namespace Bazger.Tools.App.Pages
             overwriteFilesChkBox.Checked = state.IsOverwriteChecked;
             readFromJournalChkBox.Checked = state.IsReadFromJournalChecked;
             writeToJournalChkBox.Checked = state.IsWriteToJournalCheked;
+            convertionEnabledChkBox.Checked = state.IsConversionChecked;
             //journalFileDropDown.Text = state.JournalFilePath;
             //TODO: state.VideoFormat;
         }
@@ -463,6 +472,7 @@ namespace Bazger.Tools.App.Pages
                         row.Cells["progress"].Value = _videosProgress[url].Progress;
                         row.Cells["stage"].Value = _videosProgress[url].Stage;
                         row.Cells["title"].Value = _videosProgress[url].Title;
+                        row.Cells["video_types"].Value = _videosProgress[url].SelectedVideoType;
                     }
                 });
                 FormHelper.ControlInvoker(_videoStageStatsGrid, stageGrid =>
@@ -490,24 +500,46 @@ namespace Bazger.Tools.App.Pages
                     foreach (var row in stageGrid.Rows)
                     {
                         var url = row.Cells["url"].Value.ToString();
-                        if (!_videosProgress.ContainsKey(url) || _videosProgress[url].VideoInfos == null)
+                        if (!_videosProgress.ContainsKey(url) || _videosProgress[url].PossibleVideoTypes == null)
                         {
                             continue;
                         }
-                        if (row.Cells["quality"].Value == null && _videosProgress[url].VideoInfos != null)
+                        //TODO: 1000 milis may prevent to update the grid after stopping
+                        if (row.Cells["video_types"].Value == null && _videosProgress[url].PossibleVideoTypes != null)
                         {
-                            var qualities = _videosProgress[url].VideoInfos
-                                .Where(v => v.VideoType == VideoType.Mp4)
-                                .Select(v => $"{v.FormatCode}, {v.VideoType}, {v.Resolution}");
+                            var possibleVideoTypes = _videosProgress[url].PossibleVideoTypes;
+                            var selectedVideoType = GetTypeByPriority(possibleVideoTypes.ToList());
 
-                            var comboBoxColumn = row.Cells["quality"].ColumnInfo as GridViewComboBoxColumn;
-                            comboBoxColumn.DataSource = qualities;
-                            row.Cells["quality"].Value = qualities.Last();
-                            Debug.WriteLine("SET");
+                            row.Cells["video_types"].Value = selectedVideoType;
+                            _videosProgress[url].SelectedVideoType = selectedVideoType;
                         }
+                        row.Cells["title"].Value = _videosProgress[url].Title;
                     }
                 });
             }
+        }
+
+        private VideoType GetTypeByPriority(ICollection<VideoType> possibleTypes)
+        {
+            var i = videoTypesDropDown.SelectedIndex;
+            var selectedVideoType = VideoType.AvailabledVideoTypes[i];
+            if (possibleTypes.Contains(selectedVideoType))
+            {
+                return selectedVideoType;
+            }
+            //Find videos with higher options
+            var optionalVideoTypes = VideoType.AvailabledVideoTypes.ToList().GetRange(0, i);
+            optionalVideoTypes.Reverse();
+
+            selectedVideoType = optionalVideoTypes.FirstOrDefault(possibleTypes.Contains);
+            if (selectedVideoType != null)
+            {
+                return selectedVideoType;
+            }
+            //Find videos with lower options
+            optionalVideoTypes = VideoType.AvailabledVideoTypes.ToList().GetRange(i + 1, VideoType.AvailabledVideoTypes.Count - i - 1);
+            selectedVideoType = optionalVideoTypes.FirstOrDefault(possibleTypes.Contains);
+            return selectedVideoType; // May return null
         }
 
         private static Color? StageColorFactory(VideoProgressStage stage)
@@ -534,9 +566,7 @@ namespace Bazger.Tools.App.Pages
 
         private void videoStageGrid_CellFormatting(object sender, CellFormattingEventArgs e)
         {
-            var dataRow = e.CellElement.RowInfo as GridViewDataRowInfo;
-
-            if (dataRow == null)
+            if (!(e.CellElement.RowInfo is GridViewDataRowInfo dataRow))
             {
                 return;
             }
@@ -558,28 +588,32 @@ namespace Bazger.Tools.App.Pages
                 e.CellElement.ResetValue(LightVisualElement.DrawFillProperty, ValueResetFlags.Local);
                 e.CellElement.ResetValue(VisualElement.BackColorProperty, ValueResetFlags.Local);
             }
+        }
 
-            //if (e.Column.Name == "quality")
-            //{
-            //    var comboBoxColumn = e.Column as GridViewComboBoxColumn;
-            //    if (comboBoxColumn != null && _videosProgress[urlColumn].VideoInfos != null)
-            //    {
-            //        comboBoxColumn.DataSource = _videosProgress[urlColumn].VideoInfos.Where(v => v.VideoType == VideoType.Mp4).Select(v => $"{v.FormatCode}, {v.VideoType}, {v.Resolution}");
-            //        Debug.WriteLine("CLEAR");
-            //    }
-            //}
+
+        private void videoStageGrid_CellClick(object sender, GridViewCellCancelEventArgs e)
+        {
+            if (e.Column.Name == "video_types")
+            {
+                var url = e.Row.Cells["url"].Value.ToString();
+                if (e.Column is GridViewComboBoxColumn comboBoxColumn)
+                {
+                    comboBoxColumn.DataSource = _videosProgress[url].PossibleVideoTypes.Select(v => v.ToString());
+                }
+            }
         }
 
 
         private void videoStageGrid_CellValueChanged(object sender, Telerik.WinControls.UI.GridViewCellEventArgs e)
         {
-            if (e.Column.Name == "quality")
+            if (e.Column.Name == "video_types")
             {
                 var url = e.Row.Cells["url"].Value.ToString();
-                var comboBoxColumn = e.Column as GridViewComboBoxColumn;
-                if (comboBoxColumn != null && _videosProgress[url].VideoInfos != null)
+                if (e.Column is GridViewComboBoxColumn comboBoxColumn && _videosProgress[url].PossibleVideoTypes != null)
                 {
-                    Debug.WriteLine("CLEAR");
+                    _videosProgress[url].SelectedVideoType = _videosProgress[url].PossibleVideoTypes
+                        .FirstOrDefault(v => v.ToString() == e.Value.ToString());
+                    comboBoxColumn.DataSource = _videosProgress[url].PossibleVideoTypes;
                 }
             }
         }

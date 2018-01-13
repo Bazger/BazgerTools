@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using YoutubeExtractor;
 
 namespace Bazger.Tools.YouTubeDownloader.Core.Model
 {
@@ -22,8 +21,8 @@ namespace Bazger.Tools.YouTubeDownloader.Core.Model
         public string TempDir { get; set; }
         public string DownloaderTempDir { get; set; }
         public string ConverterTempDir { get; set; }
-        public IEnumerable<VideoInfo> VideoInfos { get; set; }
-        public VideoInfo SelectedVideoInfo { get; set; }
+        public IEnumerable<VideoType> PossibleVideoTypes { get; set; }
+        public VideoType SelectedVideoType { get; set; }
 
         public bool IsStartedDownloadiong()
         {

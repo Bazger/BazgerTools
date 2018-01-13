@@ -1,11 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using Bazger.Tools.YouTubeDownloader.Core.Utility;
 using NLog;
 
@@ -44,6 +39,7 @@ namespace Bazger.Tools.YouTubeDownloader.Core.Model
                         throw new Exception("MovingFilePath can't be null");
                     }
                     var sourceFilePath = videoMetadata.MovingFilePath;
+                    //TODO: Bug on FileHelper.GetAvailableFilePath
                     var destFileName = FileHelper.RemoveIllegalPathCharacters(videoMetadata.Title) +
                                        Path.GetExtension(videoMetadata.MovingFilePath);
                     var destFilePath = Path.Combine(videoMetadata.SaveDir, destFileName);

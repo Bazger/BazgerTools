@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Threading;
 using Bazger.Tools.YouTubeDownloader.Core.Converters;
 using Bazger.Tools.YouTubeDownloader.Core.Utility;
 using NLog;

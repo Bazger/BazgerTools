@@ -1,21 +1,16 @@
 ﻿using System.Diagnostics;
-using System.IO;
 using System.Runtime.InteropServices;
 using Bazger.Tools.YouTubeDownloader.Core.Model;
-using Bazger.Tools.YouTubeDownloader.Core.Utility;
 using NLog;
 
 namespace Bazger.Tools.YouTubeDownloader.Core.Converters
 {
     public class FFmpegConverterProcessProxy : ExternalProcessProxy
     {
-        private readonly VideoProgressMetadata _videoMetadata;
         private readonly int _wairingTimeout;
-        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
         public FFmpegConverterProcessProxy(VideoProgressMetadata videoMetadata, int wairingTimeout)
         {
-            _videoMetadata = videoMetadata;
             _wairingTimeout = wairingTimeout;
             var startInfo = new System.Diagnostics.ProcessStartInfo
             {

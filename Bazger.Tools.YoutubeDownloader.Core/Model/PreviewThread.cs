@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Bazger.Tools.YouTubeDownloader.Core.Utility;
 using Bazger.Tools.YouTubeDownloader.Core.WebSites;
 using NLog;
@@ -22,7 +18,7 @@ namespace Bazger.Tools.YouTubeDownloader.Core.Model
         public PreviewThread(string name, BlockingCollection<VideoProgressMetadata> waitingForGettingPreview) : base(name)
         {
             _waitingForGettingPreview = waitingForGettingPreview;
-            _youTubeProxy = new YouTubeProxy();
+            _youTubeProxy = new YouTubeProxy(VideoType.DefaultVideoType);
         }
 
         protected override void Job()

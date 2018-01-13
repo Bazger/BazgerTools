@@ -1,50 +1,88 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Net;
-using System.Text.RegularExpressions;
 using Bazger.Tools.YouTubeDownloader.Core.Model;
 using Bazger.Tools.YouTubeDownloader.Core.Utility;
-using ConcurrentCollections;
 using NLog;
 using YoutubeExtractor;
+using VideoType = Bazger.Tools.YouTubeDownloader.Core.Model.VideoType;
 
 namespace Bazger.Tools.YouTubeDownloader.Core.WebSites
 {
     public class YouTubeProxy : WebSiteDownloaderProxy, IPreviewVideoProxy
     {
-        private const int DefaultVideoFormatCode = 18;
+        private readonly VideoType _defualtVideoType;
+        //TODO: Change for normal thing
 
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
-        private readonly int _videoFormatCode;
 
-
-        public YouTubeProxy(int videoFormatCode = DefaultVideoFormatCode, int retriesCount = 3) : base(retriesCount)
+        // Key is BazgerToolsModel.VideoInfo id; Value - YoutubeExtractor.VideoInfos ids
+        private static readonly Dictionary<int, List<int>> VideosMappings = new Dictionary<int, List<int>>
         {
-            _videoFormatCode = videoFormatCode;
+            {1080, new List<int>{137} },
+            {720, new List<int>{22,136} },
+            {480, new List<int>{135} },
+            {360, new List<int>{18,134} },
+            {240, new List<int>{133} },
+            {144, new List<int>{160} },
+            {0, new List<int>{140} }
+        };
+
+        public YouTubeProxy(VideoType defualtVideoType, int retriesCount = 3) : base(retriesCount)
+        {
+            _defualtVideoType = defualtVideoType;
         }
 
         public void Preview(VideoProgressMetadata videoMetadata)
         {
-            videoMetadata.VideoInfos = DownloadUrlResolver.GetDownloadUrls(videoMetadata.Url, false).ToList();
+            var videoInfos = DownloadUrlResolver.GetDownloadUrls(videoMetadata.Url, false).ToList();
+            var formatCodes = videoInfos.Select(v => v.FormatCode);
+
+            videoMetadata.PossibleVideoTypes = VideosMappings.Where(pair => pair.Value.Any(formatCode => formatCodes.Contains(formatCode))).
+                Select(pair => VideoType.AvailabledVideoTypes.First(v => v.Id == pair.Key));
+
+            videoMetadata.Title = videoInfos.First()?.Title;
         }
 
-        public void DownloadFromPriview(VideoProgressMetadata videoMetadata)
+
+        public override void Download(VideoProgressMetadata videoMetadata)
         {
-            var video = videoMetadata.SelectedVideoInfo;
+            var videosInfo = DownloadUrlResolver.GetDownloadUrls(videoMetadata.Url, false).ToList();
+
+            var selectedVideoType = videoMetadata.SelectedVideoType ?? _defualtVideoType;
+
+            /*
+             * Try find select video
+             */
+            VideoInfo videoInfo = null;
+            foreach (var formatCode in VideosMappings[selectedVideoType.Id])
+            {
+                videoInfo = videosInfo.First(v => v.FormatCode == formatCode);
+                if (videoInfo != null)
+                {
+                    break;
+                }
+            }
+
+            //TODO: May be priority download for video if not exists
+            if (videoInfo == null)
+            {
+                throw new Exception("No VideoInfo to pick. Tried to chose default one, but failed");
+            }
 
             /*
              * If the video has a decrypted signature, decipher it
              */
-            if (video.RequiresDecryption)
+            if (videoInfo.RequiresDecryption)
             {
-                DownloadUrlResolver.DecryptDownloadUrl(video);
+                DownloadUrlResolver.DecryptDownloadUrl(videoInfo);
             }
 
-            videoMetadata.Title = video.Title;
+            if (videoMetadata.Title != null)
+            {
+                videoMetadata.Title = videoInfo.Title;
+            }
 
             /*
              * Create the video downloader.
@@ -52,8 +90,8 @@ namespace Bazger.Tools.YouTubeDownloader.Core.WebSites
              * The second argument is the path to save the video file.
              */
             videoMetadata.VideoFilePath = Path.Combine(videoMetadata.DownloaderTempDir,
-                Guid.NewGuid() + video.VideoExtension);
-            var videoDownloader = new VideoDownloader(video, videoMetadata.VideoFilePath);
+                Guid.NewGuid() + videoInfo.VideoExtension);
+            var videoDownloader = new VideoDownloader(videoInfo, videoMetadata.VideoFilePath);
 
 
             // Register the ProgressChanged event and print the current progress
@@ -74,26 +112,6 @@ namespace Bazger.Tools.YouTubeDownloader.Core.WebSites
                 Log.Warn(ex, LogHelper.Format("Can't download video, will retry", videoMetadata));
             }
             RetryToDownload(() => { videoDownloader.Execute(); }, videoMetadata);
-        }
-
-        public override void Download(VideoProgressMetadata videoMetadata)
-        {
-            var videoInfos = DownloadUrlResolver.GetDownloadUrls(videoMetadata.Url, false).ToList();
-
-            /*
-             * Select the first .mp4 video with 360p resolution
-             */
-            var video = videoInfos
-                .First(info => info.FormatCode == _videoFormatCode) ?? videoInfos
-                    .First(info => info.FormatCode == DefaultVideoFormatCode);
-
-            if (video == null)
-            {
-                throw new Exception("No VideoInfo to pick. Tried to chose default one, but failed");
-            }
-            videoMetadata.SelectedVideoInfo = video;
-
-            DownloadFromPriview(videoMetadata);
         }
     }
 }

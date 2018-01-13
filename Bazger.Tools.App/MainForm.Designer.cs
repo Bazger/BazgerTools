@@ -50,11 +50,8 @@ namespace Bazger.Tools.App
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.copyrightLabel = new Telerik.WinControls.UI.RadLabel();
             this.clickerPage = new Telerik.WinControls.UI.RadPageViewPage();
-            this.clickerControl = new Bazger.Tools.App.Pages.ClickerControl();
             this.positionClickerPage = new Telerik.WinControls.UI.RadPageViewPage();
-            this.positionClickerControl = new Bazger.Tools.App.Pages.PositionClickerControl();
             this.downloaderPage = new Telerik.WinControls.UI.RadPageViewPage();
-            this.youTubeDownloaderControl = new Bazger.Tools.App.Pages.YouTubeDownloaderControl();
             this.toolControlsPager = new Telerik.WinControls.UI.RadPageView();
             this.visualStudio2012DarkTheme = new Telerik.WinControls.Themes.VisualStudio2012DarkTheme();
             this.visualStudio2012LightTheme = new Telerik.WinControls.Themes.VisualStudio2012LightTheme();
@@ -64,6 +61,9 @@ namespace Bazger.Tools.App
             this.logPage = new Telerik.WinControls.UI.RadPageViewPage();
             this.logTxtBox = new Telerik.WinControls.UI.RadTextBox();
             this.infoPager = new Telerik.WinControls.UI.RadPageView();
+            this.clickerControl = new Bazger.Tools.App.Pages.ClickerControl();
+            this.positionClickerControl = new Bazger.Tools.App.Pages.PositionClickerControl();
+            this.youTubeDownloaderControl = new Bazger.Tools.App.Pages.YouTubeDownloaderControl();
             ((System.ComponentModel.ISupportInitialize)(this.copyrightLabel)).BeginInit();
             this.clickerPage.SuspendLayout();
             this.positionClickerPage.SuspendLayout();
@@ -95,58 +95,31 @@ namespace Bazger.Tools.App
             // clickerPage
             // 
             this.clickerPage.Controls.Add(this.clickerControl);
-            this.clickerPage.ItemSize = new System.Drawing.SizeF(146F, 29F);
+            this.clickerPage.ItemSize = new System.Drawing.SizeF(120F, 24F);
             this.clickerPage.Location = new System.Drawing.Point(204, 5);
             this.clickerPage.Name = "clickerPage";
             this.clickerPage.Size = new System.Drawing.Size(610, 229);
             this.clickerPage.Text = "Clicker";
             // 
-            // clickerControl
-            // 
-            this.clickerControl.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.clickerControl.Location = new System.Drawing.Point(68, 13);
-            this.clickerControl.Name = "clickerControl";
-            this.clickerControl.ParentPage = this.clickerPage;
-            this.clickerControl.Size = new System.Drawing.Size(465, 164);
-            this.clickerControl.TabIndex = 0;
-            // 
             // positionClickerPage
             // 
             this.positionClickerPage.Controls.Add(this.positionClickerControl);
             this.positionClickerPage.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.positionClickerPage.ItemSize = new System.Drawing.SizeF(146F, 29F);
+            this.positionClickerPage.ItemSize = new System.Drawing.SizeF(120F, 24F);
             this.positionClickerPage.Location = new System.Drawing.Point(204, 5);
             this.positionClickerPage.Name = "positionClickerPage";
             this.positionClickerPage.Size = new System.Drawing.Size(610, 213);
             this.positionClickerPage.Text = "Multiply Clicks";
             // 
-            // positionClickerControl
-            // 
-            this.positionClickerControl.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.positionClickerControl.Location = new System.Drawing.Point(68, 13);
-            this.positionClickerControl.Name = "positionClickerControl";
-            this.positionClickerControl.ParentPage = this.positionClickerPage;
-            this.positionClickerControl.Size = new System.Drawing.Size(465, 164);
-            this.positionClickerControl.TabIndex = 0;
-            // 
             // downloaderPage
             // 
             this.downloaderPage.Controls.Add(this.youTubeDownloaderControl);
             this.downloaderPage.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.downloaderPage.ItemSize = new System.Drawing.SizeF(146F, 29F);
+            this.downloaderPage.ItemSize = new System.Drawing.SizeF(120F, 24F);
             this.downloaderPage.Location = new System.Drawing.Point(204, 5);
             this.downloaderPage.Name = "downloaderPage";
             this.downloaderPage.Size = new System.Drawing.Size(610, 229);
             this.downloaderPage.Text = "YouTube Downloader";
-            // 
-            // youTubeDownloaderControl
-            // 
-            this.youTubeDownloaderControl.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.youTubeDownloaderControl.Location = new System.Drawing.Point(0, 0);
-            this.youTubeDownloaderControl.Name = "youTubeDownloaderControl";
-            this.youTubeDownloaderControl.ParentPage = this.downloaderPage;
-            this.youTubeDownloaderControl.Size = new System.Drawing.Size(610, 233);
-            this.youTubeDownloaderControl.TabIndex = 0;
             // 
             // toolControlsPager
             // 
@@ -167,7 +140,7 @@ namespace Bazger.Tools.App
             // 
             this.downloderVideosStagePage.Controls.Add(this.videoStageStatsGrid);
             this.downloderVideosStagePage.Controls.Add(this.videoStageGrid);
-            this.downloderVideosStagePage.ItemSize = new System.Drawing.SizeF(94F, 29F);
+            this.downloderVideosStagePage.ItemSize = new System.Drawing.SizeF(77F, 24F);
             this.downloderVideosStagePage.Location = new System.Drawing.Point(204, 5);
             this.downloderVideosStagePage.Name = "downloderVideosStagePage";
             this.downloderVideosStagePage.Size = new System.Drawing.Size(610, 270);
@@ -283,25 +256,25 @@ namespace Bazger.Tools.App
             gridViewHyperlinkColumn1.HeaderText = "Url";
             gridViewHyperlinkColumn1.Name = "url";
             gridViewHyperlinkColumn1.ReadOnly = false;
-            gridViewHyperlinkColumn1.Width = 118;
+            gridViewHyperlinkColumn1.Width = 117;
             gridViewTextBoxColumn8.EnableExpressionEditor = false;
             gridViewTextBoxColumn8.HeaderText = "Title";
             gridViewTextBoxColumn8.Name = "title";
-            gridViewTextBoxColumn8.Width = 191;
+            gridViewTextBoxColumn8.Width = 189;
             gridViewComboBoxColumn1.EnableExpressionEditor = false;
-            gridViewComboBoxColumn1.HeaderText = "Quality";
-            gridViewComboBoxColumn1.Name = "quality";
-            gridViewComboBoxColumn1.Width = 100;
+            gridViewComboBoxColumn1.HeaderText = "Video types";
+            gridViewComboBoxColumn1.Name = "video_types";
+            gridViewComboBoxColumn1.Width = 99;
             gridViewDecimalColumn2.EnableExpressionEditor = false;
             gridViewDecimalColumn2.HeaderText = "Progress";
             gridViewDecimalColumn2.Name = "progress";
             gridViewDecimalColumn2.TextAlignment = System.Drawing.ContentAlignment.MiddleCenter;
-            gridViewDecimalColumn2.Width = 60;
+            gridViewDecimalColumn2.Width = 59;
             gridViewTextBoxColumn9.EnableExpressionEditor = false;
             gridViewTextBoxColumn9.HeaderText = "Stage";
             gridViewTextBoxColumn9.Name = "stage";
             gridViewTextBoxColumn9.TextAlignment = System.Drawing.ContentAlignment.MiddleCenter;
-            gridViewTextBoxColumn9.Width = 87;
+            gridViewTextBoxColumn9.Width = 86;
             this.videoStageGrid.MasterTemplate.Columns.AddRange(new Telerik.WinControls.UI.GridViewDataColumn[] {
             gridViewDecimalColumn1,
             gridViewHyperlinkColumn1,
@@ -319,12 +292,12 @@ namespace Bazger.Tools.App
             this.videoStageGrid.ShowGroupPanel = false;
             this.videoStageGrid.Size = new System.Drawing.Size(605, 211);
             this.videoStageGrid.TabIndex = 39;
-            this.videoStageGrid.ThemeName = "VisualStudio2012Light";            
+            this.videoStageGrid.ThemeName = "VisualStudio2012Light";
             // 
             // logPage
             // 
             this.logPage.Controls.Add(this.logTxtBox);
-            this.logPage.ItemSize = new System.Drawing.SizeF(94F, 29F);
+            this.logPage.ItemSize = new System.Drawing.SizeF(77F, 24F);
             this.logPage.Location = new System.Drawing.Point(204, 5);
             this.logPage.Name = "logPage";
             this.logPage.Size = new System.Drawing.Size(610, 270);
@@ -358,6 +331,33 @@ namespace Bazger.Tools.App
             this.infoPager.TabIndex = 49;
             this.infoPager.ThemeName = "VisualStudio2012Light";
             this.infoPager.ViewMode = Telerik.WinControls.UI.PageViewMode.Backstage;
+            // 
+            // clickerControl
+            // 
+            this.clickerControl.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.clickerControl.Location = new System.Drawing.Point(68, 13);
+            this.clickerControl.Name = "clickerControl";
+            this.clickerControl.ParentPage = this.clickerPage;
+            this.clickerControl.Size = new System.Drawing.Size(465, 164);
+            this.clickerControl.TabIndex = 0;
+            // 
+            // positionClickerControl
+            // 
+            this.positionClickerControl.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.positionClickerControl.Location = new System.Drawing.Point(68, 13);
+            this.positionClickerControl.Name = "positionClickerControl";
+            this.positionClickerControl.ParentPage = this.positionClickerPage;
+            this.positionClickerControl.Size = new System.Drawing.Size(465, 164);
+            this.positionClickerControl.TabIndex = 0;
+            // 
+            // youTubeDownloaderControl
+            // 
+            this.youTubeDownloaderControl.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.youTubeDownloaderControl.Location = new System.Drawing.Point(0, 0);
+            this.youTubeDownloaderControl.Name = "youTubeDownloaderControl";
+            this.youTubeDownloaderControl.ParentPage = this.downloaderPage;
+            this.youTubeDownloaderControl.Size = new System.Drawing.Size(610, 233);
+            this.youTubeDownloaderControl.TabIndex = 0;
             // 
             // MainForm
             // 

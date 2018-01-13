@@ -15,8 +15,8 @@ namespace Bazger.Tools.YouTubeDownloader.Core.Model
 
         public bool IsAlive => JobThread?.IsAlive ?? false;
 
-        public bool IsEnabled { get; protected set; }
-        public bool IsStarted { get; protected set; }
+        public bool IsEnabled { get;}
+        public bool IsStarted { get; private set; }
 
         protected ServiceThread(string name)
         {

@@ -2,8 +2,6 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using NLog;
 
 namespace Bazger.Tools.YouTubeDownloader.Core.Model
@@ -13,7 +11,7 @@ namespace Bazger.Tools.YouTubeDownloader.Core.Model
         //TODO: Check how logger works
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
-        public ConcurrentDictionary<string, VideoProgressMetadata> VideosProgress { get; protected set; }
+        public ConcurrentDictionary<string, VideoProgressMetadata> VideosProgress { get; }
 
         protected LauncherBase(string name) : base(name)
         {

@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.IO;
 using System.Net;
-using System.Threading;
 using Bazger.Tools.YouTubeDownloader.Core.Utility;
 using Bazger.Tools.YouTubeDownloader.Core.WebSites;
-using ConcurrentCollections;
 using NLog;
 using YoutubeExtractor;
 
@@ -21,7 +18,6 @@ namespace Bazger.Tools.YouTubeDownloader.Core.Model
         private readonly BlockingCollection<VideoProgressMetadata> _waitingForMoving;
         private readonly bool _isConvertionEnabled;
         private readonly bool _isAfterPreview;
-        private readonly ConcurrentDictionary<string, VideoProgressMetadata> _videosProgress;
         private readonly string _launcherTempDir;
         private string _downloaderTempDir;
         private readonly WebSiteDownloaderProxy _youTubeProxy;
@@ -35,7 +31,7 @@ namespace Bazger.Tools.YouTubeDownloader.Core.Model
             _isConvertionEnabled = isConvertionEnabled;
             _isAfterPreview = isAfterPreview;
             _launcherTempDir = launcherTempDir;
-            _youTubeProxy = new YouTubeProxy();
+            _youTubeProxy = new YouTubeProxy(VideoType.DefaultVideoType);
         }
 
         protected override void Job()
@@ -66,9 +62,9 @@ namespace Bazger.Tools.YouTubeDownloader.Core.Model
                     else
                     {
                         var previewProxy = _youTubeProxy as IPreviewVideoProxy;
-                        if (previewProxy != null && videoMetadata.SelectedVideoInfo != null)
+                        if (previewProxy != null && videoMetadata.SelectedVideoType != null)
                         {
-                            previewProxy.DownloadFromPriview(videoMetadata);
+                            previewProxy.Download(videoMetadata);
                         }
                         else
                         {
