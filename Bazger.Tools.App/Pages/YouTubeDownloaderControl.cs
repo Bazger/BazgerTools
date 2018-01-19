@@ -270,6 +270,7 @@ namespace Bazger.Tools.App.Pages
                 LoadAllVideoUrls();
                 if (_stopEvent.WaitOne(0))
                 {
+                    ToIdleState();
                     return;
                 }
                 _launcher = new MainLauncher(_videoUrls, GetDownloaderConfigs());
