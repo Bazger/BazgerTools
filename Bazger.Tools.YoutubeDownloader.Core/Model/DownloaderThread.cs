@@ -23,7 +23,11 @@ namespace Bazger.Tools.YouTubeDownloader.Core.Model
         private readonly WebSiteDownloaderProxy _youTubeProxy;
         private const int MillisecondsTimeout = 5000;
 
-        public DownloaderThread(string name, BlockingCollection<VideoProgressMetadata> waitingForDownload, BlockingCollection<VideoProgressMetadata> waitingForConvertion, BlockingCollection<VideoProgressMetadata> waitingForMoving, string launcherTempDir, bool isConvertionEnabled, bool isAfterPreview) : base(name)
+        public DownloaderThread(string name,
+            BlockingCollection<VideoProgressMetadata> waitingForDownload,
+            BlockingCollection<VideoProgressMetadata> waitingForConvertion,
+            BlockingCollection<VideoProgressMetadata> waitingForMoving,
+            string launcherTempDir, bool isConvertionEnabled, bool isAfterPreview, VideoType selectedVideoType) : base(name)
         {
             _waitingForDownload = waitingForDownload;
             _waitingForConvertion = waitingForConvertion;
@@ -31,7 +35,7 @@ namespace Bazger.Tools.YouTubeDownloader.Core.Model
             _isConvertionEnabled = isConvertionEnabled;
             _isAfterPreview = isAfterPreview;
             _launcherTempDir = launcherTempDir;
-            _youTubeProxy = new YouTubeProxy(VideoType.DefaultVideoType);
+            _youTubeProxy = new YouTubeExtractorProxy(selectedVideoType);
         }
 
         protected override void Job()
@@ -55,22 +59,7 @@ namespace Bazger.Tools.YouTubeDownloader.Core.Model
                     videoMetadata.DownloaderTempDir = _downloaderTempDir;
 
                     Log.Info(LogHelper.Format("Downloading video", videoMetadata));
-                    if (!_isAfterPreview)
-                    {
-                        _youTubeProxy.Download(videoMetadata);
-                    }
-                    else
-                    {
-                        var previewProxy = _youTubeProxy as IPreviewVideoProxy;
-                        if (previewProxy != null && videoMetadata.SelectedVideoType != null)
-                        {
-                            previewProxy.Download(videoMetadata);
-                        }
-                        else
-                        {
-                            _youTubeProxy.Download(videoMetadata);
-                        }
-                    }
+                    _youTubeProxy.Download(videoMetadata);
                     Log.Info(LogHelper.Format("Video successfully dwonloaded", videoMetadata));
                     if (!_isConvertionEnabled)
                     {

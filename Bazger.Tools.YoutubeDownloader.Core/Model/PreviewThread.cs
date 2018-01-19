@@ -18,7 +18,7 @@ namespace Bazger.Tools.YouTubeDownloader.Core.Model
         public PreviewThread(string name, BlockingCollection<VideoProgressMetadata> waitingForGettingPreview) : base(name)
         {
             _waitingForGettingPreview = waitingForGettingPreview;
-            _youTubeProxy = new YouTubeProxy(VideoType.DefaultVideoType);
+            _youTubeProxy = new YouTubeExtractorProxy(VideoType.DefaultVideoType);
         }
 
         protected override void Job()

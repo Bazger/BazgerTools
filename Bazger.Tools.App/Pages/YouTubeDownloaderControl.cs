@@ -29,7 +29,6 @@ namespace Bazger.Tools.App.Pages
         public RadPageViewPage ParentPage { get; set; }
         public string Title => this.GetType().FullName;
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
-        private IEnumerable<VideoType> AvailableVideoTypes;
 
         private MainLauncher _launcher;
         private ManualResetEvent _stopEvent;
@@ -53,14 +52,14 @@ namespace Bazger.Tools.App.Pages
             //TODO: Test journal
             //TODO: Fix resizing
             //TODO: Dropdown list
-            //TODO: Remove Video Stage from form class
+            //TODO: Remove Video Stage grids from form class
             //TODO: Disable editing for all columns excepts for video_types
             //TODO: After stop pressing the state will be returned to previous stage
-            //TODO: Rerun from preview after finishing                      
-            //TODO: Add option to download again with changing preview
+            //TODO: Rerun from preview after finishing
             //TODO: Bug fix - can't do preview more than one time
             //TODO: Set stat button disable at the startup when url is empty
             //TODO: Show error when now preview
+            //TODO: Bug with downloading more than 2 times
         }
 
 
@@ -70,12 +69,11 @@ namespace Bazger.Tools.App.Pages
             _videoStageGrid = _mainForm.videoStageGrid;
             _videoStageGrid.CellFormatting += videoStageGrid_CellFormatting;
             _videoStageGrid.CellValueChanged += videoStageGrid_CellValueChanged;
-            _videoStageGrid.CellBeginEdit += videoStageGrid_CellClick;
+            _videoStageGrid.CellBeginEdit += videoStageGrid_CellBeginEdit;
             _videoStageStatsGrid = _mainForm.videoStageStatsGrid;
             _mainForm.AddRuleToPageLoggerTarget("Bazger.Tools.YouTubeDownloader.Core.*", LogLevel.Info, Title);
             startBtn.DropDownButtonElement.ActionButton.Click += startBtn_Click;
             videoTypesDropDown.DataSource = VideoType.AvailabledVideoTypes;
-            AvailableVideoTypes = VideoType.AvailabledVideoTypes;
         }
 
         public void LoadState(IControlState controlState)
@@ -107,7 +105,7 @@ namespace Bazger.Tools.App.Pages
         {
             return new YouTubeDownloaderControlState
             {
-                Url = _currentUrl, //TODO: Fix url removing
+                Url = ValidateUrl(urlTxtBox.Text) ? urlTxtBox.Text : null,
                 DownloadersThreadSpin = (int)downloaderThreadsSpin.Value,
                 ConvertersThreadSpin = (int)converterThreadsSpin.Value,
                 IsConversionChecked = convertionEnabledChkBox.Checked,
@@ -368,7 +366,7 @@ namespace Bazger.Tools.App.Pages
             {
                 YouTubeApiKey = Resources.youtubeApiKey,
                 SaveDir = downloadsFolderDropDown.Text,
-                YouTubeVideoFormatCode = 18,
+                YouTubeVideoTypeId = VideoType.AvailabledVideoTypes[videoTypesDropDown.SelectedIndex].Id,
                 ParallelDownloadsCount = (int)downloaderThreadsSpin.Value,
                 ConvertersCount = (int)converterThreadsSpin.Value,
                 ConverterEnabled = convertionEnabledChkBox.IsChecked,
@@ -505,41 +503,14 @@ namespace Bazger.Tools.App.Pages
                             continue;
                         }
                         //TODO: 1000 milis may prevent to update the grid after stopping
-                        if (row.Cells["video_types"].Value == null && _videosProgress[url].PossibleVideoTypes != null)
+                        if (row.Cells["video_types"].Value == null && _videosProgress[url].SelectedVideoType != null)
                         {
-                            var possibleVideoTypes = _videosProgress[url].PossibleVideoTypes;
-                            var selectedVideoType = GetTypeByPriority(possibleVideoTypes.ToList());
-
-                            row.Cells["video_types"].Value = selectedVideoType;
-                            _videosProgress[url].SelectedVideoType = selectedVideoType;
+                            row.Cells["video_types"].Value = _videosProgress[url].SelectedVideoType.ToString();
                         }
                         row.Cells["title"].Value = _videosProgress[url].Title;
                     }
                 });
             }
-        }
-
-        private VideoType GetTypeByPriority(ICollection<VideoType> possibleTypes)
-        {
-            var i = videoTypesDropDown.SelectedIndex;
-            var selectedVideoType = VideoType.AvailabledVideoTypes[i];
-            if (possibleTypes.Contains(selectedVideoType))
-            {
-                return selectedVideoType;
-            }
-            //Find videos with higher options
-            var optionalVideoTypes = VideoType.AvailabledVideoTypes.ToList().GetRange(0, i);
-            optionalVideoTypes.Reverse();
-
-            selectedVideoType = optionalVideoTypes.FirstOrDefault(possibleTypes.Contains);
-            if (selectedVideoType != null)
-            {
-                return selectedVideoType;
-            }
-            //Find videos with lower options
-            optionalVideoTypes = VideoType.AvailabledVideoTypes.ToList().GetRange(i + 1, VideoType.AvailabledVideoTypes.Count - i - 1);
-            selectedVideoType = optionalVideoTypes.FirstOrDefault(possibleTypes.Contains);
-            return selectedVideoType; // May return null
         }
 
         private static Color? StageColorFactory(VideoProgressStage stage)
@@ -591,14 +562,14 @@ namespace Bazger.Tools.App.Pages
         }
 
 
-        private void videoStageGrid_CellClick(object sender, GridViewCellCancelEventArgs e)
+        private void videoStageGrid_CellBeginEdit(object sender, GridViewCellCancelEventArgs e)
         {
             if (e.Column.Name == "video_types")
             {
                 var url = e.Row.Cells["url"].Value.ToString();
                 if (e.Column is GridViewComboBoxColumn comboBoxColumn)
                 {
-                    comboBoxColumn.DataSource = _videosProgress[url].PossibleVideoTypes.Select(v => v.ToString());
+                    comboBoxColumn.DataSource = _videosProgress[url].PossibleVideoTypes?.Select(v => v.ToString());
                 }
             }
         }

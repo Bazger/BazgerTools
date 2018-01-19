@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Configuration;
 using System.IO;
+using Bazger.Tools.YouTubeDownloader.Core.Model;
 
 namespace Bazger.Tools.YouTubeDownloader.Core
 {
@@ -12,7 +13,7 @@ namespace Bazger.Tools.YouTubeDownloader.Core
             {
                 YouTubeApiKey = "AIzaSyAQXaMeoVZGg5DNr5M_tgAkh28QMLb1Q6U",
                 SaveDir = "Downloads",
-                YouTubeVideoFormatCode = 18,
+                YouTubeVideoTypeId = VideoType.DefaultVideoType.Id,
                 ParallelDownloadsCount = 10,
                 ConvertersCount = 4,
                 ConverterEnabled = true,
@@ -64,16 +65,16 @@ namespace Bazger.Tools.YouTubeDownloader.Core
             }
         }
 
-        [ConfigurationProperty("youTubeVideoFormatCode", IsRequired = false, DefaultValue = 18)]
-        public int YouTubeVideoFormatCode
+        [ConfigurationProperty("youTubeVideoTypeId", IsRequired = false, DefaultValue = VideoTypeIds.Video360P)]
+        public VideoTypeIds YouTubeVideoTypeId
         {
             get
             {
-                return (int)this["youTubeVideoFormatCode"];
+                return (VideoTypeIds)this["youTubeVideoTypeId"];
             }
             set
             {
-                this["youTubeVideoFormatCode"] = value;
+                this["youTubeVideoTypeId"] = value;
             }
         }
 

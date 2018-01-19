@@ -76,6 +76,7 @@
     <Compile Include="Model\PreviewThread.cs" />
     <Compile Include="Model\VideoFormat.cs" />
     <Compile Include="Model\VideoType.cs" />
+    <Compile Include="Model\VideoTypeIds.cs" />
     <Compile Include="PreviewLauncher.cs" />
     <Compile Include="Utility\FileHelper.cs" />
     <Compile Include="Model\ServiceThread.cs" />
@@ -89,7 +90,7 @@
     <Compile Include="Utility\YouTubeHelper.cs" />
     <Compile Include="WebSites\IPreviewVideoProxy.cs" />
     <Compile Include="WebSites\WebSiteDownloaderProxy.cs" />
-    <Compile Include="WebSites\YouTubeProxy.cs" />
+    <Compile Include="WebSites\YouTubeExtractorProxy.cs" />
     <Compile Include="WebSites\YouTubeMp3Proxy.cs" />
     <Compile Include="DownloaderConfigs.cs" />
   </ItemGroup>

@@ -32,7 +32,7 @@ namespace Bazger.Tools.YouTubeDownloader.Core
             _videoUrls = videoUrls ?? _inputVideosProgress.Keys;
             _isAfterPreview = true;
         }
-        //TODO: Add option to chose video quality and resolution
+
         public MainLauncher(IEnumerable<string> videoUrls, DownloaderConfigs configs, string name = "MainLauncher") :
             this(configs, name)
         {
@@ -237,7 +237,10 @@ namespace Bazger.Tools.YouTubeDownloader.Core
             //Inialing once because method are safe for multithreaded usage
             for (var i = 0; i < _configs.ParallelDownloadsCount; i++)
             {
-                _downloaderThreads.Add(new DownloaderThread($"Downloader {i}", waitingForDownload, waitingForConvertion, waitingForMoving, _tempDir, _configs.ConverterEnabled, _isAfterPreview));
+                _downloaderThreads.Add(new DownloaderThread($"Downloader {i}",
+                    waitingForDownload, waitingForConvertion, waitingForMoving,
+                    _tempDir, _configs.ConverterEnabled, _isAfterPreview,
+                    VideoType.AvailabledVideoTypesDictionary[_configs.YouTubeVideoTypeId]));
             }
 
             Log.Info("Starting downloader threads");

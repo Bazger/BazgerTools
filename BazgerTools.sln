@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27130.2003
+VisualStudioVersion = 15.0.27130.2024
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bazger.Tools.App", "Bazger.Tools.App\Bazger.Tools.App.csproj", "{6A5E388F-8377-41F9-802B-197F8DDD42A6}"
 EndProject

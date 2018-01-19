@@ -8,7 +8,6 @@ namespace Bazger.Tools.YouTubeDownloader.Core.Model
 {
     public abstract class LauncherBase : ServiceThread
     {
-        //TODO: Check how logger works
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
         public ConcurrentDictionary<string, VideoProgressMetadata> VideosProgress { get; }

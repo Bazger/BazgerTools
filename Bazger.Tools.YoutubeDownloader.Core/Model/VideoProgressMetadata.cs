@@ -18,7 +18,6 @@ namespace Bazger.Tools.YouTubeDownloader.Core.Model
         public string MovingFilePath { get; set; }
         public string SaveDir { get; set; }
         public string Url { get;}
-        public string TempDir { get; set; }
         public string DownloaderTempDir { get; set; }
         public string ConverterTempDir { get; set; }
         public IEnumerable<VideoType> PossibleVideoTypes { get; set; }
