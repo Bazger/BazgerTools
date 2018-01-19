@@ -59,7 +59,6 @@ namespace Bazger.Tools.App.Pages
             //TODO: After stop pressing the state will be returned to previous stage
             //TODO: Rerun from preview after finishing
             //TODO: Bug fix - can't do preview more than one time
-            //TODO: Crashes if url is not youtube
             //TODO: Show error on the status cell when preview not succeed
             //TODO: Bug with downloading more than 2 times
         }
@@ -270,6 +269,7 @@ namespace Bazger.Tools.App.Pages
                 LoadAllVideoUrls();
                 if (_stopEvent.WaitOne(0))
                 {
+                    ToIdleState();
                     return;
                 }
                 _launcher = new MainLauncher(_videoUrls, GetDownloaderConfigs());
