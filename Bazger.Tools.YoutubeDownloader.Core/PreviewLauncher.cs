@@ -15,11 +15,13 @@ namespace Bazger.Tools.YouTubeDownloader.Core
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
         private readonly IEnumerable<string> _videoUrls;
+        private readonly VideoTypeIds _selectedVideoTypeId;
         private readonly List<ServiceThread> _previewThreads;
 
-        public PreviewLauncher(IEnumerable<string> videoUrls, string name = "PreviewLauncher") : base(name)
+        public PreviewLauncher(IEnumerable<string> videoUrls, VideoTypeIds selectedVideoTypeId, string name = "PreviewLauncher") : base(name)
         {
             _videoUrls = videoUrls;
+            _selectedVideoTypeId = selectedVideoTypeId;
             _previewThreads = new List<ServiceThread>();
         }
 
@@ -46,7 +48,7 @@ namespace Bazger.Tools.YouTubeDownloader.Core
                 {
                     return;
                 }
-            }            
+            }
             Log.Info($"{Name} finished its work");
             base.Job();
         }
@@ -94,8 +96,8 @@ namespace Bazger.Tools.YouTubeDownloader.Core
         {
             //Inialing once because method are safe for multithreaded usage
             for (var i = 0; i < 1; i++)
-            {            
-                _previewThreads.Add(new PreviewThread($"Preview {i}", waitingForGettingPreview));
+            {
+                _previewThreads.Add(new PreviewThread($"Preview {i}", waitingForGettingPreview, VideoType.AvailabledVideoTypesDictionary[_selectedVideoTypeId]));
             }
 
             Log.Info("Starting preview threads");

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -18,8 +17,6 @@ using Microsoft.WindowsAPICodePack.Dialogs;
 using NLog;
 using Telerik.WinControls;
 using Telerik.WinControls.UI;
-using YoutubeExtractor;
-using VideoType = Bazger.Tools.YouTubeDownloader.Core.Model.VideoType;
 
 namespace Bazger.Tools.App.Pages
 {
@@ -44,6 +41,12 @@ namespace Bazger.Tools.App.Pages
         private PreviewLauncher _previewLauncher;
         private IDictionary<string, VideoProgressMetadata> _videosProgress;
 
+        private const string VideoTypesColumn = "video_types";
+        private const string ProgressColumn = "progress";
+        private const string StageColumn = "stage";
+        private const string TitleColumn = "title";
+        private const string UrlColumn = "url";
+
         public YouTubeDownloaderControl()
         {
             InitializeComponent();
@@ -53,12 +56,11 @@ namespace Bazger.Tools.App.Pages
             //TODO: Fix resizing
             //TODO: Dropdown list
             //TODO: Remove Video Stage grids from form class
-            //TODO: Disable editing for all columns excepts for video_types
             //TODO: After stop pressing the state will be returned to previous stage
             //TODO: Rerun from preview after finishing
             //TODO: Bug fix - can't do preview more than one time
-            //TODO: Set stat button disable at the startup when url is empty
-            //TODO: Show error when now preview
+            //TODO: Crashes if url is not youtube
+            //TODO: Show error on the status cell when preview not succeed
             //TODO: Bug with downloading more than 2 times
         }
 
@@ -67,30 +69,29 @@ namespace Bazger.Tools.App.Pages
         {
             _mainForm = mainForm;
             _videoStageGrid = _mainForm.videoStageGrid;
-            _videoStageGrid.CellFormatting += videoStageGrid_CellFormatting;
-            _videoStageGrid.CellValueChanged += videoStageGrid_CellValueChanged;
-            _videoStageGrid.CellBeginEdit += videoStageGrid_CellBeginEdit;
+            _videoStageGrid.CellFormatting += VideoStageGrid_CellFormatting;
+            _videoStageGrid.CellValueChanged += VideoStageGrid_CellValueChanged;
+            _videoStageGrid.CellBeginEdit += VideoStageGrid_CellBeginEdit;
             _videoStageStatsGrid = _mainForm.videoStageStatsGrid;
             _mainForm.AddRuleToPageLoggerTarget("Bazger.Tools.YouTubeDownloader.Core.*", LogLevel.Info, Title);
-            startBtn.DropDownButtonElement.ActionButton.Click += startBtn_Click;
+            startBtn.DropDownButtonElement.ActionButton.Click += StartBtn_Click;
             videoTypesDropDown.DataSource = VideoType.AvailabledVideoTypes;
         }
 
         public void LoadState(IControlState controlState)
         {
-            if (!(controlState is YouTubeDownloaderControlState state))
-            { return; }
+            if (!(controlState is YouTubeDownloaderControlState state)) { return; }
 
-            if (!string.IsNullOrEmpty(state.Url))
+            if (!string.IsNullOrEmpty(state.Url) && ValidateUrl(state.Url))
             {
                 urlTxtBox.Text = state.Url;
             }
-            converterThreadsSpin.Value = state.ConvertersThreadSpin;
-            //TODO: state.ConvertionFormat;
-            if (convertionFormatsDropDownList.Items.Contains(state.ConvertionFormat))
+            else
             {
-                convertionFormatsDropDownList.Text = state.ConvertionFormat;
+                startBtn.Enabled = false;
             }
+            converterThreadsSpin.Value = state.ConvertersThreadSpin;
+            convertionFormatsDropDownList.SelectedIndex = state.ConvertionFormat;
             downloaderThreadsSpin.Value = state.DownloadersThreadSpin;
             //downloadsFolderDropDown.Text = state.DownloadsFolderPath;
             overwriteFilesChkBox.Checked = state.IsOverwriteChecked;
@@ -98,7 +99,7 @@ namespace Bazger.Tools.App.Pages
             writeToJournalChkBox.Checked = state.IsWriteToJournalCheked;
             convertionEnabledChkBox.Checked = state.IsConversionChecked;
             //journalFileDropDown.Text = state.JournalFilePath;
-            //TODO: state.VideoFormat;
+            videoTypesDropDown.SelectedIndex = state.VideoTypeId;
         }
 
         public IControlState SaveState()
@@ -109,12 +110,13 @@ namespace Bazger.Tools.App.Pages
                 DownloadersThreadSpin = (int)downloaderThreadsSpin.Value,
                 ConvertersThreadSpin = (int)converterThreadsSpin.Value,
                 IsConversionChecked = convertionEnabledChkBox.Checked,
-                ConvertionFormat = convertionFormatsDropDownList.Text,
+                ConvertionFormat = convertionFormatsDropDownList.SelectedIndex,
                 DownloadsFolderPath = downloadsFolderDropDown.Text,
                 IsOverwriteChecked = overwriteFilesChkBox.Checked,
                 IsReadFromJournalChecked = readFromJournalChkBox.Checked,
                 IsWriteToJournalCheked = writeToJournalChkBox.Checked,
                 JournalFilePath = journalFileDropDown.Text,
+                VideoTypeId = videoTypesDropDown.SelectedIndex
             };
         }
 
@@ -125,7 +127,7 @@ namespace Bazger.Tools.App.Pages
             _launcher?.Abort();
         }
 
-        private void urlTxtBox_Focus(object sender, EventArgs e)
+        private void UrlTxtBox_Focus(object sender, EventArgs e)
         {
             if (urlTxtBox.Text == Resources.youtubeDonwloaderUrlInfo)
             {
@@ -133,7 +135,7 @@ namespace Bazger.Tools.App.Pages
             }
         }
 
-        private void urlTxtBox_Leave(object sender, EventArgs e)
+        private void UrlTxtBox_Leave(object sender, EventArgs e)
         {
             if (string.IsNullOrEmpty(urlTxtBox.Text))
             {
@@ -146,7 +148,7 @@ namespace Bazger.Tools.App.Pages
             }
         }
 
-        private void startBtn_Click(object sender, EventArgs e)
+        private void StartBtn_Click(object sender, EventArgs e)
         {
             if (!_isStarted)
             {
@@ -166,7 +168,7 @@ namespace Bazger.Tools.App.Pages
             }
         }
 
-        private void previewMenuItem_Click(object sender, EventArgs e)
+        private void PreviewMenuItem_Click(object sender, EventArgs e)
         {
             _currentUrl = urlTxtBox.Text;
             if (!ValidateUrl(_currentUrl))
@@ -186,6 +188,7 @@ namespace Bazger.Tools.App.Pages
             FormHelper.ControlInvoker(converterPnl, control => { control.Enabled = true; });
             FormHelper.ControlInvoker(pathsPnl, control => { control.Enabled = true; });
             FormHelper.ControlInvoker(threadPnl, control => { control.Enabled = true; });
+            FormHelper.ControlInvoker(videoTypeSelectorPnl, control => { control.Enabled = true; });
             if (!_isPreview)
             {
                 FormHelper.ControlInvoker(startBtn, control => { control.Text = Resources.startBtn_Start; });
@@ -197,6 +200,7 @@ namespace Bazger.Tools.App.Pages
                 FormHelper.ControlInvoker(startBtn, control => { control.Text = Resources.startBtn_Download; });
                 FormHelper.ControlInvoker(startBtn, control => { control.Enabled = true; });
                 FormHelper.ControlInvoker(startBtn, control => { control.Items.AddRange(startMenuItem, previewMenuItem); });
+                FormHelper.ControlInvoker(_videoStageGrid, control => { control.Columns[VideoTypesColumn].ReadOnly = false; });
             }
         }
 
@@ -209,7 +213,9 @@ namespace Bazger.Tools.App.Pages
             FormHelper.ControlInvoker(urlTxtBox, control => { control.Enabled = false; });
             FormHelper.ControlInvoker(pathsPnl, control => { control.Enabled = false; });
             FormHelper.ControlInvoker(threadPnl, control => { control.Enabled = false; });
+            FormHelper.ControlInvoker(videoTypeSelectorPnl, control => { control.Enabled = false; });
             FormHelper.ControlInvoker(_videoStageGrid, control => { control.Rows.Clear(); });
+            FormHelper.ControlInvoker(_videoStageGrid, control => { control.Columns[VideoTypesColumn].ReadOnly = true; });
             FormHelper.ControlInvoker(downloadProgressBar, bar =>
             {
                 bar.Value1 = 0;
@@ -235,7 +241,7 @@ namespace Bazger.Tools.App.Pages
                 return;
             }
 
-            _previewLauncher = new PreviewLauncher(_videoUrls);
+            _previewLauncher = new PreviewLauncher(_videoUrls, GetDownloaderConfigs().YouTubeVideoTypeId);
             _previewLauncher.Start();
 
             _videosProgress = _previewLauncher.VideosProgress;
@@ -462,15 +468,15 @@ namespace Bazger.Tools.App.Pages
                 {
                     foreach (var row in stageGrid.Rows)
                     {
-                        var url = row.Cells["url"].Value.ToString();
+                        var url = row.Cells[UrlColumn].Value.ToString();
                         if (!_videosProgress.ContainsKey(url) || !_videosProgress[url].IsStartedDownloadiong())
                         {
                             continue;
                         }
-                        row.Cells["progress"].Value = _videosProgress[url].Progress;
-                        row.Cells["stage"].Value = _videosProgress[url].Stage;
-                        row.Cells["title"].Value = _videosProgress[url].Title;
-                        row.Cells["video_types"].Value = _videosProgress[url].SelectedVideoType;
+                        row.Cells[ProgressColumn].Value = _videosProgress[url].Progress;
+                        row.Cells[StageColumn].Value = _videosProgress[url].Stage;
+                        row.Cells[TitleColumn].Value = _videosProgress[url].Title;
+                        row.Cells[VideoTypesColumn].Value = _videosProgress[url].SelectedVideoType;
                     }
                 });
                 FormHelper.ControlInvoker(_videoStageStatsGrid, stageGrid =>
@@ -497,17 +503,17 @@ namespace Bazger.Tools.App.Pages
                 {
                     foreach (var row in stageGrid.Rows)
                     {
-                        var url = row.Cells["url"].Value.ToString();
+                        var url = row.Cells[UrlColumn].Value.ToString();
                         if (!_videosProgress.ContainsKey(url) || _videosProgress[url].PossibleVideoTypes == null)
                         {
                             continue;
                         }
                         //TODO: 1000 milis may prevent to update the grid after stopping
-                        if (row.Cells["video_types"].Value == null && _videosProgress[url].SelectedVideoType != null)
+                        if (row.Cells[VideoTypesColumn].Value == null && _videosProgress[url].SelectedVideoType != null)
                         {
-                            row.Cells["video_types"].Value = _videosProgress[url].SelectedVideoType.ToString();
+                            row.Cells[VideoTypesColumn].Value = _videosProgress[url].SelectedVideoType.ToString();
                         }
-                        row.Cells["title"].Value = _videosProgress[url].Title;
+                        row.Cells[TitleColumn].Value = _videosProgress[url].Title;
                     }
                 });
             }
@@ -535,16 +541,16 @@ namespace Bazger.Tools.App.Pages
             }
         }
 
-        private void videoStageGrid_CellFormatting(object sender, CellFormattingEventArgs e)
+        private void VideoStageGrid_CellFormatting(object sender, CellFormattingEventArgs e)
         {
             if (!(e.CellElement.RowInfo is GridViewDataRowInfo dataRow))
             {
                 return;
             }
 
-            var urlColumn = dataRow.Cells["url"].Value.ToString();
-            var stageColumn = dataRow.Cells["stage"].Value;
-            if (e.Column.Name == "stage" && stageColumn != null)
+            var urlColumn = dataRow.Cells[UrlColumn].Value.ToString();
+            var stageColumn = dataRow.Cells[StageColumn].Value;
+            if (e.Column.Name == StageColumn && stageColumn != null)
             {
                 e.CellElement.DrawFill = true;
                 var color = StageColorFactory(_videosProgress[urlColumn].Stage);
@@ -562,11 +568,11 @@ namespace Bazger.Tools.App.Pages
         }
 
 
-        private void videoStageGrid_CellBeginEdit(object sender, GridViewCellCancelEventArgs e)
+        private void VideoStageGrid_CellBeginEdit(object sender, GridViewCellCancelEventArgs e)
         {
-            if (e.Column.Name == "video_types")
+            if (e.Column.Name == VideoTypesColumn)
             {
-                var url = e.Row.Cells["url"].Value.ToString();
+                var url = e.Row.Cells[UrlColumn].Value.ToString();
                 if (e.Column is GridViewComboBoxColumn comboBoxColumn)
                 {
                     comboBoxColumn.DataSource = _videosProgress[url].PossibleVideoTypes?.Select(v => v.ToString());
@@ -575,11 +581,11 @@ namespace Bazger.Tools.App.Pages
         }
 
 
-        private void videoStageGrid_CellValueChanged(object sender, Telerik.WinControls.UI.GridViewCellEventArgs e)
+        private void VideoStageGrid_CellValueChanged(object sender, GridViewCellEventArgs e)
         {
-            if (e.Column.Name == "video_types")
+            if (e.Column.Name ==VideoTypesColumn)
             {
-                var url = e.Row.Cells["url"].Value.ToString();
+                var url = e.Row.Cells[UrlColumn].Value.ToString();
                 if (e.Column is GridViewComboBoxColumn comboBoxColumn && _videosProgress[url].PossibleVideoTypes != null)
                 {
                     _videosProgress[url].SelectedVideoType = _videosProgress[url].PossibleVideoTypes
@@ -677,16 +683,15 @@ namespace Bazger.Tools.App.Pages
 
         private static bool ValidateUrl(string url)
         {
-            Uri uriResult;
-            return Uri.TryCreate(url, UriKind.Absolute, out uriResult) && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
+            return Uri.TryCreate(url, UriKind.Absolute, out var uriResult) && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
         }
 
-        private void urlTxtBox_TextChanging(object sender, Telerik.WinControls.TextChangingEventArgs e)
+        private void UrlTxtBox_TextChanging(object sender, TextChangingEventArgs e)
         {
             startBtn.Enabled = !string.IsNullOrEmpty(e.NewValue);
         }
 
-        private void goToFolderBtn_Click(object sender, EventArgs e)
+        private void GoToFolderBtn_Click(object sender, EventArgs e)
         {
             if (Directory.Exists(downloadsFolderDropDown.Text))
             {
@@ -694,7 +699,7 @@ namespace Bazger.Tools.App.Pages
             }
         }
 
-        private void browseJournalBtn_Click(object sender, EventArgs e)
+        private void BrowseJournalBtn_Click(object sender, EventArgs e)
         {
             using (var ofd = new OpenFileDialog() { Filter = "Json Files (.json)|*.json|All Files (*.*)|*.*" })
             {
@@ -707,7 +712,7 @@ namespace Bazger.Tools.App.Pages
             }
         }
 
-        private void browseDownloadsBtn_Click(object sender, EventArgs e)
+        private void BrowseDownloadsBtn_Click(object sender, EventArgs e)
         {
             using (var dialog = new CommonOpenFileDialog())
             {
@@ -720,7 +725,7 @@ namespace Bazger.Tools.App.Pages
             }
         }
 
-        private void downloadsFolderDropDown_TextChanged(object sender, EventArgs e)
+        private void DownloadsFolderDropDown_TextChanged(object sender, EventArgs e)
         {
             var text = downloadsFolderDropDown.Text;
             if (string.IsNullOrEmpty(text) || !text.Contains(":\\"))
@@ -763,7 +768,7 @@ namespace Bazger.Tools.App.Pages
             }
         }
 
-        private void downloadsFolderDropDown_SelectedIndexChanged(object sender, Telerik.WinControls.UI.Data.PositionChangedEventArgs e)
+        private void DownloadsFolderDropDown_SelectedIndexChanged(object sender, Telerik.WinControls.UI.Data.PositionChangedEventArgs e)
         {
             downloadsFolderDropDown.SelectionStart = downloadsFolderDropDown.Text.Length;
         }

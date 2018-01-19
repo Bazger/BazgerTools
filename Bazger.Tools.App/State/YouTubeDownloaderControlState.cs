@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Bazger.Tools.YouTubeDownloader.Core.Model;
 using Newtonsoft.Json;
 
 namespace Bazger.Tools.App.State
@@ -23,7 +24,7 @@ namespace Bazger.Tools.App.State
         public bool IsConversionChecked { get; set; }
 
         [JsonProperty("ConvertionFormat")]
-        public string ConvertionFormat { get; set; }
+        public int ConvertionFormat { get; set; }
 
         [JsonProperty("IsWriteToJournalCheked")]
         public bool IsWriteToJournalCheked { get; set; }
@@ -34,8 +35,8 @@ namespace Bazger.Tools.App.State
         [JsonProperty("IsOverwriteChecked")]
         public bool IsOverwriteChecked { get; set; }
 
-        [JsonProperty("VideoFormat")]
-        public string VideoFormat { get; set; }
+        [JsonProperty("VideoType")]
+        public int VideoTypeId { get; set; }
 
         [JsonProperty("JournalFilePath")]
         public string JournalFilePath { get; set; }

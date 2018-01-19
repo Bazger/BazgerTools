@@ -15,10 +15,10 @@ namespace Bazger.Tools.YouTubeDownloader.Core.Model
         private readonly IPreviewVideoProxy _youTubeProxy;
         private const int MillisecondsTimeout = 5000;
 
-        public PreviewThread(string name, BlockingCollection<VideoProgressMetadata> waitingForGettingPreview) : base(name)
+        public PreviewThread(string name, BlockingCollection<VideoProgressMetadata> waitingForGettingPreview, VideoType selectedVideoType) : base(name)
         {
             _waitingForGettingPreview = waitingForGettingPreview;
-            _youTubeProxy = new YouTubeExtractorProxy(VideoType.DefaultVideoType);
+            _youTubeProxy = new YouTubeExtractorProxy(selectedVideoType);
         }
 
         protected override void Job()

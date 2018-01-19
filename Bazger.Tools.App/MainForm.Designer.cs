@@ -266,7 +266,7 @@ namespace Bazger.Tools.App
             gridViewComboBoxColumn1.EnableExpressionEditor = false;
             gridViewComboBoxColumn1.HeaderText = "Video types";
             gridViewComboBoxColumn1.Name = "video_types";
-            gridViewComboBoxColumn1.ReadOnly = false;
+            gridViewComboBoxColumn1.ReadOnly = true;
             gridViewComboBoxColumn1.Width = 99;
             gridViewDecimalColumn2.EnableExpressionEditor = false;
             gridViewDecimalColumn2.HeaderText = "Progress";

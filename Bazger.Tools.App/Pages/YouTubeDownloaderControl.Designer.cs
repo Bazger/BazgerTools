@@ -35,8 +35,8 @@ namespace Bazger.Tools.App.Pages
         /// </summary>
         private void InitializeComponent()
         {
-            Telerik.WinControls.UI.RadListDataItem radListDataItem3 = new Telerik.WinControls.UI.RadListDataItem();
-            Telerik.WinControls.UI.RadListDataItem radListDataItem4 = new Telerik.WinControls.UI.RadListDataItem();
+            Telerik.WinControls.UI.RadListDataItem radListDataItem1 = new Telerik.WinControls.UI.RadListDataItem();
+            Telerik.WinControls.UI.RadListDataItem radListDataItem2 = new Telerik.WinControls.UI.RadListDataItem();
             this.visualStudio2012DarkTheme = new Telerik.WinControls.Themes.VisualStudio2012DarkTheme();
             this.visualStudio2012LightTheme = new Telerik.WinControls.Themes.VisualStudio2012LightTheme();
             this.urlTxtBox = new Telerik.WinControls.UI.RadTextBox();
@@ -63,7 +63,7 @@ namespace Bazger.Tools.App.Pages
             this.startBtn = new Telerik.WinControls.UI.RadSplitButton();
             this.startMenuItem = new Telerik.WinControls.UI.RadMenuItem();
             this.previewMenuItem = new Telerik.WinControls.UI.RadMenuItem();
-            this.radPanel1 = new Telerik.WinControls.UI.RadPanel();
+            this.videoTypeSelectorPnl = new Telerik.WinControls.UI.RadPanel();
             this.videoTypeLbl = new Telerik.WinControls.UI.RadLabel();
             this.videoTypesDropDown = new Telerik.WinControls.UI.RadDropDownList();
             this.converterPnl = new Telerik.WinControls.UI.RadPanel();
@@ -93,8 +93,8 @@ namespace Bazger.Tools.App.Pages
             ((System.ComponentModel.ISupportInitialize)(this.downloadProgressBar)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.waitingBar)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.startBtn)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.radPanel1)).BeginInit();
-            this.radPanel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.videoTypeSelectorPnl)).BeginInit();
+            this.videoTypeSelectorPnl.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.videoTypeLbl)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.videoTypesDropDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.converterPnl)).BeginInit();
@@ -112,9 +112,9 @@ namespace Bazger.Tools.App.Pages
             this.urlTxtBox.Text = "Enter video or playlist url";
             this.urlTxtBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.urlTxtBox.ThemeName = "VisualStudio2012Light";
-            this.urlTxtBox.TextChanging += new Telerik.WinControls.TextChangingEventHandler(this.urlTxtBox_TextChanging);
-            this.urlTxtBox.Enter += new System.EventHandler(this.urlTxtBox_Focus);
-            this.urlTxtBox.Leave += new System.EventHandler(this.urlTxtBox_Leave);
+            this.urlTxtBox.TextChanging += new Telerik.WinControls.TextChangingEventHandler(this.UrlTxtBox_TextChanging);
+            this.urlTxtBox.Enter += new System.EventHandler(this.UrlTxtBox_Focus);
+            this.urlTxtBox.Leave += new System.EventHandler(this.UrlTxtBox_Leave);
             // 
             // threadPnl
             // 
@@ -305,8 +305,8 @@ namespace Bazger.Tools.App.Pages
             this.downloadsFolderDropDown.TabIndex = 67;
             this.downloadsFolderDropDown.Text = "Downloads";
             this.downloadsFolderDropDown.ThemeName = "VisualStudio2012Light";
-            this.downloadsFolderDropDown.SelectedIndexChanged += new Telerik.WinControls.UI.Data.PositionChangedEventHandler(this.downloadsFolderDropDown_SelectedIndexChanged);
-            this.downloadsFolderDropDown.TextChanged += new System.EventHandler(this.downloadsFolderDropDown_TextChanged);
+            this.downloadsFolderDropDown.SelectedIndexChanged += new Telerik.WinControls.UI.Data.PositionChangedEventHandler(this.DownloadsFolderDropDown_SelectedIndexChanged);
+            this.downloadsFolderDropDown.TextChanged += new System.EventHandler(this.DownloadsFolderDropDown_TextChanged);
             // 
             // downloadsFolderLbl
             // 
@@ -325,7 +325,7 @@ namespace Bazger.Tools.App.Pages
             this.browseDownloadsBtn.TabIndex = 65;
             this.browseDownloadsBtn.Text = "...";
             this.browseDownloadsBtn.ThemeName = "VisualStudio2012Light";
-            this.browseDownloadsBtn.Click += new System.EventHandler(this.browseDownloadsBtn_Click);
+            this.browseDownloadsBtn.Click += new System.EventHandler(this.BrowseDownloadsBtn_Click);
             // 
             // readFromJournalChkBox
             // 
@@ -345,7 +345,7 @@ namespace Bazger.Tools.App.Pages
             this.browseJournalBtn.TabIndex = 60;
             this.browseJournalBtn.Text = "...";
             this.browseJournalBtn.ThemeName = "VisualStudio2012Light";
-            this.browseJournalBtn.Click += new System.EventHandler(this.browseJournalBtn_Click);
+            this.browseJournalBtn.Click += new System.EventHandler(this.BrowseJournalBtn_Click);
             // 
             // writeToJournalChkBox
             // 
@@ -365,7 +365,7 @@ namespace Bazger.Tools.App.Pages
             this.goToFolderBtn.TabIndex = 72;
             this.goToFolderBtn.Text = "Downloads";
             this.goToFolderBtn.ThemeName = "VisualStudio2012Light";
-            this.goToFolderBtn.Click += new System.EventHandler(this.goToFolderBtn_Click);
+            this.goToFolderBtn.Click += new System.EventHandler(this.GoToFolderBtn_Click);
             // 
             // downloadProgressBar
             // 
@@ -417,23 +417,23 @@ namespace Bazger.Tools.App.Pages
             // 
             this.startMenuItem.Name = "startMenuItem";
             this.startMenuItem.Text = "Start";
-            this.startMenuItem.Click += new System.EventHandler(this.startBtn_Click);
+            this.startMenuItem.Click += new System.EventHandler(this.StartBtn_Click);
             // 
             // previewMenuItem
             // 
             this.previewMenuItem.Name = "previewMenuItem";
             this.previewMenuItem.Text = "Preview";
-            this.previewMenuItem.Click += new System.EventHandler(this.previewMenuItem_Click);
+            this.previewMenuItem.Click += new System.EventHandler(this.PreviewMenuItem_Click);
             // 
-            // radPanel1
+            // videoTypeSelectorPnl
             // 
-            this.radPanel1.Controls.Add(this.videoTypeLbl);
-            this.radPanel1.Controls.Add(this.videoTypesDropDown);
-            this.radPanel1.Location = new System.Drawing.Point(195, 27);
-            this.radPanel1.Name = "radPanel1";
-            this.radPanel1.Size = new System.Drawing.Size(412, 34);
-            this.radPanel1.TabIndex = 77;
-            this.radPanel1.ThemeName = "VisualStudio2012Light";
+            this.videoTypeSelectorPnl.Controls.Add(this.videoTypeLbl);
+            this.videoTypeSelectorPnl.Controls.Add(this.videoTypesDropDown);
+            this.videoTypeSelectorPnl.Location = new System.Drawing.Point(195, 27);
+            this.videoTypeSelectorPnl.Name = "videoTypeSelectorPnl";
+            this.videoTypeSelectorPnl.Size = new System.Drawing.Size(412, 34);
+            this.videoTypeSelectorPnl.TabIndex = 77;
+            this.videoTypeSelectorPnl.ThemeName = "VisualStudio2012Light";
             // 
             // videoTypeLbl
             // 
@@ -468,11 +468,11 @@ namespace Bazger.Tools.App.Pages
             // 
             this.convertionFormatsDropDownList.DropDownStyle = Telerik.WinControls.RadDropDownStyle.DropDownList;
             this.convertionFormatsDropDownList.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            radListDataItem3.Selected = true;
-            radListDataItem3.Text = ".wav";
-            radListDataItem4.Text = ".mp3";
-            this.convertionFormatsDropDownList.Items.Add(radListDataItem3);
-            this.convertionFormatsDropDownList.Items.Add(radListDataItem4);
+            radListDataItem1.Selected = true;
+            radListDataItem1.Text = ".wav";
+            radListDataItem2.Text = ".mp3";
+            this.convertionFormatsDropDownList.Items.Add(radListDataItem1);
+            this.convertionFormatsDropDownList.Items.Add(radListDataItem2);
             this.convertionFormatsDropDownList.Location = new System.Drawing.Point(3, 27);
             this.convertionFormatsDropDownList.Name = "convertionFormatsDropDownList";
             this.convertionFormatsDropDownList.Size = new System.Drawing.Size(182, 27);
@@ -495,7 +495,7 @@ namespace Bazger.Tools.App.Pages
             // YouTubeDownloaderControl
             // 
             this.Controls.Add(this.startBtn);
-            this.Controls.Add(this.radPanel1);
+            this.Controls.Add(this.videoTypeSelectorPnl);
             this.Controls.Add(this.waitingBar);
             this.Controls.Add(this.goToFolderBtn);
             this.Controls.Add(this.pathsPnl);
@@ -531,9 +531,9 @@ namespace Bazger.Tools.App.Pages
             ((System.ComponentModel.ISupportInitialize)(this.downloadProgressBar)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.waitingBar)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.startBtn)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.radPanel1)).EndInit();
-            this.radPanel1.ResumeLayout(false);
-            this.radPanel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.videoTypeSelectorPnl)).EndInit();
+            this.videoTypeSelectorPnl.ResumeLayout(false);
+            this.videoTypeSelectorPnl.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.videoTypeLbl)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.videoTypesDropDown)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.converterPnl)).EndInit();
@@ -572,7 +572,7 @@ namespace Bazger.Tools.App.Pages
         private Telerik.WinControls.UI.RadLabel fileMoverThreadsLbl;
         private Telerik.WinControls.UI.RadSplitButton startBtn;
         private Telerik.WinControls.UI.RadMenuItem previewMenuItem;
-        private RadPanel radPanel1;
+        private RadPanel videoTypeSelectorPnl;
         private RadLabel videoTypeLbl;
         private RadDropDownList videoTypesDropDown;
         private RadPanel converterPnl;
