@@ -40,6 +40,8 @@ namespace Bazger.Tools.App.Pages
         private bool _isPreview;
         private PreviewLauncher _previewLauncher;
         private IDictionary<string, VideoProgressMetadata> _videosProgress;
+        private ManualResetEvent _stoppedEvent;
+        private IDictionary<string, VideoProgressMetadata> _videoProgressForRevert;
 
         private const string VideoTypesColumn = "video_types";
         private const string ProgressColumn = "progress";
@@ -56,11 +58,12 @@ namespace Bazger.Tools.App.Pages
             //TODO: Fix resizing
             //TODO: Dropdown list
             //TODO: Remove Video Stage grids from form class
-            //TODO: After stop pressing the state will be returned to previous stage
             //TODO: Rerun from preview after finishing
-            //TODO: Bug fix - can't do preview more than one time
             //TODO: Show error on the status cell when preview not succeed
-            //TODO: Bug with downloading more than 2 times
+
+            //TODO: Clear logs button
+            //TODO: Add option for counting previewed items
+            //TODO: Press on title cell and launch video/ show path
         }
 
 
@@ -73,7 +76,7 @@ namespace Bazger.Tools.App.Pages
             _videoStageGrid.CellBeginEdit += VideoStageGrid_CellBeginEdit;
             _videoStageStatsGrid = _mainForm.videoStageStatsGrid;
             _mainForm.AddRuleToPageLoggerTarget("Bazger.Tools.YouTubeDownloader.Core.*", LogLevel.Info, Title);
-            startBtn.DropDownButtonElement.ActionButton.Click += StartBtn_Click;
+            startBtn.DropDownButtonElement.ActionButton.Click += MainBtn_Click;
             videoTypesDropDown.DataSource = VideoType.AvailabledVideoTypes;
         }
 
@@ -147,24 +150,41 @@ namespace Bazger.Tools.App.Pages
             }
         }
 
-        private void StartBtn_Click(object sender, EventArgs e)
+        private void MainBtn_Click(object sender, EventArgs e)
         {
             if (!_isStarted)
             {
-                _currentUrl = urlTxtBox.Text;
-                if (!ValidateUrl(_currentUrl))
+                if (!_isPreview)
                 {
-                    Log.Warn($"Entered url is not correct, try new one | url={_currentUrl}");
-                    return;
+                    StartNewOneBtn_Click(sender, e);
                 }
-                _stopEvent = new ManualResetEvent(false);
-                ToWorkState();
-                new Thread(VideoDownloading) { Name = "Starter" }.Start();
+                else
+                {
+                    ToWorkState();
+                    _stopEvent = new ManualResetEvent(false);
+                    _stoppedEvent = new ManualResetEvent(false);
+                    new Thread(DownloadVideos) { Name = "Starter" }.Start();
+                }
             }
             else
             {
                 new Thread(StopDownloading) { Name = "Stopper" }.Start();
             }
+        }
+
+        private void StartNewOneBtn_Click(object sender, EventArgs e)
+        {
+            _currentUrl = urlTxtBox.Text;
+            if (!ValidateUrl(_currentUrl))
+            {
+                Log.Warn($"Entered url is not correct, try new one | url={_currentUrl}");
+                return;
+            }
+            _isPreview = false;
+            ToWorkState();
+            _stopEvent = new ManualResetEvent(false);
+            _stoppedEvent = new ManualResetEvent(false);
+            new Thread(DownloadVideos) { Name = "Starter" }.Start();
         }
 
         private void PreviewMenuItem_Click(object sender, EventArgs e)
@@ -177,7 +197,8 @@ namespace Bazger.Tools.App.Pages
             }
             ToWorkState();
             _stopEvent = new ManualResetEvent(false);
-            new Thread(GetVideosPreview) { Name = "Previewer" }.Start();
+            _stoppedEvent = new ManualResetEvent(false);
+            new Thread(PreviewVideos) { Name = "Previewer" }.Start();
         }
 
         private void ToIdleState()
@@ -190,15 +211,22 @@ namespace Bazger.Tools.App.Pages
             FormHelper.ControlInvoker(videoTypeSelectorPnl, control => { control.Enabled = true; });
             if (!_isPreview)
             {
-                FormHelper.ControlInvoker(startBtn, control => { control.Text = Resources.startBtn_Start; });
-                FormHelper.ControlInvoker(startBtn, control => { control.Enabled = true; });
-                FormHelper.ControlInvoker(startBtn, control => { control.Items.Add(previewMenuItem); });
+                FormHelper.ControlInvoker(startBtn, control =>
+                {
+                    control.Text = Resources.startBtn_Start;
+                    control.Enabled = true;
+                    control.Items.Add(previewMenuItem);
+                });
             }
             else
             {
-                FormHelper.ControlInvoker(startBtn, control => { control.Text = Resources.startBtn_Download; });
-                FormHelper.ControlInvoker(startBtn, control => { control.Enabled = true; });
-                FormHelper.ControlInvoker(startBtn, control => { control.Items.AddRange(startMenuItem, previewMenuItem); });
+                FormHelper.ControlInvoker(startBtn, control =>
+                {
+                    control.Text = Resources.startBtn_Download;
+                    control.DefaultItem = mainMenuItem;
+                    control.Enabled = true;
+                    control.Items.AddRange(startNewOneMenuItem, previewMenuItem);
+                });
                 FormHelper.ControlInvoker(_videoStageGrid, control => { control.Columns[VideoTypesColumn].ReadOnly = false; });
             }
         }
@@ -207,14 +235,18 @@ namespace Bazger.Tools.App.Pages
         private void ToWorkState()
         {
             _isStarted = true;
-            FormHelper.ControlInvoker(startBtn, control => { control.Text = Resources.startBtn_Stop; });
+            FormHelper.ControlInvoker(startBtn, control =>
+            {
+                control.Text = Resources.startBtn_Stop;
+                control.Items.Clear();
+            });
             FormHelper.ControlInvoker(converterPnl, control => { control.Enabled = false; });
             FormHelper.ControlInvoker(urlTxtBox, control => { control.Enabled = false; });
             FormHelper.ControlInvoker(pathsPnl, control => { control.Enabled = false; });
             FormHelper.ControlInvoker(threadPnl, control => { control.Enabled = false; });
             FormHelper.ControlInvoker(videoTypeSelectorPnl, control => { control.Enabled = false; });
-            FormHelper.ControlInvoker(_videoStageGrid, control => { control.Rows.Clear(); });
             FormHelper.ControlInvoker(_videoStageGrid, control => { control.Columns[VideoTypesColumn].ReadOnly = true; });
+            FormHelper.ControlInvoker(_videoStageStatsGrid, control => { control.Rows.Clear(); });
             FormHelper.ControlInvoker(downloadProgressBar, bar =>
             {
                 bar.Value1 = 0;
@@ -226,16 +258,21 @@ namespace Bazger.Tools.App.Pages
                 bar.Visible = true;
                 bar.Text = "Trying to get all video urls";
             });
-            FormHelper.ControlInvoker(startBtn, control => { control.Items.Clear(); });
+
+            if (!_isPreview)
+            {
+                FormHelper.ControlInvoker(_videoStageGrid, control => { control.Rows.Clear(); });
+            }
         }
 
 
-        private void GetVideosPreview()
+        private void PreviewVideos()
         {
             LoadAllVideoUrls();
 
             if (_stopEvent.WaitOne(0))
             {
+                _stoppedEvent.Set();
                 ToIdleState();
                 return;
             }
@@ -245,7 +282,8 @@ namespace Bazger.Tools.App.Pages
 
             _videosProgress = _previewLauncher.VideosProgress;
 
-            InitializeGrids();
+            InitializeStageGrid();
+            InitializeStatsGrid();
 
             var previewGridUpdate = new Thread(PreviewGridUpdate) { Name = "PreviewGridUpdate" };
             previewGridUpdate.Start();
@@ -258,33 +296,35 @@ namespace Bazger.Tools.App.Pages
             {
                 _isPreview = true;
             }
+            _stoppedEvent.Set();
             ToIdleState();
-            _stopEvent.Set();
         }
 
-        private void VideoDownloading()
+        private void DownloadVideos()
         {
             if (!_isPreview)
             {
                 LoadAllVideoUrls();
                 if (_stopEvent.WaitOne(0))
                 {
+                    _stoppedEvent.Set();
                     ToIdleState();
                     return;
                 }
                 _launcher = new MainLauncher(_videoUrls, GetDownloaderConfigs());
                 _launcher.Start();
                 _videosProgress = _launcher.VideosProgress;
+                InitializeStageGrid();
+                InitializeStatsGrid();
             }
             else
             {
-                //TODO: send videoUrls for better sequence
-                _launcher = new MainLauncher(_videosProgress, GetDownloaderConfigs());
+                _videoProgressForRevert = _videosProgress;
+                _launcher = new MainLauncher(_videosProgress, GetDownloaderConfigs(), _videoUrls);
                 _launcher.Start();
                 _videosProgress = _launcher.VideosProgress;
+                InitializeStatsGrid();
             }
-
-            InitializeGrids();
 
             _gridUpdate = new Thread(GridUpdate) { Name = "GridUpdate" };
             _gridUpdate.Start();
@@ -293,8 +333,16 @@ namespace Bazger.Tools.App.Pages
             {
                 //Waiting for finishing or stop event call
             }
-            _stopEvent.Set();
-            _isPreview = false;
+            if (!_stopEvent.WaitOne(0) && _isPreview)
+            {
+                _isPreview = false;
+            }
+            else
+            {
+                _videosProgress = _videoProgressForRevert;
+                RevertGrid();
+            }
+            _stoppedEvent.Set();
             ToIdleState();
         }
 
@@ -329,23 +377,38 @@ namespace Bazger.Tools.App.Pages
             }
         }
 
-        private void InitializeGrids()
+        private void InitializeStageGrid()
         {
             FormHelper.ControlInvoker(_videoStageGrid, stageGrid =>
             {
                 var i = 1;
-                stageGrid.BeginUpdate();
                 _videoUrls.ForEach(url =>
                 {
                     stageGrid.Rows.Add(i++, url);
                 });
                 stageGrid.TableElement.RowScroller.ScrollToFirstRow();
-                stageGrid.EndUpdate();
             });
+
+        }
+
+        private void InitializeStatsGrid()
+        {
             FormHelper.ControlInvoker(_videoStageStatsGrid, statsGrid =>
             {
                 var a = GetVideoStageStatsRow().GetAllParams();
                 statsGrid.Rows.Add(a);
+            });
+        }
+
+        private void RevertGrid()
+        {
+            FormHelper.ControlInvoker(_videoStageGrid, stageGrid =>
+            {
+                foreach (var row in stageGrid.Rows)
+                {
+                    row.Cells[ProgressColumn].Value = null;
+                    row.Cells[StageColumn].Value = null;
+                }
             });
         }
 
@@ -499,24 +562,29 @@ namespace Bazger.Tools.App.Pages
         {
             while (!_previewLauncher.Wait(1000))
             {
-                FormHelper.ControlInvoker(_videoStageGrid, stageGrid =>
-                {
-                    foreach (var row in stageGrid.Rows)
-                    {
-                        var url = row.Cells[UrlColumn].Value.ToString();
-                        if (!_videosProgress.ContainsKey(url) || _videosProgress[url].PossibleVideoTypes == null)
-                        {
-                            continue;
-                        }
-                        //TODO: 1000 milis may prevent to update the grid after stopping
-                        if (row.Cells[VideoTypesColumn].Value == null && _videosProgress[url].SelectedVideoType != null)
-                        {
-                            row.Cells[VideoTypesColumn].Value = _videosProgress[url].SelectedVideoType.ToString();
-                        }
-                        row.Cells[TitleColumn].Value = _videosProgress[url].Title;
-                    }
-                });
+                PreviewGridInnerUpdate();
             }
+            PreviewGridInnerUpdate();
+        }
+
+        private void PreviewGridInnerUpdate()
+        {
+            FormHelper.ControlInvoker(_videoStageGrid, stageGrid =>
+            {
+                foreach (var row in stageGrid.Rows)
+                {
+                    var url = row.Cells[UrlColumn].Value.ToString();
+                    if (!_videosProgress.ContainsKey(url) || _videosProgress[url].PossibleVideoTypes == null)
+                    {
+                        continue;
+                    }
+                    if (row.Cells[VideoTypesColumn].Value == null && _videosProgress[url].SelectedVideoType != null)
+                    {
+                        row.Cells[VideoTypesColumn].Value = _videosProgress[url].SelectedVideoType.ToString();
+                    }
+                    row.Cells[TitleColumn].Value = _videosProgress[url].Title;
+                }
+            });
         }
 
         private static Color? StageColorFactory(VideoProgressStage stage)
@@ -583,7 +651,7 @@ namespace Bazger.Tools.App.Pages
 
         private void VideoStageGrid_CellValueChanged(object sender, GridViewCellEventArgs e)
         {
-            if (e.Column.Name ==VideoTypesColumn)
+            if (e.Column.Name == VideoTypesColumn)
             {
                 var url = e.Row.Cells[UrlColumn].Value.ToString();
                 if (e.Column is GridViewComboBoxColumn comboBoxColumn && _videosProgress[url].PossibleVideoTypes != null)

@@ -14,7 +14,6 @@ using Bazger.Tools.YouTubeDownloader.Core.Utility;
 using Newtonsoft.Json;
 using NLog;
 using NLog.Config;
-using NLog.Targets;
 using Telerik.WinControls;
 
 namespace Bazger.Tools.App
@@ -53,7 +52,7 @@ namespace Bazger.Tools.App
             //Set loggers
             _viewScreenControls.ForEach(c => CreatePageLogger(c.Title, c.Title));
 
-            toolControlsPager_SelectedPageChanged(this, null);
+            ToolControlsPager_SelectedPageChanged(this, null);
         }
 
         /// <summary>
@@ -107,8 +106,7 @@ namespace Bazger.Tools.App
                 {
                     _viewScreenControls.ForEach(c =>
                     {
-                        var stateControl = c as IControlStateChanger;
-                        if (stateControl == null)
+                        if (!(c is IControlStateChanger stateControl))
                         {
                             return;
                         }
@@ -185,7 +183,7 @@ namespace Bazger.Tools.App
             base.WndProc(ref m);
         }
 
-        private void toolControlsPager_SelectedPageChanged(object sender, EventArgs e)
+        private void ToolControlsPager_SelectedPageChanged(object sender, EventArgs e)
         {
             var control = _viewScreenControls.Find(c => c.ParentPage.TabIndex == toolControlsPager.SelectedPage.TabIndex);
             if (control == null)

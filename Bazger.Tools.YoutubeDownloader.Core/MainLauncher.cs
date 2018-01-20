@@ -15,7 +15,7 @@ namespace Bazger.Tools.YouTubeDownloader.Core
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
         private readonly DownloaderConfigs _configs;
-        private IEnumerable<string> _videoUrls;
+        private List<string> _videoUrls;
         private readonly IDictionary<string, VideoProgressMetadata> _inputVideosProgress;
 
         private readonly List<DownloaderThread> _downloaderThreads;
@@ -29,14 +29,14 @@ namespace Bazger.Tools.YouTubeDownloader.Core
             this(configs, name)
         {
             _inputVideosProgress = videosProgress ?? new Dictionary<string, VideoProgressMetadata>();
-            _videoUrls = videoUrls ?? _inputVideosProgress.Keys;
+            _videoUrls = videoUrls?.ToList() ?? _inputVideosProgress.Keys.ToList();
             _isAfterPreview = true;
         }
 
         public MainLauncher(IEnumerable<string> videoUrls, DownloaderConfigs configs, string name = "MainLauncher") :
             this(configs, name)
         {
-            _videoUrls = videoUrls;
+            _videoUrls = videoUrls.ToList();
         }
 
         private MainLauncher(DownloaderConfigs configs, string name) : base(name)
@@ -126,14 +126,14 @@ namespace Bazger.Tools.YouTubeDownloader.Core
                 if (downloadedVideos != null)
                 {
                     //Get the dif from downloaded videos and all videos
-                    _videoUrls = _videoUrls.Except(downloadedVideos);
+                    _videoUrls = _videoUrls.Except(downloadedVideos).ToList();
                     Log.Info("Journal file loaded successfully");
                 }
             }
 
             StartupVideosProgress();
             BlockingCollection<VideoProgressMetadata> waitingForDownload;
-            if (_videoUrls != null && !_videoUrls.Any())
+            if (_videoUrls != null && _videoUrls.Any())
             {
                 waitingForDownload = new BlockingCollection<VideoProgressMetadata>(
                     new ConcurrentQueue<VideoProgressMetadata>(_videoUrls.Select(url => VideosProgress[url])));

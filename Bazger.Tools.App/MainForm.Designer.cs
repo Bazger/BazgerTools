@@ -134,7 +134,7 @@ namespace Bazger.Tools.App
             this.toolControlsPager.TabIndex = 0;
             this.toolControlsPager.ThemeName = "VisualStudio2012Light";
             this.toolControlsPager.ViewMode = Telerik.WinControls.UI.PageViewMode.Backstage;
-            this.toolControlsPager.SelectedPageChanged += new System.EventHandler(this.toolControlsPager_SelectedPageChanged);
+            this.toolControlsPager.SelectedPageChanged += new System.EventHandler(this.ToolControlsPager_SelectedPageChanged);
             // 
             // downloderVideosStagePage
             // 

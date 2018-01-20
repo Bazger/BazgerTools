@@ -37,7 +37,7 @@ namespace Bazger.Tools.YouTubeDownloader.Core.Utility
             do
             {
                 tempFilePath = Path.Combine(directory, fileName + $" ({count++})" + fileExtension);
-            } while (directory.Contains(tempFilePath));
+            } while (directoryFiles.Contains(tempFilePath));
 
             return tempFilePath;
         }

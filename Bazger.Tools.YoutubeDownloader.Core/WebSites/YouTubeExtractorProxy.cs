@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using Bazger.Tools.YouTubeDownloader.Core.Model;
@@ -63,9 +62,8 @@ namespace Bazger.Tools.YouTubeDownloader.Core.WebSites
             var possibleVideoTypes = new List<VideoType>();
             var possibleVideosInfosDictionary = new Dictionary<VideoTypeIds, VideoInfo>();
 
-            if (videoMetadata.PossibleVideoTypes == null)
+            if (videoMetadata.SelectedVideoType == null)
             {
-
                 foreach (var videosMapping in VideosMappings)
                 {
                     VideoInfo possibleVideoInfo = null;
@@ -83,9 +81,8 @@ namespace Bazger.Tools.YouTubeDownloader.Core.WebSites
                     }
                     possibleVideoTypes.Add(VideoType.AvailabledVideoTypesDictionary[videosMapping.Key]);
                     possibleVideosInfosDictionary.Add(videosMapping.Key, possibleVideoInfo);
-                    videoMetadata.PossibleVideoTypes = possibleVideoTypes;
                 }
-                videoMetadata.SelectedVideoType = VideoType.GetTheClosestByPrioiry(videoMetadata.PossibleVideoTypes, _selectedVideoType);
+                videoMetadata.SelectedVideoType = VideoType.GetTheClosestByPrioiry(possibleVideoTypes, _selectedVideoType);
                 videoInfo = possibleVideosInfosDictionary[videoMetadata.SelectedVideoType.Id];
             }
             else
@@ -98,11 +95,6 @@ namespace Bazger.Tools.YouTubeDownloader.Core.WebSites
                         break;
                     }
                 }
-            }
-
-            if (selectedVideoType == null)
-            {
-                videoMetadata.SelectedVideoType = selectedVideoType;
             }
 
             if (videoInfo == null)

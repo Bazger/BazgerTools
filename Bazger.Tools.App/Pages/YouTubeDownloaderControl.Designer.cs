@@ -61,7 +61,7 @@ namespace Bazger.Tools.App.Pages
             this.downloadProgressBar = new Telerik.WinControls.UI.RadProgressBar();
             this.waitingBar = new Telerik.WinControls.UI.RadWaitingBar();
             this.startBtn = new Telerik.WinControls.UI.RadSplitButton();
-            this.startMenuItem = new Telerik.WinControls.UI.RadMenuItem();
+            this.mainMenuItem = new Telerik.WinControls.UI.RadMenuItem();
             this.previewMenuItem = new Telerik.WinControls.UI.RadMenuItem();
             this.videoTypeSelectorPnl = new Telerik.WinControls.UI.RadPanel();
             this.videoTypeLbl = new Telerik.WinControls.UI.RadLabel();
@@ -69,6 +69,7 @@ namespace Bazger.Tools.App.Pages
             this.converterPnl = new Telerik.WinControls.UI.RadPanel();
             this.convertionFormatsDropDownList = new Telerik.WinControls.UI.RadDropDownList();
             this.convertionEnabledChkBox = new Telerik.WinControls.UI.RadCheckBox();
+            this.startNewOneMenuItem = new Telerik.WinControls.UI.RadMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.urlTxtBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.threadPnl)).BeginInit();
             this.threadPnl.SuspendLayout();
@@ -398,7 +399,7 @@ namespace Bazger.Tools.App.Pages
             // 
             // startBtn
             // 
-            this.startBtn.DefaultItem = this.startMenuItem;
+            this.startBtn.DefaultItem = this.mainMenuItem;
             this.startBtn.Items.AddRange(new Telerik.WinControls.RadItem[] {
             this.previewMenuItem});
             this.startBtn.Location = new System.Drawing.Point(525, 197);
@@ -413,11 +414,17 @@ namespace Bazger.Tools.App.Pages
             this.startBtn.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.startBtn.ThemeName = "VisualStudio2012Light";
             // 
-            // startMenuItem
+            // mainMenuItem
             // 
-            this.startMenuItem.Name = "startMenuItem";
-            this.startMenuItem.Text = "Start";
-            this.startMenuItem.Click += new System.EventHandler(this.StartBtn_Click);
+            this.mainMenuItem.Name = "mainMenuItem";
+            this.mainMenuItem.Text = "Main";
+            this.mainMenuItem.Click += new System.EventHandler(this.MainBtn_Click);
+            // 
+            // startNewOneMenuItem
+            // 
+            this.startNewOneMenuItem.Name = "startNewOneMenuItem";
+            this.startNewOneMenuItem.Text = "Start";
+            this.startNewOneMenuItem.Click += new System.EventHandler(this.StartNewOneBtn_Click);
             // 
             // previewMenuItem
             // 
@@ -578,6 +585,7 @@ namespace Bazger.Tools.App.Pages
         private RadPanel converterPnl;
         private RadDropDownList convertionFormatsDropDownList;
         private RadCheckBox convertionEnabledChkBox;
-        private RadMenuItem startMenuItem;
+        private RadMenuItem mainMenuItem;
+        private RadMenuItem startNewOneMenuItem;
     }
 }

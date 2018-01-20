@@ -95,7 +95,7 @@ namespace Bazger.Tools.YouTubeDownloader.Core
         private void StartPreviewThreads(BlockingCollection<VideoProgressMetadata> waitingForGettingPreview)
         {
             //Inialing once because method are safe for multithreaded usage
-            for (var i = 0; i < 1; i++)
+            for (var i = 0; i < 10; i++)
             {
                 _previewThreads.Add(new PreviewThread($"Preview {i}", waitingForGettingPreview, VideoType.AvailabledVideoTypesDictionary[_selectedVideoTypeId]));
             }
