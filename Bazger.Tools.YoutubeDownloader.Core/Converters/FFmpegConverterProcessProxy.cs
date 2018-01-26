@@ -18,7 +18,7 @@ namespace Bazger.Tools.YouTubeDownloader.Core.Converters
                 UseShellExecute = false,
                 WindowStyle = ProcessWindowStyle.Hidden,
                 FileName = "ffmpeg.exe",
-                Arguments = $"-i \"{videoMetadata.VideoFilePath}\" \"{videoMetadata.ConvertedFilePath}\""
+                Arguments = $"-i \"{videoMetadata.DownloadedVideoFilePath}\" \"{videoMetadata.ConvertedFilePath}\""
             };
             ExternalProcess.StartInfo = startInfo;
         }

@@ -49,7 +49,7 @@ namespace Bazger.Tools.YouTubeDownloader.Core.WebSites
             videoMetadata.Title = videoInfos.First()?.Title;
         }
 
-
+        //TODO: Functions must rerun values insted setting them
         public override void Download(VideoProgressMetadata videoMetadata)
         {
             var videosInfos = DownloadUrlResolver.GetDownloadUrls(videoMetadata.Url, false).ToList();
@@ -120,9 +120,9 @@ namespace Bazger.Tools.YouTubeDownloader.Core.WebSites
              * The first argument is the video to download.
              * The second argument is the path to save the video file.
              */
-            videoMetadata.VideoFilePath = Path.Combine(videoMetadata.DownloaderTempDir,
+            videoMetadata.DownloadedVideoFilePath = Path.Combine(videoMetadata.DownloaderTempDir,
                 Guid.NewGuid() + videoInfo.VideoExtension);
-            var videoDownloader = new VideoDownloader(videoInfo, videoMetadata.VideoFilePath);
+            var videoDownloader = new VideoDownloader(videoInfo, videoMetadata.DownloadedVideoFilePath);
 
 
             // Register the ProgressChanged event and print the current progress

@@ -58,6 +58,7 @@ namespace Bazger.Tools.YouTubeDownloader.Core.Model
                     File.Move(sourceFilePath, destFilePath);
                     Log.Info(LogHelper.Format($"Moving file succeed", videoMetadata));
                     videoMetadata.Stage = VideoProgressStage.Completed;
+                    videoMetadata.VideoFilePath = destFilePath;
                 }
                 catch (Exception ex)
                 {
@@ -70,14 +71,14 @@ namespace Bazger.Tools.YouTubeDownloader.Core.Model
                     videoMetadata.ErrorArgs = ex.ToString();
                     try
                     {
-                        if (File.Exists(videoMetadata.VideoFilePath))
+                        if (File.Exists(videoMetadata.DownloadedVideoFilePath))
                         {
-                            File.Delete(videoMetadata.VideoFilePath);
+                            File.Delete(videoMetadata.DownloadedVideoFilePath);
                         }
                     }
                     catch (Exception innerEx)
                     {
-                        Log.Warn(innerEx, LogHelper.Format($"Can't delete video file | path={videoMetadata.VideoFilePath}", videoMetadata));
+                        Log.Warn(innerEx, LogHelper.Format($"Can't delete video file | path={videoMetadata.DownloadedVideoFilePath}", videoMetadata));
                     }
                     try
                     {

@@ -63,7 +63,7 @@ namespace Bazger.Tools.YouTubeDownloader.Core.Model
                     Log.Info(LogHelper.Format("Video successfully dwonloaded", videoMetadata));
                     if (!_isConvertionEnabled)
                     {
-                        videoMetadata.MovingFilePath = videoMetadata.VideoFilePath;
+                        videoMetadata.MovingFilePath = videoMetadata.DownloadedVideoFilePath;
                         _waitingForMoving?.TryAdd(videoMetadata);
                         videoMetadata.Stage = VideoProgressStage.Moving;
                         continue;
@@ -89,7 +89,7 @@ namespace Bazger.Tools.YouTubeDownloader.Core.Model
                     if (ex is IOException)
                     {
                         Log.Error(ex,
-                            LogHelper.Format($"Can't get access to file | file={videoMetadata.VideoFilePath} | retries={videoMetadata.Retries}", videoMetadata));
+                            LogHelper.Format($"Can't get access to file | file={videoMetadata.DownloadedVideoFilePath} | retries={videoMetadata.Retries}", videoMetadata));
                     }
                     else if (ex is WebException)
                     {

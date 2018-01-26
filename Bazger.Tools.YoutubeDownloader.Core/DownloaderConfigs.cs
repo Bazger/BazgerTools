@@ -16,6 +16,7 @@ namespace Bazger.Tools.YouTubeDownloader.Core
                 YouTubeVideoTypeId = VideoType.DefaultVideoType.Id,
                 ParallelDownloadsCount = 10,
                 ConvertersCount = 4,
+                PreviewThreadsCount = 10,
                 ConverterEnabled = true,
                 ConvertionFormat = "wav",
                 JournalFilePath = "Journal.json",
@@ -79,6 +80,7 @@ namespace Bazger.Tools.YouTubeDownloader.Core
         }
 
         [ConfigurationProperty("parallelDownloadsCount", IsRequired = false, DefaultValue = 10)]
+        [IntegerValidator(MinValue = 1, MaxValue = 100)]
         public int ParallelDownloadsCount
         {
             get
@@ -92,6 +94,7 @@ namespace Bazger.Tools.YouTubeDownloader.Core
         }
 
         [ConfigurationProperty("convertersCount", IsRequired = false, DefaultValue = 4)]
+        [IntegerValidator(MinValue = 1, MaxValue = 20)]
         public int ConvertersCount
         {
             get
@@ -103,6 +106,21 @@ namespace Bazger.Tools.YouTubeDownloader.Core
                 this["convertersCount"] = value;
             }
         }
+
+        [ConfigurationProperty("previewThreadsCount", IsRequired = false, DefaultValue = 10)]
+        [IntegerValidator(MinValue = 1, MaxValue = 100)]
+        public int PreviewThreadsCount
+        {
+            get
+            {
+                return (int)this["previewThreadsCount"];
+            }
+            set
+            {
+                this["previewThreadsCount"] = value;
+            }
+        }
+
 
 
         [ConfigurationProperty("converterEnabled", IsRequired = false, DefaultValue = true)]

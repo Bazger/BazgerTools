@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Threading;
 using Bazger.Tools.YouTubeDownloader.Core.Utility;
 using Bazger.Tools.YouTubeDownloader.Core.WebSites;
 using NLog;
@@ -36,6 +37,7 @@ namespace Bazger.Tools.YouTubeDownloader.Core.Model
                     videoMetadata.Stage = VideoProgressStage.GettingPreview;
                     Log.Info(LogHelper.Format("Getting preview for video", videoMetadata));
                     _youTubeProxy.Preview(videoMetadata);
+                    videoMetadata.Stage = VideoProgressStage.PreviewFound;
                     Log.Info(LogHelper.Format("Video preview was found", videoMetadata));
                 }
                 catch (Exception ex)

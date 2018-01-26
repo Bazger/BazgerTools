@@ -43,7 +43,6 @@ namespace Bazger.Tools.YouTubeDownloader.Core.Model
         public virtual void Stop()
         {
             StopEvent.Set();
-            StoppedEvent.Set();
         }
 
         protected virtual void Job()
@@ -59,6 +58,7 @@ namespace Bazger.Tools.YouTubeDownloader.Core.Model
             }
             Log.Warn($"Abort service ({Name})");
             JobThread.Abort();
+            StoppedEvent.Set();
         }
 
         public bool Wait(int waitTimeout = -1)

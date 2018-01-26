@@ -41,7 +41,7 @@ namespace Bazger.Tools.App.Pages
             this.visualStudio2012LightTheme = new Telerik.WinControls.Themes.VisualStudio2012LightTheme();
             this.urlTxtBox = new Telerik.WinControls.UI.RadTextBox();
             this.threadPnl = new Telerik.WinControls.UI.RadPanel();
-            this.radSpinEditor1 = new Telerik.WinControls.UI.RadSpinEditor();
+            this.previewThreadSpin = new Telerik.WinControls.UI.RadSpinEditor();
             this.fileMoverThreadsLbl = new Telerik.WinControls.UI.RadLabel();
             this.converterThreadsSpin = new Telerik.WinControls.UI.RadSpinEditor();
             this.converterThreadsLbl = new Telerik.WinControls.UI.RadLabel();
@@ -70,10 +70,11 @@ namespace Bazger.Tools.App.Pages
             this.convertionFormatsDropDownList = new Telerik.WinControls.UI.RadDropDownList();
             this.convertionEnabledChkBox = new Telerik.WinControls.UI.RadCheckBox();
             this.startNewOneMenuItem = new Telerik.WinControls.UI.RadMenuItem();
+            this.backToPreviewItem = new Telerik.WinControls.UI.RadMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.urlTxtBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.threadPnl)).BeginInit();
             this.threadPnl.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.radSpinEditor1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.previewThreadSpin)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.fileMoverThreadsLbl)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.converterThreadsSpin)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.converterThreadsLbl)).BeginInit();
@@ -119,7 +120,7 @@ namespace Bazger.Tools.App.Pages
             // 
             // threadPnl
             // 
-            this.threadPnl.Controls.Add(this.radSpinEditor1);
+            this.threadPnl.Controls.Add(this.previewThreadSpin);
             this.threadPnl.Controls.Add(this.fileMoverThreadsLbl);
             this.threadPnl.Controls.Add(this.converterThreadsSpin);
             this.threadPnl.Controls.Add(this.converterThreadsLbl);
@@ -131,32 +132,26 @@ namespace Bazger.Tools.App.Pages
             this.threadPnl.TabIndex = 55;
             this.threadPnl.ThemeName = "VisualStudio2012Light";
             // 
-            // radSpinEditor1
+            // previewThreadSpin
             // 
-            this.radSpinEditor1.Location = new System.Drawing.Point(135, 61);
-            this.radSpinEditor1.Maximum = new decimal(new int[] {
-            300,
-            0,
-            0,
-            0});
-            this.radSpinEditor1.Minimum = new decimal(new int[] {
+            this.previewThreadSpin.Location = new System.Drawing.Point(135, 61);
+            this.previewThreadSpin.Minimum = new decimal(new int[] {
             1,
             0,
             0,
             0});
-            this.radSpinEditor1.Name = "radSpinEditor1";
-            this.radSpinEditor1.NullableValue = new decimal(new int[] {
-            1,
+            this.previewThreadSpin.Name = "previewThreadSpin";
+            this.previewThreadSpin.NullableValue = new decimal(new int[] {
+            10,
             0,
             0,
             0});
-            this.radSpinEditor1.ReadOnly = true;
-            this.radSpinEditor1.Size = new System.Drawing.Size(50, 24);
-            this.radSpinEditor1.TabIndex = 37;
-            this.radSpinEditor1.TabStop = false;
-            this.radSpinEditor1.ThemeName = "VisualStudio2012Light";
-            this.radSpinEditor1.Value = new decimal(new int[] {
-            1,
+            this.previewThreadSpin.Size = new System.Drawing.Size(50, 24);
+            this.previewThreadSpin.TabIndex = 37;
+            this.previewThreadSpin.TabStop = false;
+            this.previewThreadSpin.ThemeName = "VisualStudio2012Light";
+            this.previewThreadSpin.Value = new decimal(new int[] {
+            10,
             0,
             0,
             0});
@@ -166,16 +161,16 @@ namespace Bazger.Tools.App.Pages
             this.fileMoverThreadsLbl.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.fileMoverThreadsLbl.Location = new System.Drawing.Point(3, 64);
             this.fileMoverThreadsLbl.Name = "fileMoverThreadsLbl";
-            this.fileMoverThreadsLbl.Size = new System.Drawing.Size(119, 21);
+            this.fileMoverThreadsLbl.Size = new System.Drawing.Size(103, 21);
             this.fileMoverThreadsLbl.TabIndex = 36;
-            this.fileMoverThreadsLbl.Text = "File mover threads:";
+            this.fileMoverThreadsLbl.Text = "Preivew threads:";
             this.fileMoverThreadsLbl.ThemeName = "VisualStudio2012Light";
             // 
             // converterThreadsSpin
             // 
             this.converterThreadsSpin.Location = new System.Drawing.Point(135, 32);
             this.converterThreadsSpin.Maximum = new decimal(new int[] {
-            300,
+            20,
             0,
             0,
             0});
@@ -223,11 +218,6 @@ namespace Bazger.Tools.App.Pages
             // downloaderThreadsSpin
             // 
             this.downloaderThreadsSpin.Location = new System.Drawing.Point(135, 5);
-            this.downloaderThreadsSpin.Maximum = new decimal(new int[] {
-            300,
-            0,
-            0,
-            0});
             this.downloaderThreadsSpin.Minimum = new decimal(new int[] {
             1,
             0,
@@ -420,12 +410,6 @@ namespace Bazger.Tools.App.Pages
             this.mainMenuItem.Text = "Main";
             this.mainMenuItem.Click += new System.EventHandler(this.MainBtn_Click);
             // 
-            // startNewOneMenuItem
-            // 
-            this.startNewOneMenuItem.Name = "startNewOneMenuItem";
-            this.startNewOneMenuItem.Text = "Start";
-            this.startNewOneMenuItem.Click += new System.EventHandler(this.StartNewOneBtn_Click);
-            // 
             // previewMenuItem
             // 
             this.previewMenuItem.Name = "previewMenuItem";
@@ -499,6 +483,18 @@ namespace Bazger.Tools.App.Pages
             this.convertionEnabledChkBox.ThemeName = "VisualStudio2012Light";
             this.convertionEnabledChkBox.ToggleState = Telerik.WinControls.Enumerations.ToggleState.On;
             // 
+            // startNewOneMenuItem
+            // 
+            this.startNewOneMenuItem.Name = "startNewOneMenuItem";
+            this.startNewOneMenuItem.Text = "Start";
+            this.startNewOneMenuItem.Click += new System.EventHandler(this.StartNewOneBtn_Click);
+            // 
+            // backToPreviewItem
+            // 
+            this.backToPreviewItem.Name = "backToPreviewItem";
+            this.backToPreviewItem.Text = "Back to preview";
+            this.backToPreviewItem.Click += new System.EventHandler(this.BackToPreview_Click);
+            // 
             // YouTubeDownloaderControl
             // 
             this.Controls.Add(this.startBtn);
@@ -516,7 +512,7 @@ namespace Bazger.Tools.App.Pages
             ((System.ComponentModel.ISupportInitialize)(this.threadPnl)).EndInit();
             this.threadPnl.ResumeLayout(false);
             this.threadPnl.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.radSpinEditor1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.previewThreadSpin)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.fileMoverThreadsLbl)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.converterThreadsSpin)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.converterThreadsLbl)).EndInit();
@@ -575,7 +571,7 @@ namespace Bazger.Tools.App.Pages
         private Telerik.WinControls.UI.RadButton goToFolderBtn;
         private Telerik.WinControls.UI.RadProgressBar downloadProgressBar;
         private Telerik.WinControls.UI.RadWaitingBar waitingBar;
-        private Telerik.WinControls.UI.RadSpinEditor radSpinEditor1;
+        private Telerik.WinControls.UI.RadSpinEditor previewThreadSpin;
         private Telerik.WinControls.UI.RadLabel fileMoverThreadsLbl;
         private Telerik.WinControls.UI.RadSplitButton startBtn;
         private Telerik.WinControls.UI.RadMenuItem previewMenuItem;
@@ -587,5 +583,6 @@ namespace Bazger.Tools.App.Pages
         private RadCheckBox convertionEnabledChkBox;
         private RadMenuItem mainMenuItem;
         private RadMenuItem startNewOneMenuItem;
+        private RadMenuItem backToPreviewItem;
     }
 }

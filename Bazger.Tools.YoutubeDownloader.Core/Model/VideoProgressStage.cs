@@ -2,8 +2,9 @@
 {
     public enum VideoProgressStage
     {
-        GettingPreview,
         Idling,
+        GettingPreview,
+        PreviewFound,
         Downloading,
         Exist,
         WaitingToConvertion, 

@@ -35,7 +35,7 @@ namespace Bazger.Tools.YouTubeDownloader.Core.WebSites
 
             string videoName = videoInfoJson.title.ToString();
             string videoPath = Path.Combine(videoMetadata.SaveDir, videoName + ".mp3");
-            videoMetadata.VideoFilePath = videoPath;
+            videoMetadata.DownloadedVideoFilePath = videoPath;
             using (var ms = new MemoryStream())
             {
                 stream.CopyTo(ms);

@@ -25,6 +25,8 @@ namespace Bazger.Tools.YouTubeDownloader.Core
         private string _tempDir;
         private readonly bool _isAfterPreview;
 
+        private readonly Mutex _deleteDirMutex;
+
         public MainLauncher(IDictionary<string, VideoProgressMetadata> videosProgress, DownloaderConfigs configs, IEnumerable<string> videoUrls = null, string name = "MainLauncher") :
             this(configs, name)
         {
@@ -45,6 +47,7 @@ namespace Bazger.Tools.YouTubeDownloader.Core
             _downloaderThreads = new List<DownloaderThread>();
             _converterThreads = new List<ConverterThread>();
             _isAfterPreview = false;
+            _deleteDirMutex = new Mutex();
         }
 
         public override void Stop()
@@ -69,7 +72,7 @@ namespace Bazger.Tools.YouTubeDownloader.Core
             }
 
             var waitEvent = new AutoResetEvent(false);
-            while (!waitEvent.WaitOne(5000))
+            while (!waitEvent.WaitOne(1500))
             {
                 if (!JobThread.IsAlive && GetAliveDownloadersCount() == 0 && GetAliveConvertersCount() == 0)
                 {
@@ -85,6 +88,11 @@ namespace Bazger.Tools.YouTubeDownloader.Core
             while (_fileMoverThread.IsAlive && !waitEvent.WaitOne(1000))
             {
                 _fileMoverThread.Abort();
+            }
+
+            while ((GetAliveDownloadersCount() != 0 || GetAliveConvertersCount() != 0 || GetAliveFileMoversCount() != 0) && 
+                !StoppedEvent.WaitOne(200))
+            {
             }
 
             Log.Info("Removing temporary files");
@@ -179,10 +187,8 @@ namespace Bazger.Tools.YouTubeDownloader.Core
             }
 
             Log.Info("Removing temporary files");
-            if (Directory.Exists(_tempDir))
-            {
-                Directory.Delete(_tempDir, true);
-            }
+            DeleteTempDirectory();
+
             if (_configs.WriteToJournal)
             {
                 Log.Info("Writing to journal");
@@ -201,7 +207,6 @@ namespace Bazger.Tools.YouTubeDownloader.Core
                 var progressMetadata = new VideoProgressMetadata(url)
                 {
                     SaveDir = _configs.SaveDir,
-                    Stage = VideoProgressStage.Idling,
                     Progress = 0
                 };
                 if (_isAfterPreview)
@@ -215,21 +220,31 @@ namespace Bazger.Tools.YouTubeDownloader.Core
 
         public override void Abort()
         {
-            if (!JobThread.IsAlive)
+            if (StoppedEvent.WaitOne(0))
             {
                 return;
-            }
-            //TODO: Remove temp dir without collition with stop method call
+            }     
             Log.Warn($"Abort launcher service ({Name})");
             StopEvent.Set();
             AbortServices(_downloaderThreads);
             AbortServices(_converterThreads);
             _fileMoverThread.Abort();
+            while ((GetAliveDownloadersCount() != 0 || GetAliveConvertersCount() != 0 || GetAliveFileMoversCount() != 0) && !StoppedEvent.WaitOne(100))
+            {                
+            }
             Log.Info("Removing temporary files");
+            DeleteTempDirectory();
+            StoppedEvent.Set();
+        }
+
+        private void DeleteTempDirectory()
+        {
+            _deleteDirMutex.WaitOne();
             if (Directory.Exists(_tempDir))
             {
                 Directory.Delete(_tempDir, true);
             }
+            _deleteDirMutex.ReleaseMutex();
         }
 
         private void StartDownloderThreads(BlockingCollection<VideoProgressMetadata> waitingForDownload, BlockingCollection<VideoProgressMetadata> waitingForConvertion, BlockingCollection<VideoProgressMetadata> waitingForMoving)

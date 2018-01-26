@@ -14,6 +14,7 @@ namespace Bazger.Tools.YouTubeDownloader.Core.Model
         public string ErrorArgs { get; set; }
         public int Retries { get; set; }
         public string VideoFilePath { get; set; }
+        public string DownloadedVideoFilePath { get; set; }
         public string ConvertedFilePath { get; set; }
         public string MovingFilePath { get; set; }
         public string SaveDir { get; set; }

@@ -64,23 +64,36 @@ namespace Bazger.Tools.YouTubeDownloader.Core.Model
                     {
                         continue;
                     }
-                    Log.Error(ex, LogHelper.Format($"Can't convert video | path={videoMetadata.VideoFilePath}", videoMetadata));
+                    Log.Error(ex, LogHelper.Format($"Can't convert video | path={videoMetadata.DownloadedVideoFilePath}", videoMetadata));
                     try
                     {
-                        if (File.Exists(videoMetadata.VideoFilePath))
+                        if (File.Exists(videoMetadata.DownloadedVideoFilePath))
                         {
-                            File.Delete(videoMetadata.VideoFilePath);
+                            File.Delete(videoMetadata.DownloadedVideoFilePath);
                         }
                     }
                     catch (Exception innerEx)
                     {
-                        Log.Warn(innerEx, LogHelper.Format($"Can't delete video file | path={videoMetadata.VideoFilePath}", videoMetadata));
+                        Log.Warn(innerEx, LogHelper.Format($"Can't delete video file | path={videoMetadata.DownloadedVideoFilePath}", videoMetadata));
                     }
                     videoMetadata.Stage = VideoProgressStage.Error;
                     videoMetadata.ErrorArgs = ex.ToString();
                 }
             }
             base.Job();
+        }
+
+        public override void Abort()
+        {
+            if (!JobThread.IsAlive)
+            {
+                return;
+            }
+            StopEvent.Set();
+            _runningProcessProxy?.Stop();
+            Log.Warn($"Abort service ({Name})");
+            JobThread.Abort();
+            StoppedEvent.Set();
         }
     }
 }

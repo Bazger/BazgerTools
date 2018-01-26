@@ -148,7 +148,8 @@ namespace Bazger.Tools.App
             // 
             // videoStageStatsGrid
             // 
-            this.videoStageStatsGrid.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.videoStageStatsGrid.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.videoStageStatsGrid.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(246)))), ((int)(((byte)(246)))), ((int)(((byte)(246)))));
             this.videoStageStatsGrid.Cursor = System.Windows.Forms.Cursors.Default;
             this.videoStageStatsGrid.Font = new System.Drawing.Font("Segoe UI", 9.75F);
@@ -164,43 +165,37 @@ namespace Bazger.Tools.App
             this.videoStageStatsGrid.MasterTemplate.AllowEditRow = false;
             this.videoStageStatsGrid.MasterTemplate.AllowRowResize = false;
             this.videoStageStatsGrid.MasterTemplate.AutoGenerateColumns = false;
-            gridViewTextBoxColumn1.AllowResize = false;
+            this.videoStageStatsGrid.MasterTemplate.AutoSizeColumnsMode = Telerik.WinControls.UI.GridViewAutoSizeColumnsMode.Fill;
             gridViewTextBoxColumn1.EnableExpressionEditor = false;
             gridViewTextBoxColumn1.HeaderText = "Downloading";
             gridViewTextBoxColumn1.Name = "downloading";
             gridViewTextBoxColumn1.TextAlignment = System.Drawing.ContentAlignment.MiddleCenter;
             gridViewTextBoxColumn1.Width = 96;
-            gridViewTextBoxColumn2.AllowResize = false;
             gridViewTextBoxColumn2.EnableExpressionEditor = false;
             gridViewTextBoxColumn2.HeaderText = "Converting";
             gridViewTextBoxColumn2.Name = "converting";
             gridViewTextBoxColumn2.TextAlignment = System.Drawing.ContentAlignment.MiddleCenter;
             gridViewTextBoxColumn2.Width = 84;
-            gridViewTextBoxColumn3.AllowResize = false;
             gridViewTextBoxColumn3.EnableExpressionEditor = false;
             gridViewTextBoxColumn3.HeaderText = "Completed";
             gridViewTextBoxColumn3.Name = "completed";
             gridViewTextBoxColumn3.TextAlignment = System.Drawing.ContentAlignment.MiddleCenter;
             gridViewTextBoxColumn3.Width = 90;
-            gridViewTextBoxColumn4.AllowResize = false;
             gridViewTextBoxColumn4.EnableExpressionEditor = false;
             gridViewTextBoxColumn4.HeaderText = "Errors";
             gridViewTextBoxColumn4.Name = "errors";
             gridViewTextBoxColumn4.TextAlignment = System.Drawing.ContentAlignment.MiddleCenter;
             gridViewTextBoxColumn4.Width = 76;
-            gridViewTextBoxColumn5.AllowResize = false;
             gridViewTextBoxColumn5.EnableExpressionEditor = false;
             gridViewTextBoxColumn5.HeaderText = "Url Problem";
             gridViewTextBoxColumn5.Name = "url_problem";
             gridViewTextBoxColumn5.TextAlignment = System.Drawing.ContentAlignment.MiddleCenter;
             gridViewTextBoxColumn5.Width = 93;
-            gridViewTextBoxColumn6.AllowResize = false;
             gridViewTextBoxColumn6.EnableExpressionEditor = false;
             gridViewTextBoxColumn6.HeaderText = "Waiting";
             gridViewTextBoxColumn6.Name = "waiting";
             gridViewTextBoxColumn6.TextAlignment = System.Drawing.ContentAlignment.MiddleCenter;
             gridViewTextBoxColumn6.Width = 79;
-            gridViewTextBoxColumn7.AllowResize = false;
             gridViewTextBoxColumn7.EnableExpressionEditor = false;
             gridViewTextBoxColumn7.HeaderText = "Moving";
             gridViewTextBoxColumn7.Name = "moving";
@@ -251,17 +246,16 @@ namespace Bazger.Tools.App
             gridViewDecimalColumn1.EnableExpressionEditor = false;
             gridViewDecimalColumn1.HeaderText = "Id";
             gridViewDecimalColumn1.Name = "id";
-            gridViewDecimalColumn1.Width = 38;
             gridViewDecimalColumn1.ReadOnly = true;
+            gridViewDecimalColumn1.Width = 38;
             gridViewHyperlinkColumn1.EnableExpressionEditor = false;
             gridViewHyperlinkColumn1.HeaderText = "Url";
             gridViewHyperlinkColumn1.Name = "url";
-            gridViewHyperlinkColumn1.ReadOnly = true;
             gridViewHyperlinkColumn1.Width = 117;
             gridViewTextBoxColumn8.EnableExpressionEditor = false;
             gridViewTextBoxColumn8.HeaderText = "Title";
-            gridViewTextBoxColumn8.ReadOnly = true;
             gridViewTextBoxColumn8.Name = "title";
+            gridViewTextBoxColumn8.ReadOnly = true;
             gridViewTextBoxColumn8.Width = 189;
             gridViewComboBoxColumn1.EnableExpressionEditor = false;
             gridViewComboBoxColumn1.HeaderText = "Video types";
@@ -276,8 +270,8 @@ namespace Bazger.Tools.App
             gridViewDecimalColumn2.Width = 59;
             gridViewTextBoxColumn9.EnableExpressionEditor = false;
             gridViewTextBoxColumn9.HeaderText = "Stage";
-            gridViewTextBoxColumn9.ReadOnly = true;
             gridViewTextBoxColumn9.Name = "stage";
+            gridViewTextBoxColumn9.ReadOnly = true;
             gridViewTextBoxColumn9.TextAlignment = System.Drawing.ContentAlignment.MiddleCenter;
             gridViewTextBoxColumn9.Width = 86;
             this.videoStageGrid.MasterTemplate.Columns.AddRange(new Telerik.WinControls.UI.GridViewDataColumn[] {

@@ -20,6 +20,9 @@ namespace Bazger.Tools.App.State
         [JsonProperty("ConvertersThreadSpin")]
         public int ConvertersThreadSpin { get; set; }
 
+        [JsonProperty("PreviewThreadSpin")]
+        public int PreviewThreadSpin { get; set; }
+
         [JsonProperty("IsConversionChecked")]
         public bool IsConversionChecked { get; set; }
 
