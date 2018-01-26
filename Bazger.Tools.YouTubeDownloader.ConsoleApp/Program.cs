@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using Bazger.Tools.YouTubeDownloader.Core;
 using Bazger.Tools.YouTubeDownloader.Core.Model;
 using Bazger.Tools.YouTubeDownloader.Core.Utility;
@@ -18,7 +19,7 @@ namespace Bazger.Tools.YouTubeDownloader.ConsoleApp
 
         private static List<string> _videoUrls;
         private static MainLauncher _launcher;
-        private static Thread _uiThread;
+        private static Task _uiThread;
         private static AutoResetEvent _stopUiEvent;
         private static bool _onStopping;
         private static bool _launcherStopped;
@@ -45,19 +46,49 @@ namespace Bazger.Tools.YouTubeDownloader.ConsoleApp
                 return;
             }
 
+            if (Configs.ReadFromJournal)
+            {
+                Log.Info("Reading from journal");
+                var downloadedVideos = FileHelper.ReadFromJournal(Configs.JournalFilePath);
+                if (downloadedVideos != null)
+                {
+                    //Get the dif from downloaded videos and all videos
+                    _videoUrls = _videoUrls.Except(downloadedVideos).ToList();
+                    Log.Info("Journal file loaded successfully");
+                }
+                if (!_videoUrls.Any())
+                {
+                    Log.Warn("There are no urls to download, all of them has been downloaded yet");
+                    return;
+                }
+            }
+
             _launcher = new MainLauncher(_videoUrls, Configs);
             _launcher.Start();
 
             _stopUiEvent = new AutoResetEvent(true);
 
-            _uiThread = new Thread(UiDraw) { Name = "UI" };
+            _uiThread = new Task(UiDraw);
             _uiThread.Start();
 
             Console.CancelKeyPress += ConsoleCancelKeyPress;
+
+            Task.WaitAll(_uiThread);
+
+            if (Configs.WriteToJournal)
+            {
+                Log.Info("Writing to journal");
+                FileHelper.WriteToJournal(Configs.JournalFilePath, _launcher.VideosProgress.Values
+                    .Where(v => v.Stage == VideoProgressStage.Completed)
+                    .Select(v => v.Url)
+                    .ToList());
+                Log.Info("Writing succeeded");
+            }
         }
 
         private static void UiDraw()
         {
+            Thread.CurrentThread.Name = "UI";
             _stopUiEvent.WaitOne();
             var drawLastTime = false;
             while (!drawLastTime)
@@ -159,7 +190,6 @@ namespace Bazger.Tools.YouTubeDownloader.ConsoleApp
                     Console.WriteLine("\n---------------------------------------------------\n");
                 }
             }
-
         }
 
         private static void PrintConsoleLogWithRetries(string showStr, string video)

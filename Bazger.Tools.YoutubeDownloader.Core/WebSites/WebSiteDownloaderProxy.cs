@@ -18,6 +18,11 @@ namespace Bazger.Tools.YouTubeDownloader.Core.WebSites
             _retriesCount = retriesCount;
         }
 
+        //Don't forget to set videoMetadata variables:
+        //--videoMetadata.Title
+        //--videoMetadata.DownloadedVideoFilePath
+        //--videoMetadata.SelecetedVideoType
+        //--videoMetadata.Progress
         public abstract void Download(VideoProgressMetadata videoMetadata);
 
         protected void RetryToDownload(Action executeAction, VideoProgressMetadata videoMetadata)

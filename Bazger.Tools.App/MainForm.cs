@@ -2,11 +2,8 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Bazger.Tools.App.NLog;
@@ -19,12 +16,11 @@ using Newtonsoft.Json;
 using NLog;
 using NLog.Config;
 using NLog.Targets;
-using Telerik.WinControls;
 using Telerik.WinControls.UI;
 
 namespace Bazger.Tools.App
 {
-    public partial class MainForm : Telerik.WinControls.UI.RadForm
+    public partial class MainForm : RadForm
     {
         private const string StateFilePath = "state.json";
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
@@ -177,9 +173,9 @@ namespace Bazger.Tools.App
             {
                 e.Cancel = true;
 
-                var waitingScreen = new WaitingScreen {StartPosition = FormStartPosition.Manual};
-                waitingScreen.Location = new Point(this.Location.X + (this.Width - waitingScreen.Width) / 2, this.Location.Y + (this.Height - waitingScreen.Height) / 2);
-                waitingScreen.Show(this);
+                //var waitingScreen = new WaitingScreen { StartPosition = FormStartPosition.Manual };
+                //waitingScreen.Location = new Point(this.Location.X + (this.Width - waitingScreen.Width) / 2, this.Location.Y + (this.Height - waitingScreen.Height) / 2);
+                //waitingScreen.Show(this);
 
                 new Task(() =>
                 {
@@ -197,8 +193,8 @@ namespace Bazger.Tools.App
                     SerDeHelper.SerializeToJsonFile(formSate, StateFilePath,
                         new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All });
                     _formCanBeClosed = true;
-                    FormHelper.ControlInvoker(waitingScreen, control => control.Close());                 
-                    FormHelper.ControlInvoker(this, control => this.Close());                 
+                    //FormHelper.ControlInvoker(waitingScreen, control => control.Close());                 
+                    FormHelper.ControlInvoker(this, control => this.Close());
                 }).Start();
             }
             else

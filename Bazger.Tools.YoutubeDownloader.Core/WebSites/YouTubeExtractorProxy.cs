@@ -49,7 +49,6 @@ namespace Bazger.Tools.YouTubeDownloader.Core.WebSites
             videoMetadata.Title = videoInfos.First()?.Title;
         }
 
-        //TODO: Functions must rerun values insted setting them
         public override void Download(VideoProgressMetadata videoMetadata)
         {
             var videosInfos = DownloadUrlResolver.GetDownloadUrls(videoMetadata.Url, false).ToList();

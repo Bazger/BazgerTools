@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using Bazger.Tools.YouTubeDownloader.Core.Model;
-using Bazger.Tools.YouTubeDownloader.Core.Utility;
 using NLog;
 
 namespace Bazger.Tools.YouTubeDownloader.Core
@@ -15,7 +14,7 @@ namespace Bazger.Tools.YouTubeDownloader.Core
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
         private readonly DownloaderConfigs _configs;
-        private List<string> _videoUrls;
+        private readonly List<string> _videoUrls;
         private readonly IDictionary<string, VideoProgressMetadata> _inputVideosProgress;
 
         private readonly List<DownloaderThread> _downloaderThreads;
@@ -90,7 +89,7 @@ namespace Bazger.Tools.YouTubeDownloader.Core
                 _fileMoverThread.Abort();
             }
 
-            while ((GetAliveDownloadersCount() != 0 || GetAliveConvertersCount() != 0 || GetAliveFileMoversCount() != 0) && 
+            while ((GetAliveDownloadersCount() != 0 || GetAliveConvertersCount() != 0 || GetAliveFileMoversCount() != 0) &&
                 !StoppedEvent.WaitOne(200))
             {
             }
@@ -99,13 +98,6 @@ namespace Bazger.Tools.YouTubeDownloader.Core
             if (Directory.Exists(_tempDir))
             {
                 Directory.Delete(_tempDir, true);
-            }
-
-            if (_configs.WriteToJournal)
-            {
-                Log.Info("Writing to journal");
-                WriteToJournal();
-                Log.Info("Writing succeeded");
             }
 
             StoppedEvent.Set();
@@ -126,18 +118,6 @@ namespace Bazger.Tools.YouTubeDownloader.Core
             _tempDir = Path.Combine(Path.GetTempPath(), "YouTubeDownloader-{" + Guid.NewGuid() + "}");
             Directory.CreateDirectory(_tempDir);
             Directory.CreateDirectory(_configs.SaveDir);
-
-            if (_configs.ReadFromJournal)
-            {
-                Log.Info("Reading from journal");
-                var downloadedVideos = ReadFromJournal();
-                if (downloadedVideos != null)
-                {
-                    //Get the dif from downloaded videos and all videos
-                    _videoUrls = _videoUrls.Except(downloadedVideos).ToList();
-                    Log.Info("Journal file loaded successfully");
-                }
-            }
 
             StartupVideosProgress();
             BlockingCollection<VideoProgressMetadata> waitingForDownload;
@@ -189,12 +169,6 @@ namespace Bazger.Tools.YouTubeDownloader.Core
             Log.Info("Removing temporary files");
             DeleteTempDirectory();
 
-            if (_configs.WriteToJournal)
-            {
-                Log.Info("Writing to journal");
-                WriteToJournal();
-                Log.Info("Writing succeeded");
-            }
 
             Log.Info($"{Name} finished its work");
             base.Job();
@@ -223,14 +197,14 @@ namespace Bazger.Tools.YouTubeDownloader.Core
             if (StoppedEvent.WaitOne(0))
             {
                 return;
-            }     
+            }
             Log.Warn($"Abort launcher service ({Name})");
             StopEvent.Set();
             AbortServices(_downloaderThreads);
             AbortServices(_converterThreads);
             _fileMoverThread.Abort();
             while ((GetAliveDownloadersCount() != 0 || GetAliveConvertersCount() != 0 || GetAliveFileMoversCount() != 0) && !StoppedEvent.WaitOne(100))
-            {                
+            {
             }
             Log.Info("Removing temporary files");
             DeleteTempDirectory();
@@ -250,7 +224,10 @@ namespace Bazger.Tools.YouTubeDownloader.Core
         private void StartDownloderThreads(BlockingCollection<VideoProgressMetadata> waitingForDownload, BlockingCollection<VideoProgressMetadata> waitingForConvertion, BlockingCollection<VideoProgressMetadata> waitingForMoving)
         {
             //Inialing once because method are safe for multithreaded usage
-            for (var i = 0; i < _configs.ParallelDownloadsCount; i++)
+            var downloadersCount = waitingForDownload.Count <= _configs.ParallelDownloadsCount
+                ? waitingForDownload.Count
+                : _configs.ParallelDownloadsCount;
+            for (var i = 0; i < downloadersCount; i++)
             {
                 _downloaderThreads.Add(new DownloaderThread($"Downloader {i}",
                     waitingForDownload, waitingForConvertion, waitingForMoving,
@@ -273,56 +250,6 @@ namespace Bazger.Tools.YouTubeDownloader.Core
             Log.Info("Starting converter threads");
             StartServices(_converterThreads);
             Log.Info("Converter threads was started");
-        }
-
-        private void WriteToJournal()
-        {
-            try
-            {
-                if (!File.Exists(_configs.JournalFilePath))
-                {
-                    Log.Warn("Journal file doen't exist. Creating new one");
-                    SerDeHelper.SerializeToJsonFile(new HashSet<string>(), _configs.JournalFilePath);
-                }
-                var downloadedVideos = SerDeHelper.DeserializeJsonFile<HashSet<string>>(_configs.JournalFilePath);
-                foreach (
-                    var videoUrl in
-                        _videoUrls.Where(
-                            url =>
-                                VideosProgress.ContainsKey(url) &&
-                                VideosProgress[url].Stage == VideoProgressStage.Completed))
-                {
-                    downloadedVideos.Add(videoUrl);
-                }
-                SerDeHelper.SerializeToJsonFile(downloadedVideos, _configs.JournalFilePath);
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex, "There is a problem to write to a journal file");
-            }
-        }
-
-        private IEnumerable<string> ReadFromJournal()
-        {
-            if (!File.Exists(_configs.JournalFilePath))
-            {
-                Log.Warn($"Journal file doen't exist | path={_configs.JournalFilePath}");
-                return null;
-            }
-            else
-            {
-                Log.Info($"Journal file was found | path={_configs.JournalFilePath}");
-            }
-
-            try
-            {
-                return SerDeHelper.DeserializeJsonFile<HashSet<string>>(_configs.JournalFilePath);
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex, "There is a problem to read a journal file. May be journal format is illegal");
-            }
-            return null;
         }
 
         public int GetAllDownloadersCount()

@@ -136,4 +136,7 @@
   <data name="startBtn_Download" xml:space="preserve">
     <value>Download</value>
   </data>
+  <data name="downloadProgressBar_All_Of_Videos_Has_Been_Downloaded_Yet" xml:space="preserve">
+    <value>There are no videos to download, try another url</value>
+  </data>
 </root>

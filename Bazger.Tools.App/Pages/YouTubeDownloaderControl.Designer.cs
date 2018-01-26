@@ -327,6 +327,7 @@ namespace Bazger.Tools.App.Pages
             this.readFromJournalChkBox.TabIndex = 62;
             this.readFromJournalChkBox.Text = "Read from Journal";
             this.readFromJournalChkBox.ThemeName = "VisualStudio2012Light";
+            this.readFromJournalChkBox.CheckStateChanged += new System.EventHandler(this.ReadFromJournalChkBox_CheckStateChanged);
             // 
             // browseJournalBtn
             // 
