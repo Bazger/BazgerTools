@@ -14,7 +14,7 @@ namespace Bazger.Tools.App.Pages
     public partial class PositionClickerControl : UserControl, IToolControl, IControlStateChanger
     {
         private MainForm _mainForm;
-        public string Title => this.GetType().FullName;
+        public string LoggerName => this.GetType().FullName;
         public RadPageViewPage ParentPage { get; set; }
         private readonly Logger _log = LogManager.GetCurrentClassLogger();
 
@@ -44,13 +44,11 @@ namespace Bazger.Tools.App.Pages
             mainForm.AltShiftLCombinationPressed += PositionClickerMainProcess;
             _log.Info("ADD: Try to press this combination: SHIFT+ALT+K");
             _log.Info("START/STOP: Try to press this combination: SHIFT+ALT+L");
-            LoadFromState();
         }
 
         public void LoadState(IControlState controlState)
         {
-            var state = controlState as PositionClickerControlState;
-            if (state == null)
+            if (!(controlState is PositionClickerControlState state))
             { return; }
 
             delaySpin.Value = state.DelaySpin;
@@ -74,15 +72,8 @@ namespace Bazger.Tools.App.Pages
             };
         }
 
-
-        private void LoadFromState()
-        {
-
-        }
-
         public void OnFormClosing(object sender, FormClosingEventArgs e)
         {
-
         }
 
         /// <summary>
@@ -171,7 +162,7 @@ namespace Bazger.Tools.App.Pages
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void removeButton_Click(object sender, EventArgs e)
+        private void RemoveButton_Click(object sender, EventArgs e)
         {
             if (positionsGrid.Rows.Count > 0)
                 try
@@ -197,7 +188,7 @@ namespace Bazger.Tools.App.Pages
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void clearAllButton_Click(object sender, EventArgs e)
+        private void ClearAllButton_Click(object sender, EventArgs e)
         {
             if (positionsGrid.Rows.Count > 0)
             {
@@ -214,7 +205,7 @@ namespace Bazger.Tools.App.Pages
         /// </summary>
         /// <param name="sender">Sender</param>
         /// <param name="e">Event args</param>
-        private void moveUpButton_Click(object sender, EventArgs e)
+        private void MoveUpButton_Click(object sender, EventArgs e)
         {
             MoveUpDown(-1);
         }
@@ -224,7 +215,7 @@ namespace Bazger.Tools.App.Pages
         /// </summary>
         /// <param name="sender">Sender</param>
         /// <param name="e">Event args</param>
-        private void moveDownButton_Click(object sender, EventArgs e)
+        private void MoveDownButton_Click(object sender, EventArgs e)
         {
             MoveUpDown(1);
         }
@@ -237,7 +228,7 @@ namespace Bazger.Tools.App.Pages
         {
             if (positionsGrid.Rows.Count > 0)
             {
-                int selectedIndex = positionsGrid.CurrentCell.RowIndex;
+                int selectedIndex = positionsGrid.CurrentCell?.RowIndex ?? -1;
                 if (selectedIndex > -1)
                 {
                     if (selectedIndex + jumps >= 0 && selectedIndex + jumps < positionsGrid.Rows.Count)
@@ -245,6 +236,8 @@ namespace Bazger.Tools.App.Pages
                         positionsGrid.Rows[selectedIndex].IsSelected = false;
                         positionsGrid.Rows.Move(selectedIndex, selectedIndex + jumps);
                         positionsGrid.Rows[selectedIndex + jumps].IsSelected = true;
+                        positionsGrid.Rows[selectedIndex + jumps].IsCurrent = true;
+                        positionsGrid.Rows[selectedIndex + jumps].EnsureVisible();
                         _log.Info("Postition moved UP/DOWN");
                     }
 

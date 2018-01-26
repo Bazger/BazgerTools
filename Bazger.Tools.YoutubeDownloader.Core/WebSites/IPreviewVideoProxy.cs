@@ -10,6 +10,5 @@ namespace Bazger.Tools.YouTubeDownloader.Core.WebSites
     public interface IPreviewVideoProxy
     {
         void Preview(VideoProgressMetadata videoMetadata);
-        void Download(VideoProgressMetadata videoMetadata);
     }
 }

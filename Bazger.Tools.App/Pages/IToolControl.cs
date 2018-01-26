@@ -13,7 +13,7 @@ namespace Bazger.Tools.App.Pages
     public interface IToolControl
     {
         //Title need to be different in all derived classes, because loggers using it to create different logger for each control
-        string Title { get; }
+        string LoggerName { get; }
         RadPageViewPage ParentPage { get; set; }
         void IntializeControl(MainForm form);
         void OnFormClosing(object sender, FormClosingEventArgs e);        

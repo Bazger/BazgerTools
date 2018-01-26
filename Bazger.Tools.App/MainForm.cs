@@ -2,8 +2,12 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Bazger.Tools.App.NLog;
 using Bazger.Tools.App.Pages;
@@ -14,7 +18,9 @@ using Bazger.Tools.YouTubeDownloader.Core.Utility;
 using Newtonsoft.Json;
 using NLog;
 using NLog.Config;
+using NLog.Targets;
 using Telerik.WinControls;
+using Telerik.WinControls.UI;
 
 namespace Bazger.Tools.App
 {
@@ -34,25 +40,59 @@ namespace Bazger.Tools.App
 
         private enum HotKeys { AltShiftO, AltShiftK, AltShiftL }
         private readonly List<IToolControl> _viewScreenControls;
+        private bool _formCanBeClosed;
 
         /// <summary>
         /// Constructor
         /// </summary>
         public MainForm()
         {
-            ThemeResolutionService.ApplicationThemeName = "VisualStudio2012Dark";
             InitializeComponent();
+            InitizlizeContextMenus();
+
+            _viewScreenControls = new List<IToolControl> { clickerControl, positionClickerControl, youTubeDownloaderControl };
+            SetParentPagesToContols();
 
             //Create HotKeys for the program
             _altShiftO = new GlobalHotkey((int)HotKeys.AltShiftO, Constants.ALT + Constants.SHIFT, Keys.O, this);
             _altShiftK = new GlobalHotkey((int)HotKeys.AltShiftK, Constants.ALT + Constants.SHIFT, Keys.K, this);
             _altShiftL = new GlobalHotkey((int)HotKeys.AltShiftL, Constants.ALT + Constants.SHIFT, Keys.L, this);
 
-            _viewScreenControls = new List<IToolControl> { clickerControl, positionClickerControl, youTubeDownloaderControl };
             //Set loggers
-            _viewScreenControls.ForEach(c => CreatePageLogger(c.Title, c.Title));
+            _viewScreenControls.ForEach(c => CreatePageLogger(c.LoggerName, c.LoggerName));
+            //Set postion for page controls
+            _viewScreenControls.ForEach(c =>
+            {
+                var uc = (UserControl)c;
+                uc.Left = (c.ParentPage.Width - uc.Width) / 2;
+                uc.Top = (c.ParentPage.Height - uc.Height) / 2;
+            });
 
             ToolControlsPager_SelectedPageChanged(this, null);
+        }
+
+        private void InitizlizeContextMenus()
+        {
+            clearLogs.Click += ClearLogs_Click;
+            clearAllLogs.Click += ClearAllLogs_Click;
+            logTxtBox.TextBoxElement.TextBoxItem.HostedControl.ContextMenu = new ContextMenu();
+            cntxMenuManager.SetRadContextMenu(logTxtBox.TextBoxElement.TextBoxItem.HostedControl, logTxtBoxCntxMenu);
+        }
+
+        private void SetParentPagesToContols()
+        {
+            _viewScreenControls.ForEach(c =>
+            {
+                for (var i = 0; i < toolControlsPager.Controls.Count; i++)
+                {
+                    var page = toolControlsPager.Controls[i];
+                    if (!page.Controls.Contains((UserControl)c))
+                    {
+                        continue;
+                    }
+                    c.ParentPage = (RadPageViewPage)page;
+                }
+            });
         }
 
         /// <summary>
@@ -96,6 +136,7 @@ namespace Bazger.Tools.App
             //Initialize IToolControls
             _viewScreenControls.ForEach(control => control.IntializeControl(this));
 
+            //Loading states of page controls
             try
             {
                 var formState = File.Exists(StateFilePath)
@@ -110,9 +151,9 @@ namespace Bazger.Tools.App
                         {
                             return;
                         }
-                        if (formState.ControlStates.ContainsKey(c.Title))
+                        if (formState.ControlStates.ContainsKey(c.LoggerName))
                         {
-                            stateControl.LoadState(formState.ControlStates[c.Title]);
+                            stateControl.LoadState(formState.ControlStates[c.LoggerName]);
                         }
 
                     });
@@ -121,7 +162,7 @@ namespace Bazger.Tools.App
             }
             catch (Exception)
             {
-                Log.Error("Can't load states for controls fron ");
+                Log.Error("Can't load states for controls");
             }
         }
 
@@ -132,23 +173,41 @@ namespace Bazger.Tools.App
         /// <param name="e">Event args</param>
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (!_altShiftK.Unregiser() || !_altShiftL.Unregiser() || !_altShiftO.Unregiser())
+            if (!_formCanBeClosed)
             {
-                MessageBox.Show("Some Hotkey failed to unregister!");
-            }
-            _viewScreenControls.ForEach(c => c.OnFormClosing(sender, e));
+                e.Cancel = true;
 
-            var formSate = new FormState();
-            _viewScreenControls.ForEach(c =>
-            {
-                var stateControl = c as IControlStateChanger;
-                var state = stateControl?.SaveState();
-                if (state != null)
+                var waitingScreen = new WaitingScreen {StartPosition = FormStartPosition.Manual};
+                waitingScreen.Location = new Point(this.Location.X + (this.Width - waitingScreen.Width) / 2, this.Location.Y + (this.Height - waitingScreen.Height) / 2);
+                waitingScreen.Show(this);
+
+                new Task(() =>
                 {
-                    formSate.ControlStates.Add(c.Title, state);
+                    _viewScreenControls.ForEach(c => c.OnFormClosing(sender, e));
+                    var formSate = new FormState();
+                    _viewScreenControls.ForEach(c =>
+                    {
+                        var stateControl = c as IControlStateChanger;
+                        var state = stateControl?.SaveState();
+                        if (state != null)
+                        {
+                            formSate.ControlStates.Add(c.LoggerName, state);
+                        }
+                    });
+                    SerDeHelper.SerializeToJsonFile(formSate, StateFilePath,
+                        new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All });
+                    _formCanBeClosed = true;
+                    FormHelper.ControlInvoker(waitingScreen, control => control.Close());                 
+                    FormHelper.ControlInvoker(this, control => this.Close());                 
+                }).Start();
+            }
+            else
+            {
+                if (!_altShiftK.Unregiser() || !_altShiftL.Unregiser() || !_altShiftO.Unregiser())
+                {
+                    MessageBox.Show("Some Hotkey failed to unregister!");
                 }
-            });
-            SerDeHelper.SerializeToJsonFile(formSate, StateFilePath, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All });
+            }
         }
 
 
@@ -183,20 +242,36 @@ namespace Bazger.Tools.App
             base.WndProc(ref m);
         }
 
+        private void SetMinimuFormSize(IToolControl control)
+        {
+            var backstagePanelWidth = 0;
+            if (toolControlsPager.ViewElement is RadPageViewBackstageElement backstageElement)
+            {
+                backstagePanelWidth = backstageElement.ItemAreaWidth;
+            }
+            var controlSize = ((UserControl)control)?.Size.Width ?? _viewScreenControls.Max(c => ((UserControl)c).Size.Width);
+            MinimumSize = new System.Drawing.Size(controlSize + backstagePanelWidth + 15, MinimumSize.Height);
+        }
+
+        private IToolControl GetSelectedPageControl()
+        {
+            return _viewScreenControls.FirstOrDefault(c => c.ParentPage.TabIndex == toolControlsPager.SelectedPage.TabIndex);
+        }
+
         private void ToolControlsPager_SelectedPageChanged(object sender, EventArgs e)
         {
-            var control = _viewScreenControls.Find(c => c.ParentPage.TabIndex == toolControlsPager.SelectedPage.TabIndex);
+            var control = GetSelectedPageControl();
             if (control == null)
             {
                 return;
             }
-            MinimumSize = new System.Drawing.Size(((UserControl)control).Size.Width + 13, MinimumSize.Height);
+            SetMinimuFormSize(control);
 
             if (_currentPageLogs != null)
             {
                 _currentPageLogs.CollectionChanged -= UpdateLogTexBox;
             }
-            _currentPageLogs = ((ObservableMemoryTarget)LogManager.Configuration.FindTargetByName(control.Title)).Logs;
+            _currentPageLogs = ((ObservableMemoryTarget)LogManager.Configuration.FindTargetByName(control.LoggerName)).Logs;
 
             var text = string.Empty;
             _currentPageLogs.ToList().ForEach(l => text += l + Environment.NewLine);
@@ -206,9 +281,17 @@ namespace Bazger.Tools.App
 
         private void UpdateLogTexBox(object sender, NotifyCollectionChangedEventArgs e)
         {
-            foreach (string newItem in e.NewItems)
+            switch (e.Action)
             {
-                FormHelper.ControlInvoker(logTxtBox, control => control.AppendText(newItem + Environment.NewLine));
+                case NotifyCollectionChangedAction.Add:
+                    foreach (string newItem in e.NewItems)
+                    {
+                        FormHelper.ControlInvoker(logTxtBox, control => control.AppendText(newItem + Environment.NewLine));
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Reset:
+                    FormHelper.ControlInvoker(logTxtBox, control => control.Clear());
+                    break;
             }
         }
 
@@ -245,6 +328,34 @@ namespace Bazger.Tools.App
             config.LoggingRules.Add(rule);
 
             LogManager.Configuration = config;
+        }
+
+        public Target GetLogTarget(string targetName)
+        {
+            var config = Log.Factory.Configuration;
+            var target = LogManager.Configuration.FindTargetByName(targetName);
+            return target;
+        }
+
+        private void ClearLogs_Click(object sender, EventArgs e)
+        {
+            var control = GetSelectedPageControl();
+            if (control == null)
+            {
+                return;
+            }
+            var target = (ObservableMemoryTarget)GetLogTarget(control.LoggerName);
+            target?.Logs.Clear();
+        }
+
+        private void ClearAllLogs_Click(object sender, EventArgs e)
+        {
+            _viewScreenControls.ForEach(c =>
+                {
+                    var target = (ObservableMemoryTarget)GetLogTarget(c.LoggerName);
+                    target?.Logs.Clear();
+                }
+            );
         }
     }
 }

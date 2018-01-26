@@ -17,10 +17,10 @@ namespace Bazger.Tools.App
             pictureBox.Image = Resources.Background;
         }
 
-        public override sealed Color BackColor
+        public sealed override Color BackColor
         {
-            get { return base.BackColor; }
-            set { base.BackColor = value; }
+            get => base.BackColor;
+            set => base.BackColor = value;
         }
 
         private void timerOpacity_Tick(object sender, EventArgs e)

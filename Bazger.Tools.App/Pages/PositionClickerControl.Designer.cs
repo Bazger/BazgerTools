@@ -89,7 +89,7 @@
             this.moveDownBtn.TabIndex = 34;
             this.moveDownBtn.Text = "Move Down";
             this.moveDownBtn.ThemeName = "VisualStudio2012Light";
-            this.moveDownBtn.Click += new System.EventHandler(this.moveDownButton_Click);
+            this.moveDownBtn.Click += new System.EventHandler(this.MoveDownButton_Click);
             // 
             // delaySpin
             // 
@@ -125,7 +125,7 @@
             this.removeBtn.TabIndex = 31;
             this.removeBtn.Text = "Remove";
             this.removeBtn.ThemeName = "VisualStudio2012Light";
-            this.removeBtn.Click += new System.EventHandler(this.removeButton_Click);
+            this.removeBtn.Click += new System.EventHandler(this.RemoveButton_Click);
             // 
             // delayLbl
             // 
@@ -146,7 +146,7 @@
             this.moveUpBtn.TabIndex = 33;
             this.moveUpBtn.Text = "Move Up";
             this.moveUpBtn.ThemeName = "VisualStudio2012Light";
-            this.moveUpBtn.Click += new System.EventHandler(this.moveUpButton_Click);
+            this.moveUpBtn.Click += new System.EventHandler(this.MoveUpButton_Click);
             // 
             // clearAllBtn
             // 
@@ -157,7 +157,7 @@
             this.clearAllBtn.TabIndex = 32;
             this.clearAllBtn.Text = "Clear All";
             this.clearAllBtn.ThemeName = "VisualStudio2012Light";
-            this.clearAllBtn.Click += new System.EventHandler(this.clearAllButton_Click);
+            this.clearAllBtn.Click += new System.EventHandler(this.ClearAllButton_Click);
             // 
             // positionsGrid
             // 

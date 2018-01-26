@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Windows.Forms;
+using Telerik.WinControls;
 
 namespace Bazger.Tools.App
 {
@@ -18,6 +19,7 @@ namespace Bazger.Tools.App
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             SphlashForm = new SphlashScreen();
+            ThemeResolutionService.ApplicationThemeName = "VisualStudio2012Dark";
             Thread.CurrentThread.Name = "MainForm";
             MainForm = new MainForm();
             Application.Run(SphlashForm);

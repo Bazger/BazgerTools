@@ -21,7 +21,7 @@ namespace Bazger.Tools.App.Pages
     public partial class ClickerControl : UserControl, IToolControl
     {
         private MainForm _mainForm;
-        public string Title => this.GetType().FullName;
+        public string LoggerName => this.GetType().FullName;
         public RadPageViewPage ParentPage { get; set; }
         private readonly Logger _log = LogManager.GetCurrentClassLogger();
 

@@ -24,7 +24,7 @@ namespace Bazger.Tools.App.Pages
     {
         private MainForm _mainForm;
         public RadPageViewPage ParentPage { get; set; }
-        public string Title => this.GetType().FullName;
+        public string LoggerName => this.GetType().FullName;
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
         private ManualResetEvent _stopEvent;
@@ -56,32 +56,32 @@ namespace Bazger.Tools.App.Pages
         public YouTubeDownloaderControl()
         {
             InitializeComponent();
+
             _isStarted = false;
             _isPreview = false;
-            //TODO: Test journal
-            //TODO: Fix resizing
-            //TODO: Dropdown list
-            //TODO: Remove Video Stage grids from form class
 
-            //TODO: Fix 100% Progress bar
-            //TODO: Clear logs button
-            //TODO: Show waiting window when closing
-            //TODO: Bug resizing of window crashes the app when downloading
+            videoTypesDropDown.DataSource = VideoType.AvailabledVideoTypes;
+            startBtn.DropDownButtonElement.ActionButton.Click += MainBtn_Click;
+            //TODO: Test journal
+            //TODO: Resizing of window crashes the app when downloading
+
+            //TODO: Dropdown list
         }
 
 
         public void IntializeControl(MainForm mainForm)
         {
             _mainForm = mainForm;
-            _videoStageGrid = _mainForm.videoStageGrid;
+
+            _videoStageGrid = _mainForm.VideoStageGrid;
             _videoStageGrid.CellFormatting += VideoStageGrid_CellFormatting;
             _videoStageGrid.CellValueChanged += VideoStageGrid_CellValueChanged;
             _videoStageGrid.CellBeginEdit += VideoStageGrid_CellBeginEdit;
             _videoStageGrid.CellDoubleClick += VideoStageGrid_CellDoubleClick;
-            _videoStageStatsGrid = _mainForm.videoStageStatsGrid;
-            _mainForm.AddRuleToPageLoggerTarget("Bazger.Tools.YouTubeDownloader.Core.*", LogLevel.Info, Title);
-            startBtn.DropDownButtonElement.ActionButton.Click += MainBtn_Click;
-            videoTypesDropDown.DataSource = VideoType.AvailabledVideoTypes;
+
+            _videoStageStatsGrid = _mainForm.VideoStageStatsGrid;
+
+            _mainForm.AddRuleToPageLoggerTarget("Bazger.Tools.YouTubeDownloader.Core.*", LogLevel.Info, LoggerName);     
         }
 
 

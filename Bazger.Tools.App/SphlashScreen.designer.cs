@@ -68,8 +68,9 @@
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "SphlashScreen";
+            this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "SphlashScreen";
+            this.Text = "BazgerTools";
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).EndInit();
             this.ResumeLayout(false);
 

@@ -156,6 +156,12 @@
       <DependentUpon>SphlashScreen.cs</DependentUpon>
     </Compile>
     <Compile Include="Utils\FormHelper.cs" />
+    <Compile Include="WaitingScreen.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WaitingScreen.Designer.cs">
+      <DependentUpon>WaitingScreen.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="Controls\RadDropDownAutoCompleteList.resx">
       <DependentUpon>RadDropDownAutoCompleteList.cs</DependentUpon>
     </EmbeddedResource>
@@ -190,6 +196,9 @@
     <Content Include="NLog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <EmbeddedResource Include="WaitingScreen.resx">
+      <DependentUpon>WaitingScreen.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
