@@ -73,6 +73,7 @@
       <HintPath>..\packages\NLog.Windows.Forms.4.2.3\lib\net35\NLog.Windows.Forms.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Configuration" />
@@ -172,6 +173,7 @@
     <EmbeddedResource Include="Pages\YouTubeDownloaderControl.resx">
       <DependentUpon>YouTubeDownloaderControl.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Properties\licenses.licx" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

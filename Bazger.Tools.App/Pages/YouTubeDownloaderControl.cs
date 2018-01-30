@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Documents;
 using System.Windows.Forms;
 using Bazger.Tools.App.Properties;
 using Bazger.Tools.App.State;
@@ -45,6 +46,9 @@ namespace Bazger.Tools.App.Pages
         private bool _isPreview;
         private IDictionary<string, VideoProgressMetadata> _videosProgress;
         private IDictionary<string, VideoProgressMetadata> _videoProgressForRevert;
+        private List<string> _savedDownloadsFolderPaths;
+        private List<string> _savedJournalFilePaths;
+
 
         private const string VideoTypesColumn = "video_types";
         private const string ProgressColumn = "progress";
@@ -61,7 +65,6 @@ namespace Bazger.Tools.App.Pages
 
             videoTypesDropDown.DataSource = VideoType.AvailabledVideoTypes;
             startBtn.DropDownButtonElement.ActionButton.Click += MainBtn_Click;
-            //TODO: Dropdown list
         }
 
         public void IntializeControl(MainForm mainForm)
@@ -95,12 +98,20 @@ namespace Bazger.Tools.App.Pages
             convertionFormatsDropDownList.SelectedIndex = state.ConvertionFormat;
             downloaderThreadsSpin.Value = state.DownloadersThreadSpin;
             previewThreadSpin.Value = state.PreviewThreadSpin;
-            //downloadsFolderDropDown.Text = state.DownloadsFolderPath;
             overwriteFilesChkBox.Checked = state.IsOverwriteChecked;
             readFromJournalChkBox.Checked = state.IsReadFromJournalChecked;
             writeToJournalChkBox.Checked = state.IsWriteToJournalCheked;
             convertionEnabledChkBox.Checked = state.IsConversionChecked;
-            //journalFileDropDown.Text = state.JournalFilePath;
+            journalFileDropDown.DataSource = _savedJournalFilePaths = state.SavedJournalFilePaths ?? new List<string>();
+            downloadsFolderDropDown.DataSource = _savedDownloadsFolderPaths = state.SavedDownloadsFolderPaths ?? new List<string>();
+            if (!string.IsNullOrEmpty(state.DownloadsFolderPath))
+            {
+                downloadsFolderDropDown.Text = state.DownloadsFolderPath;
+            }
+            if (!string.IsNullOrEmpty(state.JournalFilePath))
+            {
+                journalFileDropDown.Text = state.JournalFilePath;
+            }
             videoTypesDropDown.SelectedIndex = state.VideoTypeId;
         }
 
@@ -115,10 +126,12 @@ namespace Bazger.Tools.App.Pages
                 IsConversionChecked = convertionEnabledChkBox.Checked,
                 ConvertionFormat = convertionFormatsDropDownList.SelectedIndex,
                 DownloadsFolderPath = downloadsFolderDropDown.Text,
+                SavedDownloadsFolderPaths = (List<string>)downloadsFolderDropDown.DataSource,
                 IsOverwriteChecked = overwriteFilesChkBox.Checked,
                 IsReadFromJournalChecked = readFromJournalChkBox.Checked,
                 IsWriteToJournalCheked = writeToJournalChkBox.Checked,
                 JournalFilePath = journalFileDropDown.Text,
+                SavedJournalFilePaths = (List<string>)journalFileDropDown.DataSource,
                 VideoTypeId = videoTypesDropDown.SelectedIndex
             };
         }
@@ -158,6 +171,11 @@ namespace Bazger.Tools.App.Pages
         {
             if (!_isStarted)
             {
+                if (string.IsNullOrEmpty(downloadsFolderDropDown.Text))
+                {
+                    Log.Error("Downloads path can't be null");
+                    return;
+                }
                 if (!_isPreview)
                 {
                     StartNewOneBtn_Click(sender, e);
@@ -167,13 +185,13 @@ namespace Bazger.Tools.App.Pages
                     ToWorkState();
                     _stopEvent = new ManualResetEvent(false);
                     _stoppedEvent = new ManualResetEvent(false);
-                    _workerThread = new Thread(DownloadVideos) { Name = "Starter" };
+                    _workerThread = new Thread(DownloadVideos) { Name = "DownloadsManager" };
                     _workerThread.Start();
                 }
             }
             else
             {
-                _workerThread = new Thread(StopDownloading) { Name = "Stopper" };
+                _workerThread = new Thread(StopDownloading) { Name = "StopManager" };
                 _workerThread.Start();
             }
         }
@@ -190,7 +208,7 @@ namespace Bazger.Tools.App.Pages
             ToWorkState();
             _stopEvent = new ManualResetEvent(false);
             _stoppedEvent = new ManualResetEvent(false);
-            _workerThread = new Thread(DownloadVideos) { Name = "Starter" };
+            _workerThread = new Thread(DownloadVideos) { Name = "DownloadsManager" };
             _workerThread.Start();
         }
 
@@ -206,7 +224,7 @@ namespace Bazger.Tools.App.Pages
             ToWorkState();
             _stopEvent = new ManualResetEvent(false);
             _stoppedEvent = new ManualResetEvent(false);
-            _workerThread = new Thread(PreviewVideos) { Name = "Previewer" };
+            _workerThread = new Thread(PreviewVideos) { Name = "PreviewManager" };
             _workerThread.Start();
         }
 
@@ -296,6 +314,8 @@ namespace Bazger.Tools.App.Pages
             _progressBarUpdate = new Thread(PreivewLauncherProgressBarUpdate) { Name = "ProgressBarUpdate" };
             _progressBarUpdate.Start();
 
+            SavePaths();
+
             LoadAllVideoUrls();
             if (_stopEvent.WaitOne(0))
             {
@@ -339,6 +359,7 @@ namespace Bazger.Tools.App.Pages
         private void DownloadVideos()
         {
             DownloaderConfigs configs = GetDownloaderConfigs();
+            SavePaths();
             if (!_isPreview)
             {
                 _progressBarUpdate = new Thread(MainLauncherProgressBarUpdate) { Name = "ProgressBarUpdate" };
@@ -433,6 +454,32 @@ namespace Bazger.Tools.App.Pages
             if (_videoUrls == null)
             {
                 _stopEvent.Set();
+            }
+        }
+
+        private void SavePaths()
+        {
+            if (!string.IsNullOrEmpty(downloadsFolderDropDown.Text) && !_savedDownloadsFolderPaths.Contains(downloadsFolderDropDown.Text))
+            {
+                var text = downloadsFolderDropDown.Text;
+                _savedDownloadsFolderPaths.Add(text);
+                FormHelper.ControlInvoker(downloadsFolderDropDown, control =>
+                {
+                    control.DataSource = _savedDownloadsFolderPaths.ToList();
+                    control.Text = text;
+                    control.Update();
+                });
+            }
+            if (!string.IsNullOrEmpty(journalFileDropDown.Text) && !_savedJournalFilePaths.Contains(journalFileDropDown.Text))
+            {
+                var text = journalFileDropDown.Text;
+                _savedJournalFilePaths.Add(text);
+                FormHelper.ControlInvoker(journalFileDropDown, control =>
+                {
+                    control.DataSource = _savedJournalFilePaths.ToList();
+                    control.Text = text;
+                    control.Update();
+                });
             }
         }
 
@@ -763,7 +810,7 @@ namespace Bazger.Tools.App.Pages
                 {
                     return;
                 }
-                System.Diagnostics.Process.Start(videoFilePath);
+                Process.Start(videoFilePath);
             }
         }
 
@@ -908,65 +955,6 @@ namespace Bazger.Tools.App.Pages
                 {
                     downloadsFolderDropDown.Text = dialog.FileName;
                 }
-            }
-        }
-
-        private void DownloadsFolderDropDown_TextChanged(object sender, EventArgs e)
-        {
-            var text = downloadsFolderDropDown.Text;
-            if (string.IsNullOrEmpty(text) || !text.Contains(":\\"))
-            {
-                return;
-            }
-            try
-            {
-                var selectionStart = downloadsFolderDropDown.SelectionStart;
-                var fullPath = Path.GetFullPath(text);
-                var directory = Path.GetDirectoryName(fullPath);
-                Debug.WriteLine("FullPath - " + fullPath);
-                Debug.WriteLine("Directory - " + directory);
-                if (string.IsNullOrEmpty(directory) && Directory.Exists(text))
-                {
-                    directory = text;
-                }
-                else if (!Directory.Exists(directory) || !Path.IsPathRooted(text))
-                {
-                    return;
-                }
-                //Check if entered text has been changed and not when only selected index.
-                if (downloadsFolderDropDown.SelectedItem == null)
-                {
-                    //downloadsFolderDropDown.AutoCompleteDataSource = Directory.GetDirectories(directory).ToList();
-                    //downloadsFolderDropDown.AutoCompleteDisplayMember = text;                    
-                    var allDirectories =
-                        Directory.GetDirectories(directory)
-                            .Where(dir => dir.ToLower().Contains(text.ToLower()))
-                            .ToList();
-                    allDirectories.Insert(0, text);
-                    downloadsFolderDropDown.DataSource = allDirectories;
-                    downloadsFolderDropDown.ShowDropDown();
-                    downloadsFolderDropDown.SelectionStart = selectionStart;
-                }
-            }
-            catch (Exception)
-            {
-                // ignored
-            }
-        }
-
-        private void DownloadsFolderDropDown_SelectedIndexChanged(object sender, Telerik.WinControls.UI.Data.PositionChangedEventArgs e)
-        {
-            downloadsFolderDropDown.SelectionStart = downloadsFolderDropDown.Text.Length;
-        }
-
-        private void ReadFromJournalChkBox_CheckStateChanged(object sender, EventArgs e)
-        {
-            if (!_isPreview)
-            {
-                return;
-            }
-            if (readFromJournalChkBox.IsChecked)
-            {
             }
         }
     }

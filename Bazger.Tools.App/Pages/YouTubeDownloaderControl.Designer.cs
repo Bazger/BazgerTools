@@ -286,6 +286,8 @@ namespace Bazger.Tools.App.Pages
             this.journalFileDropDown.TabIndex = 68;
             this.journalFileDropDown.Text = "Journal.json";
             this.journalFileDropDown.ThemeName = "VisualStudio2012Light";
+            this.journalFileDropDown.DropDownListElement.TextBox.TextBoxItem.TextBoxControl.AutoCompleteSource = AutoCompleteSource.FileSystem;
+            this.journalFileDropDown.DropDownListElement.TextBox.TextBoxItem.TextBoxControl.AutoCompleteMode = AutoCompleteMode.Suggest;    
             // 
             // downloadsFolderDropDown
             // 
@@ -296,8 +298,8 @@ namespace Bazger.Tools.App.Pages
             this.downloadsFolderDropDown.TabIndex = 67;
             this.downloadsFolderDropDown.Text = "Downloads";
             this.downloadsFolderDropDown.ThemeName = "VisualStudio2012Light";
-            this.downloadsFolderDropDown.SelectedIndexChanged += new Telerik.WinControls.UI.Data.PositionChangedEventHandler(this.DownloadsFolderDropDown_SelectedIndexChanged);
-            this.downloadsFolderDropDown.TextChanged += new System.EventHandler(this.DownloadsFolderDropDown_TextChanged);
+            this.downloadsFolderDropDown.DropDownListElement.TextBox.TextBoxItem.TextBoxControl.AutoCompleteSource = AutoCompleteSource.FileSystemDirectories;
+            this.downloadsFolderDropDown.DropDownListElement.TextBox.TextBoxItem.TextBoxControl.AutoCompleteMode = AutoCompleteMode.Suggest;
             // 
             // downloadsFolderLbl
             // 
@@ -326,8 +328,7 @@ namespace Bazger.Tools.App.Pages
             this.readFromJournalChkBox.Size = new System.Drawing.Size(132, 21);
             this.readFromJournalChkBox.TabIndex = 62;
             this.readFromJournalChkBox.Text = "Read from Journal";
-            this.readFromJournalChkBox.ThemeName = "VisualStudio2012Light";
-            this.readFromJournalChkBox.CheckStateChanged += new System.EventHandler(this.ReadFromJournalChkBox_CheckStateChanged);
+            this.readFromJournalChkBox.ThemeName = "VisualStudio2012Light";            
             // 
             // browseJournalBtn
             // 

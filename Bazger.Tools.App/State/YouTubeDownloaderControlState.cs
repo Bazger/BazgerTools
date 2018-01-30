@@ -44,7 +44,13 @@ namespace Bazger.Tools.App.State
         [JsonProperty("JournalFilePath")]
         public string JournalFilePath { get; set; }
 
+        [JsonProperty("SavedJournalFilePaths")]
+        public List<string> SavedJournalFilePaths { get; set; }
+
         [JsonProperty("DownloadsFolderPath")]
         public string DownloadsFolderPath { get; set; }
+
+        [JsonProperty("SavedDownloadsFolderPaths")]
+        public List<string> SavedDownloadsFolderPaths { get; set; }
     }
 }
