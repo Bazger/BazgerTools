@@ -240,9 +240,9 @@
     <Content Include="Resources\Gear2.ico" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Bazger.Tools.Clicker.Core\Bazger.Tools.Clicker.Core.csproj">
+    <ProjectReference Include="..\Bazger.Tools.Clicker.Core\Bazger.Tools.WinApi.csproj">
       <Project>{76fb8314-1fa9-428d-80af-ab8c598eb510}</Project>
-      <Name>Bazger.Tools.Clicker.Core</Name>
+      <Name>Bazger.Tools.WinApi</Name>
     </ProjectReference>
     <ProjectReference Include="..\Bazger.Tools.YoutubeDownloader.Core\Bazger.Tools.YouTubeDownloader.Core.csproj">
       <Project>{FCED1C65-44E5-433A-AFE5-5FA31174B0B2}</Project>

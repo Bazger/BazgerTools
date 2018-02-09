@@ -1,4 +1,4 @@
-﻿namespace Bazger.Tools.Clicker.Core
+﻿namespace Bazger.Tools.WinApi
 {
     public static class Constants
     {

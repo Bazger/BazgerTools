@@ -2,7 +2,7 @@
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
-namespace Bazger.Tools.Clicker.Core
+namespace Bazger.Tools.WinApi
 {
     public class GlobalHotkey
     {

@@ -9,8 +9,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Automation;
 using System.Windows.Forms;
-using Bazger.Tools.Clicker.Core;
 using Bazger.Tools.ObnulAtor.Utils;
+using Bazger.Tools.WinApi;
 
 namespace Bazger.Tools.ObnulAtor
 {
@@ -45,8 +45,8 @@ namespace Bazger.Tools.ObnulAtor
             //    System.Console.WriteLine(name);
             //    System.Console.WriteLine("---");
             //}
-            //var element = AutomationElementHelpers.EnumNotificationIcons().First();
-            //Cursor.Position = new Point((int)element.GetClickablePoint().X, (int)element.GetClickablePoint().Y);
+            var element = AutomationElementHelpers.EnumNotificationIcons().First();
+            Cursor.Position = new Point((int)element.GetClickablePoint().X, (int)element.GetClickablePoint().Y);
             ProgramClick.DoMouseRightClick(1000, 1000);
             Thread.Sleep(2000);
             AutomationElementHelpers.GetContextMenuEntriesOnRootMenu();

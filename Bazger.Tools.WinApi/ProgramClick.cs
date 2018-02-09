@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using System.Runtime.InteropServices;
 
-namespace Bazger.Tools.Clicker.Core
+namespace Bazger.Tools.WinApi
 {
     public static class ProgramClick
     {

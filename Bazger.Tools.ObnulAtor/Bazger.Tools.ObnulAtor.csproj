@@ -72,9 +72,9 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Bazger.Tools.Clicker.Core\Bazger.Tools.Clicker.Core.csproj">
+    <ProjectReference Include="..\Bazger.Tools.Clicker.Core\Bazger.Tools.WinApi.csproj">
       <Project>{76FB8314-1FA9-428D-80AF-AB8C598EB510}</Project>
-      <Name>Bazger.Tools.Clicker.Core</Name>
+      <Name>Bazger.Tools.WinApi</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

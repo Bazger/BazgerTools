@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
 using Bazger.Tools.App.State;
-using Bazger.Tools.Clicker.Core;
+using Bazger.Tools.WinApi;
 using NLog;
 using Telerik.WinControls.UI;
 

@@ -7,8 +7,8 @@
     <ProjectGuid>{76FB8314-1FA9-428D-80AF-AB8C598EB510}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Bazger.Tools.Clicker.Core</RootNamespace>
-    <AssemblyName>Bazger.Tools.Clicker.Core</AssemblyName>
+    <RootNamespace>Bazger.Tools.WinApi</RootNamespace>
+    <AssemblyName>Bazger.Tools.WinApi</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

@@ -10,7 +10,7 @@ using Bazger.Tools.App.NLog;
 using Bazger.Tools.App.Pages;
 using Bazger.Tools.App.State;
 using Bazger.Tools.App.Utils;
-using Bazger.Tools.Clicker.Core;
+using Bazger.Tools.WinApi;
 using Bazger.Tools.YouTubeDownloader.Core.Utility;
 using Newtonsoft.Json;
 using NLog;
