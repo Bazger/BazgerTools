@@ -26,7 +26,7 @@ namespace Bazger.Tools.ObnulAtor.Utils
         /// <param name="filter"> A delegate that returns true for windows
         ///    that should be returned and false for windows that should
         ///    not be returned </param>
-        public static IEnumerable<IntPtr> FindWindows(User32.EnumWindowProc filter)
+        private static IEnumerable<IntPtr> FindWindows(User32.EnumWindowProc filter)
         {
             IntPtr found = IntPtr.Zero;
             List<IntPtr> windows = new List<IntPtr>();
@@ -46,6 +46,20 @@ namespace Bazger.Tools.ObnulAtor.Utils
             return windows;
         }
 
+        public static IEnumerable<IntPtr> FindChildWindows(IntPtr parentIntPtr)
+        {
+            var childWindows = new List<IntPtr>();
+
+            User32.EnumChildWindows(parentIntPtr, delegate (IntPtr childWnd, IntPtr param)
+            {
+                childWindows.Add(childWnd);
+                // but return true here so that we iterate all windows
+                return true;
+            }, IntPtr.Zero);
+
+            return childWindows;
+        }
+
 
         /// <summary> Find all windows that contain the given title text </summary>
         /// <param name="titleText"> The text that the window title must contain. </param>
@@ -53,5 +67,6 @@ namespace Bazger.Tools.ObnulAtor.Utils
         {
             return FindWindows((wnd, param) => GetWindowText(wnd).Contains(titleText));
         }
+
     }
 }

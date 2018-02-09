@@ -16,9 +16,14 @@ namespace Bazger.Tools.Clicker.Core
         /// <summary>
         /// Call the imported function with the cursor's current position
         /// </summary>
-        public static void DoMouseClick(int x, int y)
+        public static void DoMouseLeftClick(int x, int y)
         {
             mouse_event(Constants.MOUSEEVENTF_LEFTDOWN | Constants.MOUSEEVENTF_LEFTUP, (uint)x, (uint)y, 0, 0);
+        }
+
+        public static void DoMouseRightClick(int x, int y)
+        {
+            mouse_event(Constants.MOUSEEVENTF_RIGHTDOWN | Constants.MOUSEEVENTF_RIGHTUP, (uint)x, (uint)y, 0, 0);
         }
     }
 }

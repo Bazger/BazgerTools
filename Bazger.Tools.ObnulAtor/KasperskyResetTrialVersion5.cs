@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -28,24 +29,20 @@ namespace Bazger.Tools.ObnulAtor
                 //TODO: log here
                 return false;
             }
-            var msgBoxTask = Task<bool>.Factory.StartNew(() =>
-            {
-                Thread.Sleep(500);
-                foreach (var hwnd in WindowsHelper.FindWindowsWithText(WindowTitle))
-                {
-                    var hWndMsgBox = User32.FindWindowEx(hwnd, IntPtr.Zero, "Button", "&Да");
-                    if (hWndMsgBox != IntPtr.Zero)
-                    {
-                        User32.SendMessage(hWndMsgBox, User32.WM_LBUTTONDOWN, 0, IntPtr.Zero);
-                        User32.SendMessage(hWndMsgBox, User32.WM_LBUTTONUP, 0, IntPtr.Zero);
-                        return true;
-                    }
-                }
-                return false;
-            });
 
-            User32.SendMessage(hwndChild, User32.BN_CLICKED, 0, IntPtr.Zero);
-            return msgBoxTask.Result;
+            User32.PostMessage(hwndChild, User32.BN_CLICKED, 0, IntPtr.Zero);
+            Thread.Sleep(200);
+            foreach (var hwnd in WindowsHelper.FindWindowsWithText(WindowTitle))
+            {
+                var hWndMsgBox = User32.FindWindowEx(hwnd, IntPtr.Zero, "Button", "&Да");
+                if (hWndMsgBox != IntPtr.Zero)
+                {
+                    User32.SendMessage(hWndMsgBox, User32.WM_LBUTTONDOWN, 0, IntPtr.Zero);
+                    User32.SendMessage(hWndMsgBox, User32.WM_LBUTTONUP, 0, IntPtr.Zero);
+                    return true;
+                }
+            }
+            return false;
         }
 
         public override bool ActivateFromLicence()
