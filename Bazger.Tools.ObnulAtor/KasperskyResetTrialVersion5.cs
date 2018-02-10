@@ -6,7 +6,8 @@ using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Bazger.Tools.ObnulAtor.Utils;
+using System.Windows.Automation;
+using Bazger.Tools.WinApi;
 
 namespace Bazger.Tools.ObnulAtor
 {
@@ -30,15 +31,15 @@ namespace Bazger.Tools.ObnulAtor
                 return false;
             }
 
-            User32.PostMessage(hwndChild, User32.BN_CLICKED, 0, IntPtr.Zero);
+            User32.PostMessage(hwndChild, BN.CLICKED, 0, IntPtr.Zero);
             Thread.Sleep(200);
             foreach (var hwnd in WindowsHelper.FindWindowsWithText(WindowTitle))
             {
                 var hWndMsgBox = User32.FindWindowEx(hwnd, IntPtr.Zero, "Button", "&Да");
                 if (hWndMsgBox != IntPtr.Zero)
                 {
-                    User32.SendMessage(hWndMsgBox, User32.WM_LBUTTONDOWN, 0, IntPtr.Zero);
-                    User32.SendMessage(hWndMsgBox, User32.WM_LBUTTONUP, 0, IntPtr.Zero);
+                    User32.SendMessage(hWndMsgBox, WM.LBUTTONDOWN, 0, IntPtr.Zero);
+                    User32.SendMessage(hWndMsgBox, WM.LBUTTONUP, 0, IntPtr.Zero);
                     return true;
                 }
             }

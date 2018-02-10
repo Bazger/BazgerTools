@@ -240,7 +240,7 @@
     <Content Include="Resources\Gear2.ico" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Bazger.Tools.Clicker.Core\Bazger.Tools.WinApi.csproj">
+    <ProjectReference Include="..\Bazger.Tools.WinApi\Bazger.Tools.WinApi.csproj">
       <Project>{76fb8314-1fa9-428d-80af-ab8c598eb510}</Project>
       <Name>Bazger.Tools.WinApi</Name>
     </ProjectReference>

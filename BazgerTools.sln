@@ -11,9 +11,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bazger.Tools.YouTubeDownloa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bazger.Tools.YouTubeDownloader.ConsoleApp", "Bazger.Tools.YouTubeDownloader.ConsoleApp\Bazger.Tools.YouTubeDownloader.ConsoleApp.csproj", "{EB57C87B-AA5E-4D88-A70D-EFE8A57D318A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bazger.Tools.WinApi", "Bazger.Tools.Clicker.Core\Bazger.Tools.WinApi.csproj", "{76FB8314-1FA9-428D-80AF-AB8C598EB510}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bazger.Tools.ObnulAtor", "Bazger.Tools.ObnulAtor\Bazger.Tools.ObnulAtor.csproj", "{2177CBB2-F381-455A-A652-86F0122CB31E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bazger.Tools.WinApi", "Bazger.Tools.WinApi\Bazger.Tools.WinApi.csproj", "{76FB8314-1FA9-428D-80AF-AB8C598EB510}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -53,14 +53,6 @@ Global
 		{EB57C87B-AA5E-4D88-A70D-EFE8A57D318A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{EB57C87B-AA5E-4D88-A70D-EFE8A57D318A}.Release|x86.ActiveCfg = Release|Any CPU
 		{EB57C87B-AA5E-4D88-A70D-EFE8A57D318A}.Release|x86.Build.0 = Release|Any CPU
-		{76FB8314-1FA9-428D-80AF-AB8C598EB510}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{76FB8314-1FA9-428D-80AF-AB8C598EB510}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{76FB8314-1FA9-428D-80AF-AB8C598EB510}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{76FB8314-1FA9-428D-80AF-AB8C598EB510}.Debug|x86.Build.0 = Debug|Any CPU
-		{76FB8314-1FA9-428D-80AF-AB8C598EB510}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{76FB8314-1FA9-428D-80AF-AB8C598EB510}.Release|Any CPU.Build.0 = Release|Any CPU
-		{76FB8314-1FA9-428D-80AF-AB8C598EB510}.Release|x86.ActiveCfg = Release|Any CPU
-		{76FB8314-1FA9-428D-80AF-AB8C598EB510}.Release|x86.Build.0 = Release|Any CPU
 		{2177CBB2-F381-455A-A652-86F0122CB31E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2177CBB2-F381-455A-A652-86F0122CB31E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2177CBB2-F381-455A-A652-86F0122CB31E}.Debug|x86.ActiveCfg = Debug|Any CPU
@@ -69,6 +61,14 @@ Global
 		{2177CBB2-F381-455A-A652-86F0122CB31E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2177CBB2-F381-455A-A652-86F0122CB31E}.Release|x86.ActiveCfg = Release|Any CPU
 		{2177CBB2-F381-455A-A652-86F0122CB31E}.Release|x86.Build.0 = Release|Any CPU
+		{76FB8314-1FA9-428D-80AF-AB8C598EB510}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{76FB8314-1FA9-428D-80AF-AB8C598EB510}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{76FB8314-1FA9-428D-80AF-AB8C598EB510}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{76FB8314-1FA9-428D-80AF-AB8C598EB510}.Debug|x86.Build.0 = Debug|Any CPU
+		{76FB8314-1FA9-428D-80AF-AB8C598EB510}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{76FB8314-1FA9-428D-80AF-AB8C598EB510}.Release|Any CPU.Build.0 = Release|Any CPU
+		{76FB8314-1FA9-428D-80AF-AB8C598EB510}.Release|x86.ActiveCfg = Release|Any CPU
+		{76FB8314-1FA9-428D-80AF-AB8C598EB510}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

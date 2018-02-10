@@ -110,7 +110,7 @@ namespace Bazger.Tools.App.Pages
         {
             while (_isClickerStarted)
             {
-                ProgramClick.DoMouseLeftClick(Cursor.Position.X, Cursor.Position.Y);
+                MouseHelper.DoMouseLeftClick(Cursor.Position.X, Cursor.Position.Y);
                 Thread.Sleep(_clickDelay);
                 _clicksCount++;
             }

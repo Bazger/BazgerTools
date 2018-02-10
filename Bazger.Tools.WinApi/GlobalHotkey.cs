@@ -21,23 +21,17 @@ namespace Bazger.Tools.WinApi
 
         public bool Register()
         {
-            return RegisterHotKey(_hWnd, _id, _modifier, _key);
+            return User32.RegisterHotKey(_hWnd, _id, _modifier, _key);
         }
 
         public bool Unregiser()
         {
-            return UnregisterHotKey(_hWnd, _id);
+            return User32.UnregisterHotKey(_hWnd, _id);
         }
 
         public override int GetHashCode()
         {
             return _modifier ^ _key ^ _hWnd.ToInt32();
         }
-
-        [DllImport("user32.dll")]
-        private static extern bool RegisterHotKey(IntPtr hWnd, int id, int fsModifiers, int vk);
-
-        [DllImport("user32.dll")]
-        private static extern bool UnregisterHotKey(IntPtr hWnd, int id);
     }
 }

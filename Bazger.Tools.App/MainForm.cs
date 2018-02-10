@@ -50,9 +50,9 @@ namespace Bazger.Tools.App
             SetParentPagesToContols();
 
             //Create HotKeys for the program
-            _altShiftO = new GlobalHotkey((int)HotKeys.AltShiftO, Constants.ALT + Constants.SHIFT, Keys.O, this);
-            _altShiftK = new GlobalHotkey((int)HotKeys.AltShiftK, Constants.ALT + Constants.SHIFT, Keys.K, this);
-            _altShiftL = new GlobalHotkey((int)HotKeys.AltShiftL, Constants.ALT + Constants.SHIFT, Keys.L, this);
+            _altShiftO = new GlobalHotkey((int)HotKeys.AltShiftO, WinApi.ModifierKeys.ALT + WinApi.ModifierKeys.SHIFT, Keys.O, this);
+            _altShiftK = new GlobalHotkey((int)HotKeys.AltShiftK, WinApi.ModifierKeys.ALT + WinApi.ModifierKeys.SHIFT, Keys.K, this);
+            _altShiftL = new GlobalHotkey((int)HotKeys.AltShiftL, WinApi.ModifierKeys.ALT + WinApi.ModifierKeys.SHIFT, Keys.L, this);
 
             //Set loggers
             _viewScreenControls.ForEach(c => CreatePageLogger(c.LoggerName, c.LoggerName));
@@ -220,7 +220,7 @@ namespace Bazger.Tools.App
 
         protected override void WndProc(ref Message m)
         {
-            if (m.Msg == Constants.WM_HOTKEY_MSG_ID)
+            if (m.Msg == WM.HOTKEY_MSG_ID)
             {
                 switch (m.WParam.ToInt32())
                 {

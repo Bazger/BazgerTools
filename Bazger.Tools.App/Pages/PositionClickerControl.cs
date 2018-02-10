@@ -123,7 +123,7 @@ namespace Bazger.Tools.App.Pages
                 {
                     string[] resultsArray = positionsGrid.Rows[i].Cells[0].Value.ToString().Split(',');
                     MoveCursor(new Point(Convert.ToInt32(resultsArray[0]), Convert.ToInt32(resultsArray[1])));
-                    ProgramClick.DoMouseLeftClick(Cursor.Position.X, Cursor.Position.Y);
+                    MouseHelper.DoMouseLeftClick(Cursor.Position.X, Cursor.Position.Y);
                     Thread.Sleep(_posClickDelay);
                 }
                 _circlesCount++;
