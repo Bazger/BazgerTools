@@ -6,11 +6,13 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Bazger.Tools.WinApi;
+using NLog;
 
 namespace Bazger.Tools.ObnulAtor
 {
     public abstract class KasperskyResetTrialBase
     {
+        private readonly Logger _log = LogManager.GetCurrentClassLogger();
         private const int RetriesCount = 3;
 
         protected readonly string WindowTitle;
@@ -47,10 +49,9 @@ namespace Bazger.Tools.ObnulAtor
                     retriesCount++;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                //TODO: log here
-                // ignored
+                _log.Error(ex, $"Can't open KRT, version: {GetVersion()}");
             }
             return false;
         }

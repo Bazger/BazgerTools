@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
@@ -8,47 +9,85 @@ using System.Threading;
 using System.Windows.Automation;
 using System.Windows.Forms;
 using Bazger.Tools.WinApi;
+using NLog;
 
 namespace Bazger.Tools.ObnulAtor
 {
     internal static class Program
     {
-        [STAThread]
-        private static void Main(string[] args)
-        {
-            //TODO: Add Configuration for names
-            //TODO: Add logging
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
-            //TODO: Add to configuration
-            if (Process.GetProcessesByName("avpui").Any())
+        private static string _kasperskyProcessName;
+        private static string _kasperskyServiceName;
+        private static string _kasperskyTrayTitle;
+        private static string _kasperskyExitButtonTitle;
+        private static string _kasperskyResetTrialFileName;
+        private static string _kasperskyResetTrialWindowTitle;
+
+
+        [STAThread]
+        private static int Main(string[] args)
+        {
+            Thread.CurrentThread.Name = "Main";
+            Log.Info("---------BazgerTools ObnulAtor v1---------");
+            try
             {
+                LoadConfiguration();
+            }
+            catch (Exception ex)
+            {
+                Log.Fatal(ex);
+                return -1;
+            }
+
+            if (Process.GetProcessesByName(_kasperskyProcessName).Any())
+            {
+                Log.Info("Closing KasperskyAV");
                 if (!CloseKasperskyAv())
                 {
-                    //TODO: Log here
-                    return;
+                    return -1;
                 }
-                var stopEvent = new ManualResetEvent(false);
+                Log.Info("KasperskyAV was closed from tray");
 
+                var stopEvent = new ManualResetEvent(false);
+                Log.Info("Waiting for KasperskyAV Process and Service stopping");
                 while (!stopEvent.WaitOne(200))
                 {
-                    //TODO: Add to configuration
-                    using (var sc = new ServiceController("AVP17.0.0"))
+                    using (var sc = new ServiceController(_kasperskyServiceName))
                     {
-                        //TODO: Add to configuration
-                        if (sc.Status == ServiceControllerStatus.Stopped && !Process.GetProcessesByName("avpui").Any())
+                        if (sc.Status == ServiceControllerStatus.Stopped && !Process.GetProcessesByName(_kasperskyProcessName).Any())
                         {
                             break;
                         }
                     }
                 }
+                Log.Info("KasperskyAV Process and Service stopped successfully");
             }
-            //TODO: Add to configuration
-            var krt = new KasperskyResetTrialVersion5("KRT", "Kaspersky_Reset_Trial_5.1.0.29");
+
+            var krt = new KasperskyResetTrialVersion5(_kasperskyResetTrialWindowTitle, _kasperskyResetTrialFileName);
+            Log.Info("Openning KRT");
             if (!krt.Open())
             {
-                return;
+                return -1;
             }
-            krt.ResetActivation();
+            Log.Info("KRT Updating activation");
+            if (!krt.ResetActivation())
+            {
+                Log.Error("KRT can't reset activation");
+                return -1;
+            }
+            Log.Info("KasperskyAV License updated");
+            return 0;
+        }
+
+        private static void LoadConfiguration()
+        {
+            _kasperskyProcessName = ConfigurationManager.AppSettings["kasperskyProcessName"] ?? throw new ConfigurationErrorsException("kasperskyProcessName can't be null");
+            _kasperskyServiceName = ConfigurationManager.AppSettings["kasperskyServiceName"] ?? throw new ConfigurationErrorsException("kasperskyServiceName can't be null");
+            _kasperskyTrayTitle = ConfigurationManager.AppSettings["kasperskyTrayTitle"] ?? throw new ConfigurationErrorsException("kasperskyTrayTitle can't be null");
+            _kasperskyExitButtonTitle = ConfigurationManager.AppSettings["kasperskyExitButtonTitle"] ?? throw new ConfigurationErrorsException("kasperskyExitButtonTitle can't be null");
+            _kasperskyResetTrialFileName = ConfigurationManager.AppSettings["kasperskyResetTrialFileName"] ?? throw new ConfigurationErrorsException("kasperskyResetTrialFileName can't be null");
+            _kasperskyResetTrialWindowTitle = ConfigurationManager.AppSettings["kasperskyResetTrialWindowTitle"] ?? throw new ConfigurationErrorsException("kasperskyResetTrialWindowTitle can't be null");
         }
 
         private static bool CloseKasperskyAv()
@@ -59,13 +98,14 @@ namespace Bazger.Tools.ObnulAtor
                 foreach (var icon in trayIcons)
                 {
                     if (icon.GetCurrentPropertyValue(AutomationElement.NameProperty) is string name &&
-                        !name.Contains("Kaspersky"))//TODO: Add to configuration
+                        !name.Contains(_kasperskyTrayTitle))
                     {
                         continue;
                     }
                     var point = new Point((int)icon.GetClickablePoint().X, (int)icon.GetClickablePoint().Y);
                     Cursor.Position = point;
                     MouseHelper.DoMouseRightClick(point.X, point.Y);
+
                     //Find menus and press exit
                     Thread.Sleep(200);
                     var menus = AutomationElementHelpers.GetContextMenuEntriesOnRootMenu();
@@ -73,7 +113,7 @@ namespace Bazger.Tools.ObnulAtor
                     {
 
                         if (menuItem.GetCurrentPropertyValue(AutomationElement.NameProperty) is string menuItemName &&
-                            !menuItemName.Contains("Выход"))//TODO: Add to configuration
+                            !menuItemName.Contains(_kasperskyExitButtonTitle))
                         {
                             continue;
                         }
@@ -82,28 +122,11 @@ namespace Bazger.Tools.ObnulAtor
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                //TODO: Log here
+                Log.Error(ex, "Closing KaspeskyAV was failed");
             }
             return false;
-        }
-
-
-        private static void Automation()
-        {
-            //foreach (var icon in AutomationElementHelpers.EnumNotificationIcons())
-            //{
-            //    var name = icon.GetCurrentPropertyValue(AutomationElement.NameProperty)
-            //        as string;
-            //    System.Console.WriteLine(name);
-            //    System.Console.WriteLine("---");
-            //}
-            var element = AutomationElementHelpers.EnumNotificationIcons().First();
-            Cursor.Position = new Point((int)element.GetClickablePoint().X, (int)element.GetClickablePoint().Y);
-            MouseHelper.DoMouseRightClick(1000, 1000);
-            Thread.Sleep(2000);
-            AutomationElementHelpers.GetContextMenuEntriesOnRootMenu();
         }
     }
 }

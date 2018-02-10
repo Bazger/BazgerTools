@@ -8,11 +8,14 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Automation;
 using Bazger.Tools.WinApi;
+using NLog;
 
 namespace Bazger.Tools.ObnulAtor
 {
     public class KasperskyResetTrialVersion5 : KasperskyResetTrialBase
     {
+        private readonly Logger _log = LogManager.GetCurrentClassLogger();
+
         public KasperskyResetTrialVersion5(string windowTitle, string executableName) : base(windowTitle, executableName)
         {
         }
@@ -21,13 +24,13 @@ namespace Bazger.Tools.ObnulAtor
         {
             if (Hwnd == IntPtr.Zero)
             {
-                //TODO: log here
+                _log.Warn("KRT window pointer is zero");
                 return false;
             }
             var hwndChild = User32.FindWindowEx(Hwnd, IntPtr.Zero, "TButton", "Сбросить активацию");
             if (hwndChild == IntPtr.Zero)
             {
-                //TODO: log here
+                _log.Warn("Reset Activation button pointer is zero");
                 return false;
             }
 

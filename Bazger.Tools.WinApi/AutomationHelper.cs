@@ -50,6 +50,7 @@ namespace Bazger.Tools.WinApi
         /// <returns></returns>
         public static IEnumerable<AutomationElement> EnumNotificationIcons()
         {
+            //TODO: Add languages support
             foreach (var button in AutomationElement.RootElement.FindByName(
                 "Пользовательская область уведомлений"/*"User Promoted Notification Area"*/).EnumChildButtons())
             {
@@ -65,6 +66,7 @@ namespace Bazger.Tools.WinApi
             var chevron = AutomationElement.RootElement.FindByName("NotificationChevron");
             if (chevron != null && chevron.InvokeButton())
             {
+                //TODO: Add languages support
                 foreach (var button in AutomationElement.RootElement.FindByName(
                     "Область уведомлений переполнения"/*"Overflow Notification Area"*/).EnumChildButtons())
                 {

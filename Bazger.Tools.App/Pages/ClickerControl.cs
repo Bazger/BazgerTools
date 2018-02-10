@@ -66,7 +66,7 @@ namespace Bazger.Tools.App.Pages
         /// </summary>
         /// <param name="sender">Sender</param>
         /// <param name="e">Event args</param>
-        private void clickerStartButton_Click(object sender, EventArgs e)
+        private void ClickerStartButton_Click(object sender, EventArgs e)
         {
             _clicksCount++;
             UpdateCountLblText();
