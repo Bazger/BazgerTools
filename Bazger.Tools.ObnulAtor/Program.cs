@@ -2,6 +2,7 @@
 using System.Configuration;
 using System.Diagnostics;
 using System.Drawing;
+using System.Globalization;
 using System.Linq;
 using System.ServiceProcess;
 using System.Text;
@@ -13,6 +14,17 @@ using NLog;
 
 namespace Bazger.Tools.ObnulAtor
 {
+    /// <summary>
+    /// Helpful websites:
+    /// -- MSAA vs UIAutomation: https://stackoverflow.com/questions/27323110/msaa-finds-controls-ui-automation-doesnt
+    /// -- MSAA: https://www.codeproject.com/Articles/38906/UI-Automation-Using-Microsoft-Active-Accessibility
+    /// -- UIAutomation: https://www.codeproject.com/Articles/141842/Automate-your-UI-using-Microsoft-Automation-Framew
+    /// -- Enumerating Notify buttons: https://blogs.msdn.microsoft.com/oldnewthing/20141013-00/?p=43863
+    /// -- TestApi for 3ed party UIAutomation lib: https://archive.codeplex.com/?p=testapi
+    /// -- Finding opened contex menus example: https://social.msdn.microsoft.com/Forums/windowsdesktop/en-US/89b2ad4a-1b55-40af-a2f8-5469ac946be7/how-to-get-a-list-with-all-context-menu-entries?forum=windowsaccessibilityandautomation 
+    /// -- Example for flow of opening tray icon and press on the context menu: https://stackoverflow.com/questions/32354728/programmatically-obtaining-a-windows-applications-tray-menu-items?rq=1
+    /// -- Example for Usage of WinAPI and Unsafe function for retriving the BUTTONINFO: https://stackoverflow.com/questions/33652756/how-to-get-the-processes-that-have-systray-icon/33707955
+    /// </summary>
     internal static class Program
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
@@ -29,7 +41,7 @@ namespace Bazger.Tools.ObnulAtor
         private static int Main(string[] args)
         {
             Thread.CurrentThread.Name = "Main";
-            Log.Info("---------BazgerTools ObnulAtor v1---------");
+            Log.Info("---------BazgerTools ObnulAtor v.1.0.0---------");
             try
             {
                 LoadConfiguration();
@@ -102,9 +114,11 @@ namespace Bazger.Tools.ObnulAtor
                     {
                         continue;
                     }
+                    var oldPoint = Cursor.Position;
                     var point = new Point((int)icon.GetClickablePoint().X, (int)icon.GetClickablePoint().Y);
                     Cursor.Position = point;
                     MouseHelper.DoMouseRightClick(point.X, point.Y);
+                    Cursor.Position = oldPoint;
 
                     //Find menus and press exit
                     Thread.Sleep(200);

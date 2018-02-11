@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Windows.Automation;
 
@@ -50,9 +51,14 @@ namespace Bazger.Tools.WinApi
         /// <returns></returns>
         public static IEnumerable<AutomationElement> EnumNotificationIcons()
         {
-            //TODO: Add languages support
-            foreach (var button in AutomationElement.RootElement.FindByName(
-                "Пользовательская область уведомлений"/*"User Promoted Notification Area"*/).EnumChildButtons())
+            var currentCultureInfo = CultureInfo.CurrentUICulture.ToString();
+            var knownCultures = new List<string> { "en-US", "ru-RU" };
+            if (!knownCultures.Contains(currentCultureInfo))
+            {
+                throw new CultureNotFoundException("CurrentUICulture is unsupported, notification area won't be found");
+            }
+
+            foreach (var button in AutomationElement.RootElement.FindByName(GetUserNotificationAreaTitle(currentCultureInfo)).EnumChildButtons())
             {
                 yield return button;
             }
@@ -66,9 +72,7 @@ namespace Bazger.Tools.WinApi
             var chevron = AutomationElement.RootElement.FindByName("NotificationChevron");
             if (chevron != null && chevron.InvokeButton())
             {
-                //TODO: Add languages support
-                foreach (var button in AutomationElement.RootElement.FindByName(
-                    "Область уведомлений переполнения"/*"Overflow Notification Area"*/).EnumChildButtons())
+                foreach (var button in AutomationElement.RootElement.FindByName(GetOverflowNotificationAreaTitle(currentCultureInfo)).EnumChildButtons())
                 {
                     yield return button;
                 }
@@ -98,6 +102,31 @@ namespace Bazger.Tools.WinApi
             //Assert.AreEqual( entries.Count, aeCol.Count, "There are not the correct count of menu entries in the list" );
 
             return aeCol;
+        }
+
+
+        private static string GetUserNotificationAreaTitle(string cultureInfo)
+        {
+            switch (cultureInfo)
+            {
+                case "ru-RU":
+                    return "Пользовательская область уведомлений";
+                case "en-US":
+                default:
+                    return "User Promoted Notification Area";
+            }
+        }
+
+        private static string GetOverflowNotificationAreaTitle(string cultureInfo)
+        {
+            switch (cultureInfo)
+            {
+                case "ru-RU":
+                    return "Область уведомлений переполнения";
+                case "en-US":
+                default:
+                    return "Overflow Notification Area";
+            }
         }
     }
 }

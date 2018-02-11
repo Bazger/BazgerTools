@@ -95,6 +95,9 @@ namespace Bazger.Tools.WinApi
             return hWnd;
         }
 
+        /// <summary>
+        /// Took from example: https://social.msdn.microsoft.com/Forums/vstudio/en-US/4a1f52ef-f74b-4055-9bfd-e69fd420338e/hide-system-tray-icons?forum=netfxbcl
+        /// </summary>
         public static void DeleteAllTaskbarButtons()
         {
             IntPtr window = WindowsHelper.GetSystemPromotedNotificationArea();

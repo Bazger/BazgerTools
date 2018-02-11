@@ -4,6 +4,10 @@ using System.Text;
 
 namespace Bazger.Tools.WinApi
 {
+    /// <summary>
+    /// Helpful info for all commands BN, WM ant ect: https://wiki.winehq.org/List_Of_Windows_Messages
+    /// </summary>
+
     public enum GW : UInt32
     {
         HWNDFIRST = 0,
