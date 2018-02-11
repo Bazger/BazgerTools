@@ -5,12 +5,14 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Bazger.Tools.ObnulAtor.Utils;
+using Bazger.Tools.WinApi;
+using NLog;
 
 namespace Bazger.Tools.ObnulAtor
 {
     public abstract class KasperskyResetTrialBase
     {
+        private readonly Logger _log = LogManager.GetCurrentClassLogger();
         private const int RetriesCount = 3;
 
         protected readonly string WindowTitle;
@@ -33,7 +35,7 @@ namespace Bazger.Tools.ObnulAtor
             }
             try
             {
-                Process.Start(_executableName + ".exe");
+                Process.Start(_executableName);
                 var retriesCount = 0;
                 var stopEvent = new ManualResetEvent(false);
                 while (!stopEvent.WaitOne(500) && retriesCount < RetriesCount)
@@ -47,10 +49,9 @@ namespace Bazger.Tools.ObnulAtor
                     retriesCount++;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                //TODO: log here
-                // ignored
+                _log.Error(ex, $"Can't open KRT, version: {GetVersion()}");
             }
             return false;
         }
@@ -62,7 +63,7 @@ namespace Bazger.Tools.ObnulAtor
 
             //send WM_CLOSE system message
             if (hwnd == IntPtr.Zero) { return false; }
-            User32.SendMessage(hwnd, User32.WM_CLOSE, 0, IntPtr.Zero);
+            User32.SendMessage(hwnd, WM.CLOSE, 0, IntPtr.Zero);
             return true;
         }
 

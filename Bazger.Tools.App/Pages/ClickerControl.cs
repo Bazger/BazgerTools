@@ -9,7 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Bazger.Tools.App.State;
-using Bazger.Tools.Clicker.Core;
+using Bazger.Tools.WinApi;
 using NLog;
 using NLog.Targets;
 using NLog.Targets.Wrappers;
@@ -66,7 +66,7 @@ namespace Bazger.Tools.App.Pages
         /// </summary>
         /// <param name="sender">Sender</param>
         /// <param name="e">Event args</param>
-        private void clickerStartButton_Click(object sender, EventArgs e)
+        private void ClickerStartButton_Click(object sender, EventArgs e)
         {
             _clicksCount++;
             UpdateCountLblText();
@@ -110,7 +110,7 @@ namespace Bazger.Tools.App.Pages
         {
             while (_isClickerStarted)
             {
-                ProgramClick.DoMouseClick(Cursor.Position.X, Cursor.Position.Y);
+                MouseHelper.DoMouseLeftClick(Cursor.Position.X, Cursor.Position.Y);
                 Thread.Sleep(_clickDelay);
                 _clicksCount++;
             }

@@ -55,7 +55,7 @@
             this.startBtn.TabIndex = 27;
             this.startBtn.Text = "Test Clicking!";
             this.startBtn.ThemeName = "VisualStudio2012Light";
-            this.startBtn.Click += new System.EventHandler(this.clickerStartButton_Click);
+            this.startBtn.Click += new System.EventHandler(this.ClickerStartButton_Click);
             // 
             // countLbl
             // 
